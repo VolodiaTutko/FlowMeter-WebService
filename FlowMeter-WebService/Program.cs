@@ -1,9 +1,26 @@
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, loggerConfig) =>
+{
+    loggerConfig
+    .ReadFrom.Configuration(context.Configuration)
+    .WriteTo.Console()
+    .Enrich.FromLogContext()
+    .Enrich.WithEnvironmentName()
+    .Enrich.WithMachineName()
+    .WriteTo.Seq("https://localhost:5341/");
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging(options => {
+    options.EnrichDiagnosticContext = WebApplication1.Logger.Enricher.HttpRequestEnricher;
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
