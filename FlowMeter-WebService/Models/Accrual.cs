@@ -6,7 +6,7 @@ namespace FlowMeter_WebService.Models
 	public class Accrual
 	{
 		[Key]
-		public int AccuralID { get; set; }
+		public int AccrualID { get; set; }
 
 		[Required]
 		public string PersonalAccount { get; set; }
@@ -18,12 +18,12 @@ namespace FlowMeter_WebService.Models
 		public double? PreviuosDebit { get; set; }
 
 		[Required]
-		public double Paid; // ? bool?
+		public decimal? Paid; 
 
 		[Required]
 		public DateTime Date {  get; set; }
 
 		[ForeignKey(nameof(PersonalAccount))]
-		public Account Account { get; set; }
+		public Consumer Consumer { get; set; }
 	}
 }

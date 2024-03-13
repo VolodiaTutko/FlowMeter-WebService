@@ -6,6 +6,7 @@ namespace FlowMeter_WebService.Models
 	public class Account
 	{
 		[Key]
+		public int AccountID { get; set; }	
 		[StringLength(10)]
 		public string PersonalAccount { get; set; }
 		[StringLength(10)]
@@ -20,8 +21,9 @@ namespace FlowMeter_WebService.Models
 		public string? Gas { get; set; }
 		[StringLength(10)]
 		public string? PublicService { get; set; }
-		
-		
+
+		[ForeignKey(nameof(PersonalAccount))]
+		public Consumer Consumer { get; set; }
 
 	}
 }

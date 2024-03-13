@@ -6,8 +6,6 @@ namespace FlowMeter_WebService.Models
     public class Consumer
     {
         [Key]
-        public int ConsumersId { get; set; }
-        [Required]
 		[MaxLength(10)]
 		public string PersonalAccount { get; set; }
 		[Required]
@@ -25,8 +23,7 @@ namespace FlowMeter_WebService.Models
 		public string ConsumerEmail { get; set; }
 
 
-		[ForeignKey(nameof(PersonalAccount))] 
-		public Account Account { get; set; }
+		
 
 		[ForeignKey(nameof(HouseId))]
 		public House House { get; set; }

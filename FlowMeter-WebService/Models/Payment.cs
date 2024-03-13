@@ -17,8 +17,7 @@ namespace FlowMeter_WebService.Models
 		[Required]
 		public string Type { get; set; }
 
-
 		[ForeignKey(nameof(PersonalAccount))]
-		public Account Account { get; set; }
+		public Consumer Consumer { get; set; }
 	}
 }
