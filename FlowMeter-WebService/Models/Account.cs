@@ -1,0 +1,27 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FlowMeter_WebService.Models
+{
+	public class Account
+	{
+		[Key]
+		[StringLength(10)]
+		public string PersonalAccount { get; set; }
+		[StringLength(10)]
+		public string? HotWater { get; set; }
+		[StringLength(10)]
+		public string? ColdWater { get; set; }
+		[StringLength(10)]
+		public string? Heating { get; set; }
+		[StringLength(10)]
+		public string? Electricity { get; set; }
+		[StringLength(10)]
+		public string? Gas { get; set; }
+		[StringLength(10)]
+		public string? PublicService { get; set; }
+		
+		
+
+	}
+}
