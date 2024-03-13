@@ -6,11 +6,9 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 {
     loggerConfig
     .ReadFrom.Configuration(context.Configuration)
-    .WriteTo.Console()
     .Enrich.FromLogContext()
     .Enrich.WithEnvironmentName()
-    .Enrich.WithMachineName()
-    .WriteTo.Seq("https://localhost:5341/");
+    .Enrich.WithMachineName();
 });
 
 // Add services to the container.
@@ -29,6 +27,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

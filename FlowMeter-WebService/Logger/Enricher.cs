@@ -9,7 +9,6 @@ namespace WebApplication1.Logger
         public string Host { get; set; }
         public string Protocol { get; set; }
         public string Scheme { get; set; }
-        public string User { get; set; }
     }
 
     public static class Enricher
@@ -22,19 +21,9 @@ namespace WebApplication1.Logger
                 Scheme = httpContext.Request.Scheme,
                 IpAddress = httpContext.Connection.RemoteIpAddress.ToString(),
                 Host = httpContext.Request.Host.ToString(),
-                User = GetUserInfo(httpContext.User)
             };
 
             diagnosticContext.Set("HttpContext", httpContextInfo, true);
-        }
-
-        private static string GetUserInfo(ClaimsPrincipal user)
-        {
-            if (user.Identity != null && user.Identity.IsAuthenticated)
-            {
-                return user.Identity.Name;
-            }
-            return Environment.UserName;
         }
     }
 
