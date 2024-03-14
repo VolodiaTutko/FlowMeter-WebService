@@ -1,6 +1,6 @@
-using FlowMeter_WebService.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +15,12 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<AppDbContext>(opt => 
-opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+AppDbContextExtensions.AddApplicationDbContext(
+    builder.Services,
+    "Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=12345"
+//Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+);
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging(options => {
