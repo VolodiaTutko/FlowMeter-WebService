@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Core.Models;
-
-namespace Application.DataAccess
+﻿namespace Application.DataAccess
 {
+    using Application.Models;
     public interface IHouseRepository
     {
         Task<House> GetByIdAsync(int id);

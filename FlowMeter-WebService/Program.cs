@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Infrastructure.Data;
+using Infrastructure.Data.Repositories;
+using Application.DataAccess;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,8 @@ AppDbContextExtensions.AddApplicationDbContext(
     "Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=12345"
 //Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
 );
+builder.Services.AddTransient<IHouseRepository, HouseRepository>();
+builder.Services.AddTransient<HouseService>();
 
 var app = builder.Build();
 

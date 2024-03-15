@@ -1,12 +1,12 @@
 ﻿namespace Infrastructure.Data.Repositories
 {
     using Application.DataAccess;
-    using Core.Models;
+    using Application.Models;
     using Microsoft.EntityFrameworkCore;
 
     public class HouseRepository : IHouseRepository
     {
-        private readonly AppDbContext _context = new AppDbContext();
+        private readonly AppDbContext _context;
         protected readonly DbSet<House> dbSet;
 
         public HouseRepository(AppDbContext context)

@@ -1,8 +1,8 @@
-﻿using Core.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
+	using Application.Models;
 	public class AppDbContext : DbContext
 	{
 		public AppDbContext(DbContextOptions<AppDbContext> options)
