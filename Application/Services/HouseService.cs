@@ -7,6 +7,11 @@ namespace Application.Services
     {
         private readonly IHouseRepository _houseRepository;
 
+        public HouseService(IHouseRepository houseRepository)
+        {
+            _houseRepository = houseRepository;
+        }   
+
         public async Task<House> AddHouse(House house)
         {
             return await _houseRepository.Add(house);

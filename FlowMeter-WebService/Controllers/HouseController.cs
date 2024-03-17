@@ -1,18 +1,22 @@
-﻿using Application.UseCases.House.GetList;
-using Infrastructure.Data.Repositories;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowMeter_WebService.Controllers
 {
+    using Application.Services;
+    using Application.Models;
+    using Infrastructure.Data;
+    using Application.DataAccess;
+
     public class HouseController : Controller
     {
         // GET: HouseController
-        public async void Index()
+        public void Index(AppDbContext dddd)
         {
-            var ccc = new GetList(new HouseRepository(new Infrastructure.Data.AppDbContext())) ;
-            var rrr = await ccc.Execute();
-            return View();
+            //int data = houseService.GetData();
+
+
+            //return View();
         }
 
         // GET: HouseController/Details/5
@@ -22,7 +26,7 @@ namespace FlowMeter_WebService.Controllers
         }
 
         // GET: HouseController/Create
-        public ActionResult Create()
+        public ActionResult Create(House h)
         {
             return View();
         }
