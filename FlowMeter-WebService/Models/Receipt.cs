@@ -12,7 +12,7 @@ namespace FlowMeter_WebService.Models
 		[Required]
 		public DateTime Date { get; set; }
 
-		public byte[]?  PDF { get; set; }	
+		public byte[]? PDF { get; set; }
 
 		[ForeignKey(nameof(PersonalAccount))]
 		public Consumer Consumer { get; set; }
