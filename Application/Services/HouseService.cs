@@ -3,7 +3,8 @@ namespace Application.Services
 {
     using Application.Models;
     using Application.DataAccess;
-    public class HouseService
+    using Application.Services.Interfaces;
+    public class HouseService: IHouseService
     {
         private readonly IHouseRepository _houseRepository;
 
@@ -19,7 +20,8 @@ namespace Application.Services
 
         public async Task<List<House>> GetList()
         {
-            return await _houseRepository.All();
+            var all = await _houseRepository.All();
+            return all.Where(item => item != null).ToList();
         }
     }
 }

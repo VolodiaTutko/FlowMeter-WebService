@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Application.DataAccess;
 using Application.Services;
+using Application.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,10 +25,9 @@ AppDbContextExtensions.AddApplicationDbContext(
     "Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=12345"
 //Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
 );
-//builder.Services.AddScoped<AppDbContext, AppDbContext>();
-//builder.Services.AddScoped<HouseService, HouseService>();
-//builder.Services.AddScoped<IHouseRepository, HouseRepository>(c => new HouseRepository(c.GetService<AppDbContext>()));
-//builder.Services.AddScoped<AppDbContext, AppDbContext>();
+
+builder.Services.AddScoped<IHouseRepository, HouseRepository>();
+builder.Services.AddScoped<IHouseService, HouseService>();
 
 var app = builder.Build();
 

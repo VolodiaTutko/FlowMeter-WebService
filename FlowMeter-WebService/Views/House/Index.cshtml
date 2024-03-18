@@ -28,7 +28,10 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @if (Model != null & Model.Any())
+{
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.HouseAddress)
@@ -48,6 +51,11 @@
                 <a asp-action="Delete" asp-route-id="@item.HouseId">Delete</a>
             </td>
         </tr>
+    }
+}
+else
+{
+    <p>No houses found.</p>
 }
     </tbody>
 </table>

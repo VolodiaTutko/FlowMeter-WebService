@@ -5,18 +5,20 @@ namespace FlowMeter_WebService.Controllers
 {
     using Application.Services;
     using Application.Models;
-    using Infrastructure.Data;
-    using Application.DataAccess;
+    using Application.Services.Interfaces;
 
     public class HouseController : Controller
     {
-        // GET: HouseController
-        public void Index(AppDbContext dddd)
+        private IHouseService _houseService;
+        public HouseController(IHouseService service)
         {
-            //int data = houseService.GetData();
-
-
-            //return View();
+            _houseService = service;
+        }
+        // GET: HouseController
+        public async Task<ActionResult> Index()
+        {
+            var houses = await _houseService.GetList();
+            return View(houses);
         }
 
         // GET: HouseController/Details/5
