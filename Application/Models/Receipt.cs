@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FlowMeter_WebService.Models
+namespace Application.Models
 {
 	public class Receipt
 	{
@@ -12,7 +12,7 @@ namespace FlowMeter_WebService.Models
 		[Required]
 		public DateTime Date { get; set; }
 
-		public byte[]? PDF { get; set; }
+		public byte[]?  PDF { get; set; }	
 
 		[ForeignKey(nameof(PersonalAccount))]
 		public Consumer Consumer { get; set; }

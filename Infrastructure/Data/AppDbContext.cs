@@ -1,8 +1,8 @@
-﻿using FlowMeter_WebService.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace FlowMeter_WebService.Data
+namespace Infrastructure.Data
 {
+	using Application.Models;
 	public class AppDbContext : DbContext
 	{
 		public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -10,7 +10,18 @@ namespace FlowMeter_WebService.Data
 		{
 		}
 
-		public DbSet<Account> accounts { get; set; }
+        public AppDbContext()
+       : base()
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            //options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
+            options.UseNpgsql("Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=123456");
+        }
+
+        public DbSet<Account> accounts { get; set; }
 		public DbSet<Accrual> accruals { get; set; }
 		public DbSet<Admin> admins { get; set; }
 		public DbSet<Consumer> consumers { get; set; }

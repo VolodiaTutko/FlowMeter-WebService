@@ -1,21 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FlowMeter_WebService.Models
+namespace Application.Models
 {
-	public class Receipt
+	public class Payment
 	{
 		[Key]
-		public int ReceiptId { get; set; }
+		public int PaymentID { get; set; }
 		[Required]
-		public string PersonalAccount { get; set; }
+		public double Amount { get; set; }
 		[Required]
 		public DateTime Date { get; set; }
+		[Required]
+		public string PersonalAccount { get; set; }
 
-		public byte[]? PDF { get; set; }
+		[Required]
+		public string Type { get; set; }
 
 		[ForeignKey(nameof(PersonalAccount))]
 		public Consumer Consumer { get; set; }
-
 	}
 }

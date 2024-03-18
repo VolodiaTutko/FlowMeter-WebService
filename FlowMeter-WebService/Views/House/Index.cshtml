@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Application.Models.House>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@Html.Partial("_TableNavigation")
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HouseAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HeatingAreaOfHouse)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfFlat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfResidents)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null & Model.Any())
+{
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HouseAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HeatingAreaOfHouse)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfFlat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfResidents)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.HouseId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.HouseId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.HouseId">Delete</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <p>No houses found.</p>
+}
+    </tbody>
+</table>

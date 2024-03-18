@@ -1,6 +1,6 @@
+using System.Diagnostics;
 using FlowMeter_WebService.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace FlowMeter_WebService.Controllers
 {
@@ -21,6 +21,11 @@ namespace FlowMeter_WebService.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public IActionResult Tables()
+        {
+            return RedirectToAction("Index", "House");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
