@@ -22,7 +22,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 builder.Services.AddControllersWithViews();
 AppDbContextExtensions.AddApplicationDbContext(
     builder.Services,
-    "Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=12345"
+    "Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=123456"
 //Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
 );
 

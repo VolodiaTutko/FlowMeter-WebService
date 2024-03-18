@@ -18,7 +18,7 @@ namespace Infrastructure.Data
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             //options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
-            options.UseNpgsql("Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=12345");
+            options.UseNpgsql("Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=123456");
         }
 
         public DbSet<Account> accounts { get; set; }
