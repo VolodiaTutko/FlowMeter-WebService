@@ -14,6 +14,7 @@
             _context = context;
             dbSet = context.Set<House>();
         }
+
         public Task<House> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
@@ -21,8 +22,8 @@
 
         public async Task<List<House>> All()
         {
-            var house = await dbSet.FirstOrDefaultAsync();
-            return await Task.FromResult(new List<House> { house });
+            var houses = await dbSet.ToListAsync();
+            return houses;
         }
 
         public async Task<House> Add(House house)

@@ -1,9 +1,9 @@
-﻿
-namespace Application.Services
+﻿namespace Application.Services
 {
     using Application.Models;
     using Application.DataAccess;
     using Application.Services.Interfaces;
+
     public class HouseService: IHouseService
     {
         private readonly IHouseRepository _houseRepository;
@@ -11,7 +11,7 @@ namespace Application.Services
         public HouseService(IHouseRepository houseRepository)
         {
             _houseRepository = houseRepository;
-        }   
+        }
 
         public async Task<House> AddHouse(House house)
         {
