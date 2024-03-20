@@ -1,0 +1,62 @@
+﻿@using Application.DTOS
+@using Application.Services.Interfaces
+
+@{
+    IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
+    var houseOptions = await houseService.GetHouseOptions();
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row mt-3">
+                <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+                <div class="col-md-6">
+                    <input type="text" id="PersonalAccount" class="form-control" name="PersonalAccount">
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="ConsumerOwner" class="col-form-label col-md-6">ПІБ власника</label>
+                <div class="col-md-6">
+                    <input type="text" id="ConsumerOwner" class="form-control" name="ConsumerOwner">
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="ConsumerEmail" class="col-form-label col-md-6">Email</label>
+                <div class="col-md-6">
+                    <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail">
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
+                <div class="col-md-6">
+                    <select class="form-select building-select" id="HouseId" name="HouseId">
+                        <option value="">Оберіть будинок</option>
+                        @foreach (var item in houseOptions)
+                        {
+                            <option value="@item.HouseId">@item.HouseAddress</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="Flat" class="col-form-label col-md-6">№ квартири</label>
+                <div class="col-md-6">
+                    <input type="text" id="Flat" class="form-control" name="Flat">
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="HeatingArea" class="col-form-label col-md-6">Опалювальна площа квартири</label>
+                <div class="col-md-6">
+                    <input type="text" id="HeatingArea" class="form-control" name="HeatingArea">
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
+                <div class="col-md-6">
+                    <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

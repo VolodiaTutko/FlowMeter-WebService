@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Application.Models.Consumer>
+
+@{
+    ViewData["Title"] = "Index";
+    ViewBag.PartialViewName = "_CreateConsumerForm";
+}
+
+@Html.Partial("_TableNavigation")
+
+<h1>Index</h1>
+
+@Html.Partial("_CreateModal")
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PersonalAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Flat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConsumerOwner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HeatingArea)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfPersons)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConsumerEmail)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null & Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PersonalAccount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Flat)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ConsumerOwner)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HeatingArea)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumberOfPersons)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ConsumerEmail)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.PersonalAccount">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.PersonalAccount">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.PersonalAccount">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No consumers found.</p>
+        }
+    </tbody>
+</table>
