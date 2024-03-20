@@ -10,6 +10,7 @@ namespace FlowMeter_WebService.Controllers
     public class ConsumerController : Controller
     {
         private IConsumerService _consumerService;
+
         public ConsumerController(IConsumerService service)
         {
             _consumerService = service;
@@ -17,8 +18,8 @@ namespace FlowMeter_WebService.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var houses = await _consumerService.GetList();
-            return View(houses);
+            var consumer = await _consumerService.GetList();
+            return View(consumer);
         }
 
         public ActionResult Details(int id)
@@ -35,9 +36,15 @@ namespace FlowMeter_WebService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Consumer model)
         {
+            ModelState.Remove("House");
+            ModelState.Remove("User");
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(Index), model);
+            }
+
             try
             {
-                // Використовуйте отриману модель, щоб створити новий об'єкт Consumer
                 var consumer = new Consumer
                 {
                     PersonalAccount = model.PersonalAccount,
@@ -47,23 +54,18 @@ namespace FlowMeter_WebService.Controllers
                     HouseId = model.HouseId,
                     NumberOfPersons = model.NumberOfPersons,
                     ConsumerEmail = model.ConsumerEmail
-                    // Інші властивості, якщо вони є
                 };
 
-                // Викликайте службу для збереження об'єкта в базі даних
                 await _consumerService.AddConsumer(consumer);
 
-                // Після успішного збереження перенаправте користувача на сторінку з індексом
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                // Якщо виникає помилка, додайте повідомлення про помилку до ModelState
                 ModelState.AddModelError("", $"Error: {ex.Message}");
             }
 
-            // Якщо ModelState не є валідним, поверніть сторінку з формою знову разом з валідаційними помилками
-           return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), model);
         }
 
         public ActionResult Edit(int id)

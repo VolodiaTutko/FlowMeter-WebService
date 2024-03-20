@@ -1,4 +1,12 @@
-﻿<div class="container">
+﻿@using Application.DTOS
+@using Application.Services.Interfaces
+
+@{
+    IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
+    var houseOptions = await houseService.GetHouseOptions();
+}
+
+<div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row mt-3">
@@ -22,9 +30,9 @@
             <div class="form-group row mt-3">
                 <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
                 <div class="col-md-6">
-                    <select class="form-select building-select">
+                    <select class="form-select building-select" id="HouseId" name="HouseId">
                         <option value="">Оберіть будинок</option>
-                        @foreach (var item in Model)
+                        @foreach (var item in houseOptions)
                         {
                             <option value="@item.HouseId">@item.HouseAddress</option>
                         }
