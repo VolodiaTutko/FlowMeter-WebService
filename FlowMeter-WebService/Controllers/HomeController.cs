@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using FlowMeter_WebService.Models;
+using Application.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowMeter_WebService.Controllers
