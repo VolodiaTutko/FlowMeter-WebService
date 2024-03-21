@@ -1,9 +1,9 @@
 ﻿namespace Application.Services
 {
-    using Application.Models;
     using Application.DataAccess;
-    using Application.Services.Interfaces;
     using Application.DTOS;
+    using Application.Models;
+    using Application.Services.Interfaces;
 
     public class HouseService: IHouseService
     {

@@ -1,8 +1,9 @@
-﻿using Serilog;
-using System.Security.Claims;
-
-namespace WebApplication1.Logger
+﻿namespace WebApplication1.Logger
 {
+    using System.Security.Claims;
+
+    using Serilog;
+
     public class HttpContextInfo
     {
         public string IpAddress { get; set; }

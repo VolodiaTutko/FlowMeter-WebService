@@ -1,22 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Application.Models
+﻿namespace Application.Models
 {
-	public class Counter
-	{
-		[Key]
-		public int CountersId { get; set; }
+    using System.ComponentModel.DataAnnotations;
 
-		public decimal? CurrentIndicator { get; set; }
+    public class Counter
+    {
+        [Key]
+        public int CountersId { get; set; }
 
-		[Required]
-		public string CounterAccount { get; set; }
-		[Required]
-		public string TypeOfAccount { get; set; }
+        public decimal? CurrentIndicator { get; set; }
 
-		[Required]
-		public string Role { get; set; }
-		[Required]
-		public DateTime Date { get; set; }
-	}
+        [Required]
+        public string CounterAccount { get; set; }
+
+        [Required]
+        public string TypeOfAccount { get; set; }
+
+        [Required]
+        public string Role { get; set; }
+
+        [Required]
+        public DateTime Date { get; set; }
+    }
 }

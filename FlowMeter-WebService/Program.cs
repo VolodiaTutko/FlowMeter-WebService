@@ -1,11 +1,11 @@
-using Microsoft.EntityFrameworkCore;
-using Serilog;
-using Infrastructure.Data;
-using Infrastructure.Data.Repositories;
 using Application.DataAccess;
 using Application.Services;
 using Application.Services.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 

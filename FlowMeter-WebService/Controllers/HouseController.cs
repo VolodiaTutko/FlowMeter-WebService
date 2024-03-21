@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace FlowMeter_WebService.Controllers
+﻿namespace FlowMeter_WebService.Controllers
 {
-    using Application.Services;
     using Application.Models;
+    using Application.Services;
     using Application.Services.Interfaces;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
 
     public class HouseController : Controller
     {

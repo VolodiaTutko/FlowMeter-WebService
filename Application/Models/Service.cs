@@ -1,22 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Application.Models
+﻿namespace Application.Models
 {
-	public class Service
-	{
-		[Key]
-		public int ServiceId { get; set; }
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-		public int? HouseId { get; set; }
-		[Required]
-		public string TypeOfAccount { get; set; }
+    public class Service
+    {
+        [Key]
+        public int ServiceId { get; set; }
 
-		public int? Price { get; set; }
+        public int? HouseId { get; set; }
 
-		[ForeignKey(nameof(HouseId))]
-		public House House { get; set; }
-	
-		
-	}
+        [Required]
+        public string TypeOfAccount { get; set; }
+
+        public int? Price { get; set; }
+
+        [ForeignKey(nameof(HouseId))]
+        public House House { get; set; }
+    }
 }

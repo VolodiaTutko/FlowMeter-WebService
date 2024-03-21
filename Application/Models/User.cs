@@ -1,13 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Application.Models
+﻿namespace Application.Models
 {
-	public class User
-	{
-		[Key]
-		public string ConsumerEmail { get; set; }
-		[Required]
-		public string Password { get; set; }	
-		
-	}
+    using System.ComponentModel.DataAnnotations;
+
+    public class User
+    {
+        [Key]
+        public string ConsumerEmail { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
 }

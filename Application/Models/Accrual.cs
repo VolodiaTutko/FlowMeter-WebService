@@ -1,29 +1,28 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Application.Models
+﻿namespace Application.Models
 {
-	public class Accrual
-	{
-		[Key]
-		public int AccrualID { get; set; }
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-		[Required]
-		public string PersonalAccount { get; set; }
+    public class Accrual
+    {
+        [Key]
+        public int AccrualID { get; set; }
 
+        [Required]
+        public string PersonalAccount { get; set; }
 
-		[Required]
-		public double Accrued { get; set; }
+        [Required]
+        public double Accrued { get; set; }
 
-		public double? PreviuosDebit { get; set; }
+        public double? PreviuosDebit { get; set; }
 
-		[Required]
-		public decimal? Paid; 
+        [Required]
+        public decimal? Paid;
 
-		[Required]
-		public DateTime Date {  get; set; }
+        [Required]
+        public DateTime Date { get; set; }
 
-		[ForeignKey(nameof(PersonalAccount))]
-		public Consumer Consumer { get; set; }
-	}
+        [ForeignKey(nameof(PersonalAccount))]
+        public Consumer Consumer { get; set; }
+    }
 }

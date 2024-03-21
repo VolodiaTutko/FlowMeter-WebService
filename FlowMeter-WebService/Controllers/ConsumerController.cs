@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace FlowMeter_WebService.Controllers
+﻿namespace FlowMeter_WebService.Controllers
 {
-    using Application.Services;
     using Application.Models;
+    using Application.Services;
     using Application.Services.Interfaces;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
 
     public class ConsumerController : Controller
     {
         private IConsumerService _consumerService;
+        private readonly ILogger<ConsumerController> _logger;
 
-        public ConsumerController(IConsumerService service)
+        public ConsumerController(IConsumerService service, ILogger<ConsumerController> logger)
         {
             _consumerService = service;
+            _logger = logger;
         }
 
         public async Task<ActionResult> Index()
@@ -57,12 +58,14 @@ namespace FlowMeter_WebService.Controllers
                 };
 
                 await _consumerService.AddConsumer(consumer);
+                _logger.LogInformation("Consumer created successfully: {ConsumerId}", consumer.PersonalAccount);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error: {ex.Message}");
+                _logger.LogError(ex, "Error occurred while creating consumer");
+                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
             }
 
             return RedirectToAction(nameof(Index), model);

@@ -1,9 +1,10 @@
-using System.Diagnostics;
-using Application.Models;
-using Microsoft.AspNetCore.Mvc;
-
 namespace FlowMeter_WebService.Controllers
 {
+    using System.Diagnostics;
+
+    using Application.Models;
+    using Microsoft.AspNetCore.Mvc;
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

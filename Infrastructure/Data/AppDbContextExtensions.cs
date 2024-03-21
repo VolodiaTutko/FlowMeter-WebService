@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Data
+﻿namespace Infrastructure.Data
 {
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+
     public static class AppDbContextExtensions
     {
         public static void AddApplicationDbContext(this IServiceCollection services, string connectionString)
