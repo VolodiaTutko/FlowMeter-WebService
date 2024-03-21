@@ -18,6 +18,9 @@
                 @Html.DisplayNameFor(model => model.PersonalAccount)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.House.HouseAddress)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Flat)
             </th>
             <th>
@@ -43,6 +46,9 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.PersonalAccount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.House.HouseAddress)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Flat)
