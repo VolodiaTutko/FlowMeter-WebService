@@ -21,9 +21,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 AppDbContextExtensions.AddApplicationDbContext(
-    builder.Services,
-    "Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=123456"
-//Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+	builder.Services, Environment.GetEnvironmentVariable("ConnectionStrings:DefaultConnection")
 );
 
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
