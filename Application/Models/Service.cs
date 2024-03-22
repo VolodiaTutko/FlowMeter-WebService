@@ -6,6 +6,7 @@
     public class Service
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ServiceId { get; set; }
 
         public int? HouseId { get; set; }

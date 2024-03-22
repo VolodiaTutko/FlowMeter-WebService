@@ -9,51 +9,70 @@
     public class HouseController : Controller
     {
         private IHouseService _houseService;
-        public HouseController(IHouseService service)
+        private readonly ILogger<HouseController> _logger;
+
+        public HouseController(IHouseService service, ILogger<HouseController> logger)
         {
             _houseService = service;
+            _logger = logger;
         }
-        // GET: HouseController
+
         public async Task<ActionResult> Index()
         {
             var houses = await _houseService.GetList();
             return View(houses);
         }
 
-        // GET: HouseController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: HouseController/Create
-        public ActionResult Create(House h)
+        public ActionResult Create()
         {
             return View();
         }
 
-        // POST: HouseController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(House model)
         {
+            //ModelState.Remove("House");
+            //ModelState.Remove("User");
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(Index), model);
+            }
+
             try
             {
+                var house = new House
+                {
+                    HouseAddress = model.HouseAddress,
+                    HeatingAreaOfHouse = model.HeatingAreaOfHouse,
+                    NumberOfFlat = model.NumberOfFlat,
+                    NumberOfResidents = model.NumberOfResidents,
+                };
+
+                await _houseService.AddHouse(house);
+                _logger.LogInformation("House created successfully: {HouseAddress}", house.HouseAddress);
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                _logger.LogError(ex, "Error occurred while creating house");
+                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
             }
+
+            return RedirectToAction(nameof(Index), model);
         }
 
-        // GET: HouseController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: HouseController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -68,13 +87,11 @@
             }
         }
 
-        // GET: HouseController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: HouseController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

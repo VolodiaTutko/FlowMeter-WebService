@@ -2,15 +2,23 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewBag.PartialViewName = "_CreateHouseForm";
+    ViewBag.ModalTitle = "Create new house";
 }
 
 @Html.Partial("_TableNavigation")
 
-<h1>Index</h1>
+<h1>HOUSE_INDEX</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@Html.Partial("_CreateModal")
+
+@* <p>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalForHouse">
+        Create new
+    </button>
+</p> *@
+
+
 <table class="table">
     <thead>
         <tr>

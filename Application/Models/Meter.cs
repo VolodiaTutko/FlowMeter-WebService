@@ -1,10 +1,12 @@
 ﻿namespace Application.Models
 {
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Counter
+    public class Meter
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CountersId { get; set; }
 
         public decimal? CurrentIndicator { get; set; }

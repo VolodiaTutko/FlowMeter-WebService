@@ -6,6 +6,7 @@
     public class Receipt
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ReceiptId { get; set; }
 
         [Required]

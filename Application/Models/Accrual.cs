@@ -6,6 +6,7 @@
     public class Accrual
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AccrualID { get; set; }
 
         [Required]

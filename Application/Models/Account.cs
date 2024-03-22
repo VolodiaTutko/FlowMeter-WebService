@@ -6,6 +6,7 @@
     public class Account
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AccountID { get; set; }
 
         [StringLength(10)]

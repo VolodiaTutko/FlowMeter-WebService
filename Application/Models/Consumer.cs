@@ -24,7 +24,6 @@
         [Required]
         public int NumberOfPersons { get; set; }
 
-        [Required]
         public string ConsumerEmail { get; set; }
 
         [ForeignKey(nameof(HouseId))]
