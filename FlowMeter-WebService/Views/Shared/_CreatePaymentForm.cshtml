@@ -1,0 +1,53 @@
+﻿@using Application.DTOS
+@using Application.Services.Interfaces
+@{
+    IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
+    var houseOptions = await houseService.GetHouseOptions();
+
+    IConsumerService consumerServise = (IConsumerService)ViewContext.HttpContext.RequestServices.GetService(typeof(IConsumerService));
+    var consumerOptions = await consumerServise.GetConsumerOptions();
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row mt-3">
+                <label for="HouseId" class="col-form-label col-md-6">Адреса будинку</label>
+                <div class="col-md-6">
+                    <select class="form-select building-select" id="HouseId" name="HouseId">
+                        <option value="">Оберіть будинок</option>
+                            @foreach (var item in houseOptions)
+                            {
+                                <option value="@item.HouseId">@item.HouseAddress</option>
+                            }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+                <div class="col-md-6">
+                    <select class="form-select building-select" id="PersonalAccount" name="PersonalAccount">
+                        <option value="">Оберіть персональний рахунок</option>
+                        @foreach (var item in consumerOptions)
+                            {
+                                <option value="@item.PersonalAccount">@item.PersonalAccount</option>
+                            }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="Type" class="col-form-label col-md-6">Type</label>
+                <div class="col-md-6">
+                    <input type="text" id="Type" class="form-control" name="Type">
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="Amount" class="col-form-label col-md-6">Amount</label>
+                <div class="col-md-6">
+                    <input type="number" id="Amount" class="form-control" name="Amount" min="1">
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

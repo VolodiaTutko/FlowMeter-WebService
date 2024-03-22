@@ -30,6 +30,9 @@ builder.Services.AddScoped<IHouseService, HouseService>();
 builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
 builder.Services.AddScoped<IConsumerService, ConsumerService>();
 
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging(options => {

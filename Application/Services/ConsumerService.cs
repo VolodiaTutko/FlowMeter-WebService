@@ -45,5 +45,13 @@
         {
             return await _houseService.GetHouseOptions();
         }
+
+        public async Task<List<SelectConsumerDTO>> GetConsumerOptions()
+        {
+            var allConsumer = await _consumerRepository.All();
+            List<SelectConsumerDTO> options = new List<SelectConsumerDTO>();
+            allConsumer.ForEach(item => options.Add(new SelectConsumerDTO(item)));
+            return options;
+        }
     }
 }
