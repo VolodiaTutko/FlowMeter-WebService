@@ -3,23 +3,26 @@
     using Application.Models;
     using Application.Services;
     using Application.Services.Interfaces;
+    using Humanizer;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using System;
+    
 
-    public class ConsumerController : Controller
+    public class PaymentController : Controller
     {
-        private IConsumerService _consumerService;
-        private readonly ILogger<ConsumerController> _logger;
+        private IPaymentService _paymentService;
+        private readonly ILogger<PaymentController> _logger;
 
-        public ConsumerController(IConsumerService service, ILogger<ConsumerController> logger)
+        public PaymentController(IPaymentService service, ILogger<PaymentController> logger)
         {
-            _consumerService = service;
+            _paymentService = service;
             _logger = logger;
         }
 
         public async Task<ActionResult> Index()
         {
-            var consumer = await _consumerService.GetList();
+            var consumer = await _paymentService.GetList();
             return View(consumer);
         }
 
@@ -35,10 +38,9 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Consumer model)
+        public async Task<IActionResult> Create(Payment model)
         {
-            ModelState.Remove("House");
-            ModelState.Remove("User");
+            ModelState.Remove("Consumer");
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(Index), model);
@@ -46,25 +48,24 @@
 
             try
             {
-                var consumer = new Consumer
+                Random random = new Random();
+                var payment = new Payment
                 {
+                    PaymentID = random.Next(1, 100000000),
+                    Amount = model.Amount,
+                    Date = DateTime.UtcNow.Date,
                     PersonalAccount = model.PersonalAccount,
-                    Flat = model.Flat,
-                    ConsumerOwner = model.ConsumerOwner,
-                    HeatingArea = model.HeatingArea,
-                    HouseId = model.HouseId,
-                    NumberOfPersons = model.NumberOfPersons,
-                    ConsumerEmail = model.ConsumerEmail
+                    Type = model.Type
                 };
 
-                await _consumerService.AddConsumer(consumer);
-                _logger.LogInformation("Consumer created successfully: {ConsumerId}", consumer.PersonalAccount);
+                await _paymentService.AddPayment(payment);
+                _logger.LogInformation("Consumer created successfully: {PaymentId}", payment.PaymentID);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while creating consumer");
+                _logger.LogError(ex, "Error occurred while creating payment");
                 ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
             }
 
