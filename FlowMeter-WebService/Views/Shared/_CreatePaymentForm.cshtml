@@ -8,31 +8,32 @@
     var consumerOptions = await consumerServise.GetConsumerOptions();
 }
 
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row mt-3">
-                <label for="HouseId" class="col-form-label col-md-6">Адреса будинку</label>
+                <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
                 <div class="col-md-6">
-                    <select class="form-select building-select" id="HouseId" name="HouseId">
-                        <option value="">Оберіть будинок</option>
-                            @foreach (var item in houseOptions)
-                            {
-                                <option value="@item.HouseId">@item.HouseAddress</option>
-                            }
-                    </select>
+                    <input class="form-control" list="houses" id="HouseId" name="HouseId" placeholder="Введіть адресу будинку">
+                    <datalist id="houses">
+                        @foreach (var item in houseOptions)
+                        {
+                            <option value="@item.HouseAddress">@item.HouseAddress</option>
+                        }
+                    </datalist>
                 </div>
             </div>
             <div class="form-group row mt-3">
                 <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
                 <div class="col-md-6">
-                    <select class="form-select building-select" id="PersonalAccount" name="PersonalAccount">
-                        <option value="">Оберіть персональний рахунок</option>
+                    <input class="form-control" list="personalAccounts" id="PersonalAccount" name="PersonalAccount" placeholder="Введіть персональний рахунок">
+                    <datalist>
                         @foreach (var item in consumerOptions)
-                            {
-                                <option value="@item.PersonalAccount">@item.PersonalAccount</option>
-                            }
-                    </select>
+                        {
+                            <option value="@item.PersonalAccount">@item.PersonalAccount</option>
+                        }
+                    </datalist>
                 </div>
             </div>
             <div class="form-group row mt-3">
