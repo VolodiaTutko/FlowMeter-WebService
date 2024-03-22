@@ -30,9 +30,8 @@
         {
             _context.meters.Add(meter);
             _context.SaveChanges();
-            await dbSet.AddAsync(meter);
             await _context.SaveChangesAsync();
-            return await Task.FromResult(meter);
+            return meter;
         }
 
         public Task<Meter> Update(Meter meter)

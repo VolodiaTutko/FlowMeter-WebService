@@ -58,7 +58,7 @@
                 };
 
                 await _consumerService.AddConsumer(consumer);
-                _logger.LogInformation("Consumer created successfully: {ConsumerId}", consumer.PersonalAccount);
+                _logger.LogInformation("Consumer created successfully with PersonalAccount: {ConsumerId}", consumer.PersonalAccount);
 
                 return RedirectToAction(nameof(Index));
             }

@@ -33,9 +33,8 @@
         {
             _context.payments.Add(payment);
             _context.SaveChanges();
-            await dbSet.AddAsync(payment);
             await _context.SaveChangesAsync();
-            return await Task.FromResult(payment);
+            return payment;
         }
 
         public Task<Payment> Update(Payment payment)

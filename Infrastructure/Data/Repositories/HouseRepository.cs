@@ -30,9 +30,8 @@
         {
             _context.houses.Add(house);
             _context.SaveChanges();
-            await dbSet.AddAsync(house);
             await _context.SaveChangesAsync();
-            return await Task.FromResult(house);
+            return house;
         }
 
         public Task<House> Update(House house)

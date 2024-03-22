@@ -21,8 +21,17 @@
 
         public async Task<Consumer> AddConsumer(Consumer consumer)
         {
-            _logger.LogInformation("Adding a new consumer with Petsonal Account {ConsumerId}.", consumer.PersonalAccount);
-            return await _consumerRepository.Add(consumer);
+            try
+            {
+                var addedConsumer = await _consumerRepository.Add(consumer);
+                _logger.LogInformation("Added a new house to the database with PersonalAccount: {PersonalAccount}", addedConsumer.PersonalAccount);
+                return addedConsumer;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a house to the database.");
+                throw;
+            }
         }
 
         public async Task<List<Consumer>> GetList()

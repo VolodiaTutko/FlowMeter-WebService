@@ -30,9 +30,8 @@
         {
             _context.consumers.Add(consumer);
             _context.SaveChanges();
-            await dbSet.AddAsync(consumer);
             await _context.SaveChangesAsync();
-            return await Task.FromResult(consumer);
+            return consumer;
         }
 
         public Task<Consumer> Update(Consumer consumer)

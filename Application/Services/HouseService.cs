@@ -19,7 +19,17 @@
 
         public async Task<House> AddHouse(House house)
         {
-            return await _houseRepository.Add(house);
+            try
+            {
+                var addedHouse = await _houseRepository.Add(house);
+                _logger.LogInformation("Added a new house to the database with ID: {HouseId}", addedHouse.HouseId);
+                return addedHouse;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a house to the database.");
+                throw;
+            }
         }
 
         public async Task<List<House>> GetList()

@@ -37,8 +37,6 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(House model)
         {
-            //ModelState.Remove("House");
-            //ModelState.Remove("User");
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(Index), model);
@@ -55,7 +53,7 @@
                 };
 
                 await _houseService.AddHouse(house);
-                _logger.LogInformation("House created successfully: {HouseAddress}", house.HouseAddress);
+                _logger.LogInformation("House created successfully with ID: {HouseAddress}", house.HouseAddress);
 
                 return RedirectToAction(nameof(Index));
             }

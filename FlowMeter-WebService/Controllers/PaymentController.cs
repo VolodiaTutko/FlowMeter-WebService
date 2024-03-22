@@ -58,7 +58,7 @@
                 };
 
                 await _paymentService.AddPayment(payment);
-                _logger.LogInformation("Consumer created successfully: {PaymentId}", payment.PaymentID);
+                _logger.LogInformation("Payment created successfully with ID: {PaymentId}", payment.PaymentID);
 
                 return RedirectToAction(nameof(Index));
             }
