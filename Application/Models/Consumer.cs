@@ -28,9 +28,6 @@
 
         [ForeignKey(nameof(HouseId))]
         public House House { get; set; }
-
-        [ForeignKey(nameof(ConsumerEmail))]
-        public User User { get; set; }
     }
 }
 

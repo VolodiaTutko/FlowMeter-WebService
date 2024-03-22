@@ -51,7 +51,6 @@
                 Random random = new Random();
                 var payment = new Payment
                 {
-                    PaymentID = random.Next(1, 100000000),
                     Amount = model.Amount,
                     Date = DateTime.UtcNow.Date,
                     PersonalAccount = model.PersonalAccount,
