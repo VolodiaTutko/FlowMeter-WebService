@@ -28,11 +28,6 @@
             return View();
         }
 
-        public ActionResult Create(Account a)
-        {
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Consumer model)
@@ -71,10 +66,6 @@
             return RedirectToAction(nameof(Index), model);
         }
 
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -90,22 +81,26 @@
             }
         }
 
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(string id)
         {
             try
             {
+                var deletedConsumer = await _consumerService.DeleteConsumer(id);
+                if (deletedConsumer == null)
+                {
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} deleted successfully", deletedConsumer.PersonalAccount);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                _logger.LogError(ex, "Error occurred while deleting consumer");
+                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+                return RedirectToAction(nameof(Index));
             }
         }
     }

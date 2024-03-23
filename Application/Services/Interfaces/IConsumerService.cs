@@ -7,7 +7,10 @@
     {
         public Task<Consumer> AddConsumer(Consumer consumer);
 
+        Task<Consumer> DeleteConsumer(string id);
+
         public Task<List<Consumer>> GetList();
+
         Task<List<SelectConsumerDTO>> GetConsumerOptions();
     }
 }

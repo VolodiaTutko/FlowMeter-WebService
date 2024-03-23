@@ -39,9 +39,17 @@
             throw new NotImplementedException();
         }
 
-        public Task<Consumer> Delete(int id)
+        public async Task<Consumer> Delete(string personalAccount)
         {
-            throw new NotImplementedException();
+            var consumer = await dbSet.FindAsync(personalAccount);
+            if (consumer == null)
+            {
+                return null;
+            }
+
+            _context.consumers.Remove(consumer);
+            await _context.SaveChangesAsync();
+            return consumer;
         }
     }
 }

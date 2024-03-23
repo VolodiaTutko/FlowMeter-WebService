@@ -12,6 +12,6 @@
 
         Task<Consumer> Update(Consumer consumer);
 
-        Task<Consumer> Delete(int id);
+        Task<Consumer> Delete(string id);
     }
 }

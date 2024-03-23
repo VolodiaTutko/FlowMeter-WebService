@@ -50,6 +50,21 @@
             }
         }
 
+        public async Task<Consumer> DeleteConsumer(string id)
+        {
+            try
+            {
+                var addedConsumer = await _consumerRepository.Delete(id);
+                _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} deleted successfully", addedConsumer.PersonalAccount);
+                return addedConsumer;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting a consumer from the database.");
+                throw;
+            }
+        }
+
         public async Task<List<SelectHouseDTO>> GetHouseOptions() 
         {
             return await _houseService.GetHouseOptions();
