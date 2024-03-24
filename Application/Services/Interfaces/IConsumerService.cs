@@ -7,7 +7,11 @@
     {
         public Task<Consumer> AddConsumer(Consumer consumer);
 
+        Task<Consumer> UpdateConsumer(Consumer consumer);
+
         Task<Consumer> DeleteConsumer(string id);
+
+        Task<Consumer> GetConsumerByPersonalAccount(string personalAccount);
 
         public Task<List<Consumer>> GetList();
 

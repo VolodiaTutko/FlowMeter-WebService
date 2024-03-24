@@ -5,15 +5,18 @@
     using Application.Services.Interfaces;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
 
     public class ConsumerController : Controller
     {
         private IConsumerService _consumerService;
+        private IAccountService _accountService;
         private readonly ILogger<ConsumerController> _logger;
 
-        public ConsumerController(IConsumerService service, ILogger<ConsumerController> logger)
+        public ConsumerController(IConsumerService service, IAccountService account, ILogger<ConsumerController> logger)
         {
             _consumerService = service;
+            _accountService = account;
             _logger = logger;
         }
 
@@ -36,6 +39,13 @@
             ModelState.Remove("User");
             if (!ModelState.IsValid)
             {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        _logger.LogError($"Validation error: {error.ErrorMessage}");
+                    }
+                }
                 return RedirectToAction(nameof(Index), model);
             }
 
@@ -55,6 +65,19 @@
                 await _consumerService.AddConsumer(consumer);
                 _logger.LogInformation("Consumer created successfully with PersonalAccount: {ConsumerId}", consumer.PersonalAccount);
 
+                var account = new Account
+                {
+                    PersonalAccount = model.PersonalAccount,
+                    HotWater = null,
+                    ColdWater = null,
+                    Heating = null,
+                    Electricity = null,
+                    Gas = null,
+                    PublicService = null
+                };
+
+                await _accountService.AddAccount(account);
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -69,16 +92,9 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Update(Consumer updatedConsumer, string id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return View();
         }
 
         [HttpPost]

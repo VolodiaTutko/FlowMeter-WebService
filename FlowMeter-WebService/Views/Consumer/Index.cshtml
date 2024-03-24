@@ -70,9 +70,9 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col">
-                                <form asp-controller="Consumer" asp-action="Edit" asp-route-id="@item.PersonalAccount" method="get">
+                                    <form asp-action="Update" asp-route-id="@item.PersonalAccount" method="post">
                                         <button type="submit" class="btn btn-primary w-100">Edit</button>
-                                </form>
+                                    </form>
                                 </div>
 
                                 <div class="col">

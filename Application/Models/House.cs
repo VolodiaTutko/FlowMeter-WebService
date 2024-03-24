@@ -18,7 +18,5 @@
         public int? NumberOfFlat { get; set; }
 
         public int? NumberOfResidents { get; set; }
-
-        
     }
 }

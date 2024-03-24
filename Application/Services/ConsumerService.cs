@@ -24,14 +24,19 @@
             try
             {
                 var addedConsumer = await _consumerRepository.Add(consumer);
-                _logger.LogInformation("Added a new house to the database with PersonalAccount: {PersonalAccount}", addedConsumer.PersonalAccount);
+                _logger.LogInformation("Added a new consumer to the database with PersonalAccount: {PersonalAccount}", addedConsumer.PersonalAccount);
                 return addedConsumer;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding a house to the database.");
+                _logger.LogError(ex, "An error occurred while adding a consumer to the database.");
                 throw;
             }
+        }
+
+        public async Task<Consumer> GetConsumerByPersonalAccount(string personalAccount)
+        {
+            return await _consumerRepository.GetByIdAsync(personalAccount);
         }
 
         public async Task<List<Consumer>> GetList()
@@ -46,6 +51,21 @@
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving consumers from the database.");
+                throw;
+            }
+        }
+
+        public async Task<Consumer> UpdateConsumer(Consumer consumer)
+        {
+            try
+            {
+                var updatedConsumer = await _consumerRepository.Update(consumer);
+                _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
+                return updatedConsumer;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating a consumer in the database.");
                 throw;
             }
         }

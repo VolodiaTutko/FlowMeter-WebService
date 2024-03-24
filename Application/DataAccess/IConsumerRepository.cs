@@ -4,7 +4,7 @@
 
     public interface IConsumerRepository
     {
-        Task<Consumer> GetByIdAsync(int id);
+        Task<Consumer> GetByIdAsync(string id);
 
         Task<List<Consumer>> All();
 

@@ -15,9 +15,10 @@
             dbSet = context.Set<Consumer>();
         }
 
-        public Task<Consumer> GetByIdAsync(int id)
+
+        public async Task<Consumer> GetByIdAsync(string personalAccount)
         {
-            throw new NotImplementedException();
+            return await _context.consumers.FirstOrDefaultAsync(c => c.PersonalAccount == personalAccount);
         }
 
         public async Task<List<Consumer>> All()
@@ -34,9 +35,12 @@
             return consumer;
         }
 
-        public Task<Consumer> Update(Consumer consumer)
+        public async Task<Consumer> Update(Consumer consumer)
         {
-            throw new NotImplementedException();
+            _context.Update(consumer);
+            await _context.SaveChangesAsync();
+
+            return consumer;
         }
 
         public async Task<Consumer> Delete(string personalAccount)
