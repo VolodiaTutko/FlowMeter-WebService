@@ -13,5 +13,6 @@
         Task<Consumer> Update(Consumer consumer);
 
         Task<Consumer> Delete(string id);
+        void GetConsumerByPersonalAccount(string v);
     }
 }

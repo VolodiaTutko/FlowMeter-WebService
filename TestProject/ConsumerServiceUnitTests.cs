@@ -136,5 +136,63 @@ namespace TestProject
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => service.DeleteConsumer(consumerId));
         }
+
+        [Fact]
+        public async Task UpdateConsumer_ValidInput_ReturnsUpdatedConsumer()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger<ConsumerService>>();
+            var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockHouseService = new Mock<IHouseService>();
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var updatedConsumer = new Consumer { PersonalAccount = "TestAccount", ConsumerOwner = "New Owner" };
+
+            mockConsumerRepository.Setup(repo => repo.Update(It.IsAny<Consumer>())).ReturnsAsync(updatedConsumer);
+            mockConsumerRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Consumer());
+
+            // Act
+            var result = await consumerService.UpdateConsumer(updatedConsumer);
+
+            // Assert
+            Assert.Equal(updatedConsumer, result);
+        }
+
+        [Fact]
+        public async Task UpdateConsumer_InvalidInput_ThrowsException()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger<ConsumerService>>();
+            var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockHouseService = new Mock<IHouseService>();
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var updatedConsumer = new Consumer { PersonalAccount = "TestAccount", ConsumerOwner = "New Owner" };
+
+            mockConsumerRepository.Setup(repo => repo.Update(It.IsAny<Consumer>())).ThrowsAsync(new Exception("Simulated exception"));
+            mockConsumerRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Consumer());
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => consumerService.UpdateConsumer(updatedConsumer));
+        }
+
+        [Fact]
+        public async Task UpdateConsumer_ConsumerFound_ReturnsUpdatedConsumer()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger<ConsumerService>>();
+            var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockHouseService = new Mock<IHouseService>();
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var existingConsumer = new Consumer { PersonalAccount = "ExistingAccount", ConsumerOwner = "Old Owner" };
+            var updatedConsumer = new Consumer { PersonalAccount = "ExistingAccount", ConsumerOwner = "New Owner" };
+
+            mockConsumerRepository.Setup(repo => repo.GetByIdAsync(existingConsumer.PersonalAccount)).ReturnsAsync(existingConsumer);
+            mockConsumerRepository.Setup(repo => repo.Update(It.IsAny<Consumer>())).ReturnsAsync(updatedConsumer);
+
+            // Act
+            var result = await consumerService.UpdateConsumer(updatedConsumer);
+
+            // Assert
+            Assert.Equal(updatedConsumer, result);
+        }
     }
 }

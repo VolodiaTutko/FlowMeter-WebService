@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class ConsumerController : Controller
     {
@@ -36,7 +37,6 @@
         public async Task<IActionResult> Create(Consumer model)
         {
             ModelState.Remove("House");
-            ModelState.Remove("User");
             if (!ModelState.IsValid)
             {
                 foreach (var modelState in ModelState.Values)
@@ -89,12 +89,46 @@
             return RedirectToAction(nameof(Index), model);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Update(Consumer updatedConsumer, string id)
+        public async Task<ActionResult> Update(Consumer consumer)
         {
-            return View();
+            try
+            {
+                ModelState.Remove("Flat");
+                ModelState.Remove("HeatingArea");
+                ModelState.Remove("HouseId");
+                ModelState.Remove("ConsumerEmail");
+                ModelState.Remove("House");
+                if (ModelState.IsValid)
+                {
+                    var updatedConsumer = await _consumerService.GetConsumerByPersonalAccount(consumer.PersonalAccount);
+
+                    updatedConsumer.PersonalAccount = consumer.PersonalAccount;
+                    updatedConsumer.ConsumerOwner = consumer.ConsumerOwner;
+                    updatedConsumer.NumberOfPersons = consumer.NumberOfPersons;
+
+                    await _consumerService.UpdateConsumer(updatedConsumer);
+
+                    if (updatedConsumer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating a consumer in the database.");
+                throw;
+            }
         }
 
         [HttpPost]
