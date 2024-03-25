@@ -55,5 +55,10 @@
             await _context.SaveChangesAsync();
             return consumer;
         }
+
+        public void GetConsumerByPersonalAccount(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

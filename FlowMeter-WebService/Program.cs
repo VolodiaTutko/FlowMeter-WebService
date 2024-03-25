@@ -5,6 +5,7 @@ using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,8 +23,8 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 builder.Services.AddControllersWithViews();
 
 AppDbContextExtensions.AddApplicationDbContext(
-    builder.Services,
-    "Host=localhost; Port=5432; Database=flowmeterWeb; Username=postgres; Password=123456"
+builder.Services,
+  "Host=localhost; Port=5433; Database=flowmeterWeb; Username=postgres; Password=12032004"
 );
 
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
