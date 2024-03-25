@@ -12,11 +12,24 @@
         public int? HouseId { get; set; }
 
         [Required]
+        [EnumDataType(typeof(ServiceType))] // Використовуємо EnumDataType
         public string TypeOfAccount { get; set; }
 
         public int? Price { get; set; }
 
         [ForeignKey(nameof(HouseId))]
         public House House { get; set; }
+    }
+
+    public enum ServiceType
+    {
+        [Display(Name = "Холодна вода")]
+        ColdWater,
+        [Display(Name = "Гаряча вода")]
+        HotWater,
+        [Display(Name = "Газ")]
+        Gas,
+        [Display(Name = "Світло")]
+        Electricity
     }
 }

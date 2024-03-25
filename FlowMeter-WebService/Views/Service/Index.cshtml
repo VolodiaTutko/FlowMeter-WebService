@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Application.Models.Service>
+
+@{
+    ViewData["Title"] = "Index";
+    ViewBag.PartialViewName = "_CreateServiceForm";
+    ViewBag.ModalTitle = "Create new service";
+}
+
+@Html.Partial("_TableNavigation")
+
+<h1>SERVICE_INDEX</h1>
+
+@Html.Partial("_CreateModal")
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ServiceId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeOfAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TypeOfAccount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ServiceId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ServiceId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ServiceId">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No services found.</p>
+        }
+    </tbody>
+</table>
