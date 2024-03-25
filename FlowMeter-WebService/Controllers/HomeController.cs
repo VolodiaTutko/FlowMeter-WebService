@@ -29,6 +29,11 @@ namespace FlowMeter_WebService.Controllers
             return RedirectToAction("Index", "House");
         }
 
+        public IActionResult UserInfo()
+        {
+            return RedirectToAction("Index", "User");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

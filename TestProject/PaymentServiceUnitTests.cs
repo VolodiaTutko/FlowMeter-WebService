@@ -21,16 +21,17 @@
             // Arrange
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockConsumerService = new Mock<IConsumerService>();
-            var paymentService = new PaymentService(mockPaymentRepository.Object, mockConsumerService.Object);
-            var payment = new Payment { PaymentID = 1 };
+            var mockLogger = new Mock<ILogger<PaymentService>>();
+            var paymentService = new PaymentService(mockPaymentRepository.Object, mockConsumerService.Object, mockLogger.Object);
+            var expectedPayment = new Payment { PaymentID = 1 };
 
-            mockPaymentRepository.Setup(repo => repo.Add(payment)).ReturnsAsync(payment);
+            mockPaymentRepository.Setup(repo => repo.Add(expectedPayment)).ReturnsAsync(expectedPayment);
 
             // Act
-            var result = await paymentService.AddPayment(payment);
+            var result = await paymentService.AddPayment(expectedPayment);
 
             // Assert
-            Assert.Equal(payment, result);
+            Assert.Equal(expectedPayment, result);
         }
 
         [Fact]
@@ -39,7 +40,8 @@
             // Arrange
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockConsumerService = new Mock<IConsumerService>();
-            var paymentService = new PaymentService(mockPaymentRepository.Object, mockConsumerService.Object);
+            var mockLogger = new Mock<ILogger<PaymentService>>();
+            var paymentService = new PaymentService(mockPaymentRepository.Object, mockConsumerService.Object, mockLogger.Object);
             var payments = new List<Payment> 
             {
                 new Payment { PaymentID = 1, Amount = 100 },
@@ -61,9 +63,9 @@
             // Arrange
             var mockPaymentRepository = new Mock<IPaymentRepository>();
             var mockConsumerService = new Mock<IConsumerService>();
+            var mockLogger = new Mock<ILogger<PaymentService>>();
 
-
-            var paymentService = new PaymentService(mockPaymentRepository.Object, mockConsumerService.Object);
+            var paymentService = new PaymentService(mockPaymentRepository.Object, mockConsumerService.Object, mockLogger.Object);
             var consumerOptions = new List<SelectConsumerDTO> { };
 
             mockConsumerService.Setup(service => service.GetConsumerOptions()).ReturnsAsync(consumerOptions);

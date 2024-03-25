@@ -38,6 +38,9 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging(options => {

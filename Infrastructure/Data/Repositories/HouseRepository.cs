@@ -15,9 +15,9 @@
             dbSet = context.Set<House>();
         }
 
-        public Task<House> GetByIdAsync(int id)
+        public async Task<House> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.houses.FirstOrDefaultAsync(c => c.HouseId == id);
         }
 
         public async Task<List<House>> All()

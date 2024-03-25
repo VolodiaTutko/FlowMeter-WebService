@@ -19,8 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\FlowMeter-WebService\FlowMeter-WebService.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

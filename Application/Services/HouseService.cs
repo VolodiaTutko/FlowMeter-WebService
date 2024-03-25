@@ -32,6 +32,11 @@
             }
         }
 
+        public async Task<House> GetHouseById(int id)
+        {
+            return await _houseRepository.GetByIdAsync(id);
+        }
+
         public async Task<List<House>> GetList()
         {
             try

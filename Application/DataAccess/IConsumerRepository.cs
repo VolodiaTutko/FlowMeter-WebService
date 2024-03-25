@@ -4,7 +4,7 @@
 
     public interface IConsumerRepository
     {
-        Task<Consumer> GetByIdAsync(int id);
+        Task<Consumer> GetByIdAsync(string id);
 
         Task<List<Consumer>> All();
 
@@ -12,6 +12,6 @@
 
         Task<Consumer> Update(Consumer consumer);
 
-        Task<Consumer> Delete(int id);
+        Task<Consumer> Delete(string id);
     }
 }
