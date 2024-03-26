@@ -2,20 +2,14 @@
 {
     using Application.Models;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Options;
 
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
        : base(options)
         {
-        }
-
-
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            //options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
-            options.UseNpgsql("Host=localhost; Port=5433; Database=flowmeterWeb; Username=postgres; Password=12032004");
         }
 
         public DbSet<Account> accounts { get; set; }

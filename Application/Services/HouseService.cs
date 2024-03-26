@@ -32,6 +32,36 @@
             }
         }
 
+        public async Task<House> UpdateHouse(House house)
+        {
+            try
+            {
+                var updatedHouse = await _houseRepository.Update(house);
+                _logger.LogInformation("House with Address: {HouseAddress} updated successfully", updatedHouse.HouseAddress);
+                return updatedHouse;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating a house in the database.");
+                throw;
+            }
+        }
+
+        public async Task<House> DeleteHouse(int id)
+        {
+            try
+            {
+                var deletedHouse = await _houseRepository.Delete(id);
+                _logger.LogInformation("House with Address: {HouseAddress} deleted successfully", deletedHouse.HouseAddress);
+                return deletedHouse;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting a house from the database.");
+                throw;
+            }
+        }
+
         public async Task<House> GetHouseById(int id)
         {
             return await _houseRepository.GetByIdAsync(id);

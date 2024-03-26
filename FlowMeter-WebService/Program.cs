@@ -4,6 +4,7 @@ using Application.Services.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -24,8 +25,9 @@ builder.Services.AddControllersWithViews();
 
 AppDbContextExtensions.AddApplicationDbContext(
 builder.Services,
-  "Host=localhost; Port=5433; Database=flowmeterWeb; Username=postgres; Password=12032004"
+  (builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
 
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IHouseService, HouseService>();

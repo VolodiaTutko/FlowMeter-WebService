@@ -73,15 +73,44 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Update(House house)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                ModelState.Remove("Flat");
+                ModelState.Remove("HeatingArea");
+                ModelState.Remove("HouseId");
+                ModelState.Remove("ConsumerEmail");
+                ModelState.Remove("House");
+                if (ModelState.IsValid)
+                {
+                    var updatedHouse = await _houseService.GetHouseById(house.HouseId);
+
+                    updatedHouse.HouseAddress = house.HouseAddress != null ? house.HouseAddress : updatedHouse.HouseAddress;
+                    updatedHouse.HeatingAreaOfHouse = house.HeatingAreaOfHouse != null ? house.HeatingAreaOfHouse : updatedHouse.HeatingAreaOfHouse;
+                    updatedHouse.NumberOfFlat = house.NumberOfFlat != null ? house.NumberOfFlat : updatedHouse.NumberOfFlat;
+                    updatedHouse.NumberOfResidents = house.NumberOfResidents != null ? house.NumberOfResidents : updatedHouse.NumberOfResidents;
+
+                    await _houseService.UpdateHouse(updatedHouse);
+
+                    if (updatedHouse == null)
+                    {
+                        return NotFound();
+                    }
+
+                    _logger.LogInformation("House with Address: {HouseAddress} updated successfully", updatedHouse.HouseAddress);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                _logger.LogError(ex, "An error occurred while updating a house in the database.");
+                throw;
             }
         }
 

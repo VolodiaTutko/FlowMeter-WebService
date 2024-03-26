@@ -34,14 +34,25 @@
             return house;
         }
 
-        public Task<House> Update(House house)
+        public async Task<House> Update(House house)
         {
-            throw new NotImplementedException();
+            _context.Update(house);
+            await _context.SaveChangesAsync();
+
+            return house;
         }
 
-        public Task<House> Delete(int id)
+        public async Task<House> Delete(int id)
         {
-            throw new NotImplementedException();
+            var house = await dbSet.FindAsync(id);
+            if (house == null)
+            {
+                return null;
+            }
+
+            _context.houses.Remove(house);
+            await _context.SaveChangesAsync();
+            return house;
         }
     }
 }
