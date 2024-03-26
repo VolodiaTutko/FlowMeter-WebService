@@ -85,7 +85,7 @@
             }
         }
 
-        public async Task<List<SelectHouseDTO>> GetHouseOptions() 
+        public async Task<List<SelectHouseDTO>> GetHouseOptions()
         {
             return await _houseService.GetHouseOptions();
         }
