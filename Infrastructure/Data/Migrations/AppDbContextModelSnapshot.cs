@@ -326,7 +326,7 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Application.Models.House", "House")
                         .WithMany()
                         .HasForeignKey("HouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("House");
@@ -358,7 +358,8 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Application.Models.House", "House")
                         .WithMany()
-                        .HasForeignKey("HouseId");
+                        .HasForeignKey("HouseId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("House");
                 });

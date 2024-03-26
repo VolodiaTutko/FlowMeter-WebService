@@ -54,6 +54,7 @@
                                 <div class="col">
                                     <button type="submit"  data-bs-toggle="modal" data-bs-target="#updateModal-@item.HouseId" class="btn btn-outline-info mx-0">Edit</button>
                                     <form asp-controller="House" asp-action="Update" asp-route-id="@item.HouseId" method="post">
+                                        <input type="hidden" id="HouseId" name="HouseId" value="@item.HouseId" />
                                         <div class="modal fade" id="updateModal-@item.HouseId" tabindex="-1" aria-labelledby="updateModalLabel-@item.HouseId" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
