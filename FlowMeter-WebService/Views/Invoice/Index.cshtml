@@ -1,40 +1,38 @@
-﻿@model IEnumerable<Application.Models.Payment>
+﻿@model IEnumerable<Application.Models.Receipt>
+@using System.Text;
 
 @{
-    ViewData["Title"] = "Payment";
-    ViewBag.PartialViewName = "_CreatePaymentForm";
-    ViewBag.ModalTitle = "Create new payment";
+    ViewData["Title"] = "Invoices";
 }
 
 @Html.Partial("_TableNavigation")
 
-<h1>Payments</h1>
+<h1>Invoices</h1>
 
-@Html.Partial("_CreateModal")
 
 <table class="table table-bordered">
     <thead class="table-light">
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.ReceiptId)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Consumer.House.HouseAddress)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PersonalAccount)
+
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Consumer.ConsumerOwner)
-                
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Amount)
+                @Html.DisplayNameFor(model => model.PDF)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            
+
             <th></th>
         </tr>
     </thead>
@@ -44,6 +42,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReceiptId)
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Consumer.House.HouseAddress)
                     </td>
@@ -57,23 +58,21 @@
                         @Html.DisplayFor(modelItem => item.Date)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Amount)
+                        @($"invoice_{item.PersonalAccount}_{item.Date.ToString("yyyyMMdd")}.pdf")
                     </td>
+
                     <td>
-                        @Html.DisplayFor(modelItem => item.Type)
-                    </td>
-                            
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.PersonalAccount">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.PersonalAccount">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.PersonalAccount">Delete</a>
+                        <form method="post" asp-action="Download" asp-route-id="@item.ReceiptId">
+                            <button type="submit" class="btn btn-primary w-100">Download</button>
+                            <input type="text" id="ReceiptId" class="form-control" name="ReceiptId" value=@item.ReceiptId hidden>
+                        </form>
                     </td>
                 </tr>
             }
         }
         else
         {
-                <p>No payments found.</p>
+            <p>No invoices found.</p>
         }
     </tbody>
 </table>

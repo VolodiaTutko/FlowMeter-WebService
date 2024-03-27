@@ -22,8 +22,8 @@
 
         public async Task<ActionResult> Index()
         {
-            var consumer = await _paymentService.GetList();
-            return View(consumer);
+            var payment = await _paymentService.GetList();
+            return View(payment);
         }
 
         public ActionResult Details(int id)

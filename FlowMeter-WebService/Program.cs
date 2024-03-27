@@ -20,14 +20,12 @@ builder.Host.UseSerilog((context, loggerConfig) =>
     .Enrich.WithMachineName();
 });
 
-
 builder.Services.AddControllersWithViews();
 
 AppDbContextExtensions.AddApplicationDbContext(
 builder.Services,
   (builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
 
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IHouseService, HouseService>();
@@ -43,6 +41,9 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
 var app = builder.Build();
 
