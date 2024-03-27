@@ -5,6 +5,7 @@
     using Application.Models;
     using Application.Services.Interfaces;
     using Microsoft.Extensions.Logging;
+    using System.Threading.Channels;
 
     public class ServiceService : IServiceService
     {
@@ -30,6 +31,42 @@
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding a house to the database.");
+                throw;
+            }
+        }
+
+        public async Task<Service> GetServiceByServiceId(int serviceId)
+        {
+            return await _serviceRepository.GetByIdAsync(serviceId);
+        }
+
+        public async Task<Service> DeleteService(int id)
+        {
+            try
+            {
+                var deletedService = await _serviceRepository.Delete(id);
+
+                _logger.LogInformation("Service with ServiceId {ServiceId} deleted successfully.", deletedService.ServiceId);
+                return deletedService;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting a service from the database.");
+                throw; 
+            }
+        }
+        
+        public async Task<Service> UpdateService(Service service)
+        {
+            try
+            {
+                var updatedService = await _serviceRepository.Update(service);
+                _logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
+                return updatedService;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating a consumer in the database.");
                 throw;
             }
         }
