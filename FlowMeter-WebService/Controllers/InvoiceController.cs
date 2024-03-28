@@ -8,9 +8,9 @@ namespace FlowMeter_WebService.Controllers
     {
 
         private IInvoiceService _invoiceService;
-        private readonly ILogger<ConsumerController> _logger;
+        private readonly ILogger<InvoiceController> _logger;
 
-        public InvoiceController(IInvoiceService service, ILogger<ConsumerController> logger)
+        public InvoiceController(IInvoiceService service, ILogger<InvoiceController> logger)
         {
             _invoiceService = service;
             _logger = logger;

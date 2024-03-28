@@ -1,4 +1,4 @@
-﻿@model Application.Models.Consumer
+﻿@model FlowMeter_WebService.ViewModels.ConsumerInvoicesViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -17,7 +17,7 @@
                 <div class="card-body" style="background-color: #FAFAFA;">
                     <div class="form-group mb-3">
                         <label for="fullName">Full Name</label>
-                        <input type="text" class="form-control" id="fullName" value="@Model.ConsumerOwner" disabled>
+                        <input type="text" class="form-control" id="fullName" value="@Model.Consumer.ConsumerOwner" disabled>
                     </div>
                     <div class="form-group mb-3">
                         <label for="address">Address</label>
@@ -25,19 +25,60 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="personalAccount">Personal account number</label>
-                        <input type="text" class="form-control" id="personalAccount" value="@Model.PersonalAccount" disabled>
+                        <input type="text" class="form-control" id="personalAccount" value="@Model.Consumer.PersonalAccount" disabled>
                     </div>
                     <div class="form-group mb-3">
                         <label for="heatingArea">Flat heating area</label>
-                        <input type="text" class="form-control" id="heatingArea" value="@Model.HeatingArea" disabled>
+                        <input type="text" class="form-control" id="heatingArea" value="@Model.Consumer.HeatingArea" disabled>
                     </div>
                     <div class="form-group mb-3">
                         <label for="residentsCount">Number of residents</label>
-                        <input type="text" class="form-control" id="residentsCount" value="@Model.NumberOfPersons" disabled>
+                        <input type="text" class="form-control" id="residentsCount" value="@Model.Consumer.NumberOfPersons" disabled>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-8"></div>
+        <div class="col-8">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center">
+                            Month/Year
+                        </th>
+                        <th class="text-center">
+                            Invoice Filename
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Receipts != null && Model.Receipts.Any())
+                    {
+                        @foreach (var item in Model.Receipts)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    @item.Date.ToString("MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                                </td>
+                                <td class="text-center">
+                                    @($"invoice-{item.Date.ToString("yyyy-MM")}.pdf")
+                                </td>
+                                <td>
+                                    <form method="post" asp-action="Download" asp-route-id="@item.ReceiptId">
+                                        <button type="submit" class="btn btn-primary w-100">Download</button>
+                                        <input type="text" id="ReceiptId" class="form-control" name="ReceiptId" value=@item.ReceiptId hidden>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <p>No invoices found.</p>
+                    }
+                </tbody>
+            </table>
+
+        </div>
     </div>
 </div>

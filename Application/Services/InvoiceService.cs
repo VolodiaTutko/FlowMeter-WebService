@@ -26,6 +26,11 @@ namespace Application.Services
             return await _invoiceRepository.GetByIdAsync(id);
         }
 
+        public async Task<IEnumerable<Receipt>> GetInvoiceByPersonalAccount(string personalAccount)
+        {
+            return await _invoiceRepository.GetByPersonalAccountAsync(personalAccount);
+        }
+
         public async Task<List<Receipt>> GetList()
         {
             try

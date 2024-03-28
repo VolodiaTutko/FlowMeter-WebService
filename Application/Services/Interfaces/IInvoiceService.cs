@@ -11,6 +11,8 @@ namespace Application.Services.Interfaces
     {
         public Task<Receipt> GetInvoiceById(int id);
 
+        Task<IEnumerable<Receipt>> GetInvoiceByPersonalAccount(string personalAccount);
+
         public Task<List<Receipt>> GetList();
     }
 }

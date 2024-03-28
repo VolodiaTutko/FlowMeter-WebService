@@ -11,6 +11,8 @@ namespace Application.DataAccess
     {
         Task<Receipt> GetByIdAsync(int id);
 
+        Task<IEnumerable<Receipt>> GetByPersonalAccountAsync(string personalAccount);
+
         Task<List<Receipt>> All();
 
     }

@@ -26,6 +26,13 @@ namespace Infrastructure.Data.Repositories
             return await _context.receipts.FirstOrDefaultAsync(c => c.ReceiptId == id);
         }
 
+        public async Task<IEnumerable<Receipt>> GetByPersonalAccountAsync(string personalAccount)
+        {
+            return await _context.receipts
+                        .Where(r => r.Consumer.PersonalAccount == personalAccount)
+                        .ToListAsync();
+        }
+
         public async Task<List<Receipt>> All()
         {
             var invoice = await dbSet.Include(r => r.Consumer).ThenInclude(c => c.House).OrderBy(x => x.ReceiptId).ToListAsync(); ;
