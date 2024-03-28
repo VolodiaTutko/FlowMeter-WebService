@@ -115,8 +115,6 @@
                 ModelState.Remove("TypeOfAccount");
                 if (ModelState.IsValid)
                 {
-                    _logger.LogInformation("Current ServiceId received in Update method: {ServiceId}", service.ServiceId);
-
                     var updatedService = await _serviceService.GetServiceByServiceId(service.ServiceId);
 
                     updatedService.Price = service.Price;
