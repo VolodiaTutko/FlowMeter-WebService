@@ -3,10 +3,13 @@
     using Application.Models;
     using Application.Services;
     using Application.Services.Interfaces;
+    using Infrastructure.Data;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using Microsoft.Extensions.Logging;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Linq;
 
     public class ConsumerController : Controller
     {
@@ -14,13 +17,15 @@
         private IAccountService _accountService;
         private IHouseService _houseService;
         private readonly ILogger<ConsumerController> _logger;
+        private IUserService _userService;
 
-        public ConsumerController(IConsumerService service, IAccountService account, IHouseService houseService, ILogger<ConsumerController> logger)
+        public ConsumerController(IConsumerService service, IAccountService account, IHouseService houseService, ILogger<ConsumerController> logger, IUserService userService)
         {
             _consumerService = service;
             _accountService = account;
             _houseService = houseService;
             _logger = logger;
+            _userService = userService;
         }
 
         public async Task<ActionResult> Index()
@@ -103,26 +108,68 @@
                 ModelState.Remove("Flat");
                 ModelState.Remove("HeatingArea");
                 ModelState.Remove("HouseId");
-                ModelState.Remove("ConsumerEmail");
                 ModelState.Remove("House");
                 if (ModelState.IsValid)
                 {
                     var updatedConsumer = await _consumerService.GetConsumerByPersonalAccount(consumer.PersonalAccount);
-
-                    updatedConsumer.PersonalAccount = consumer.PersonalAccount;
-                    updatedConsumer.ConsumerOwner = consumer.ConsumerOwner;
-                    updatedConsumer.NumberOfPersons = consumer.NumberOfPersons;
-
-                    await _consumerService.UpdateConsumer(updatedConsumer);
-
-                    if (updatedConsumer == null)
+                    if (updatedConsumer.ConsumerEmail == consumer.ConsumerEmail) //якщо немає змін емейла
                     {
-                        return NotFound();
+                        updatedConsumer.PersonalAccount = consumer.PersonalAccount;
+                        updatedConsumer.ConsumerOwner = consumer.ConsumerOwner;
+                        updatedConsumer.NumberOfPersons = consumer.NumberOfPersons;
+
+                        await _consumerService.UpdateConsumer(updatedConsumer);
+
+                        _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
+
+                        return RedirectToAction(nameof(Index));
                     }
+                    else
+                    {
+                        var existingUser = await _userService.GetUserByEmail(consumer.ConsumerEmail);
+                        Console.WriteLine(existingUser);
+                        if (existingUser != null)//Чи існує юзер з таким емейлом
+                        {
 
-                    _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
+                            _logger.LogInformation("User with this email already exists.");
+                            return RedirectToAction(nameof(Index));
+                        }
+                        else
+                        {
 
-                    return RedirectToAction(nameof(Index));
+
+                            updatedConsumer.PersonalAccount = consumer.PersonalAccount;
+                            updatedConsumer.ConsumerOwner = consumer.ConsumerOwner;
+                            updatedConsumer.NumberOfPersons = consumer.NumberOfPersons;
+
+                            //if (consumer.ConsumerEmail != null)
+                            //{
+                            //var updatedUser = await _userService.GetUserByEmail(updatedConsumer.ConsumerEmail);
+                            //updatedUser.ConsumerEmail = consumer.ConsumerEmail;
+                            updatedConsumer.ConsumerEmail = consumer.ConsumerEmail;
+
+                            await _consumerService.UpdateConsumer(updatedConsumer);
+                            //await _userService.UpdateUser(updatedUser);
+                            //}
+                            //else
+                            //{
+                            await _userService.AddUser(new User
+                            {
+                                ConsumerEmail = consumer.ConsumerEmail,
+                                Password = "your_password_here"
+                            });
+                            //}
+
+                            if (updatedConsumer == null)
+                            {
+                                return NotFound();
+                            }
+
+                            _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
+
+                            return RedirectToAction(nameof(Index));
+                        }
+                    }
                 }
                 else
                 {
