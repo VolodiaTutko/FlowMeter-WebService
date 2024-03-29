@@ -12,12 +12,14 @@
     {
         private IConsumerService _consumerService;
         private IAccountService _accountService;
+        private IHouseService _houseService;
         private readonly ILogger<ConsumerController> _logger;
 
-        public ConsumerController(IConsumerService service, IAccountService account, ILogger<ConsumerController> logger)
+        public ConsumerController(IConsumerService service, IAccountService account, IHouseService houseService, ILogger<ConsumerController> logger)
         {
             _consumerService = service;
             _accountService = account;
+            _houseService = houseService;
             _logger = logger;
         }
 
@@ -34,9 +36,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Consumer model)
+        public async Task<IActionResult> Create(Consumer model, string houseAddress)
         {
+            var houseModel = await _houseService.GetHouseByAddress(houseAddress);
             ModelState.Remove("House");
+            model.HouseId = houseModel.HouseId;
             if (!ModelState.IsValid)
             {
                 foreach (var modelState in ModelState.Values)
@@ -51,6 +55,7 @@
 
             try
             {
+                //var houseModel = _houseService.GetHouseByAddress((string)model.HouseId);
                 var consumer = new Consumer
                 {
                     PersonalAccount = model.PersonalAccount,

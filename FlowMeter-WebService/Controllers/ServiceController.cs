@@ -9,11 +9,13 @@
     public class ServiceController : Controller
     {
         private IServiceService _serviceService;
+        private IHouseService _houseService;
         private readonly ILogger<ServiceController> _logger;
 
-        public ServiceController(IServiceService service, ILogger<ServiceController> logger)
+        public ServiceController(IServiceService service, IHouseService houseService, ILogger<ServiceController> logger)
         {
             _serviceService = service;
+            _houseService = houseService;
             _logger = logger;
         }
 
@@ -35,9 +37,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Service model)
+        public async Task<IActionResult> Create(Service model, string houseAddress)
         {
+            var houseModel = await _houseService.GetHouseByAddress(houseAddress);
             ModelState.Remove("House");
+            model.HouseId = houseModel.HouseId;
             //ModelState.Remove("User");
             if (!ModelState.IsValid)
             {

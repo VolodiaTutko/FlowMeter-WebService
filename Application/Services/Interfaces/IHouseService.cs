@@ -14,6 +14,8 @@ namespace Application.Services.Interfaces
 
         Task<House> GetHouseById(int id);
 
+        Task<House> GetHouseByAddress(string houseAddress);
+
         public Task<List<House>> GetList();
 
         Task<List<SelectHouseDTO>> GetHouseOptions();
