@@ -1,4 +1,5 @@
-﻿using Application.Models;
+﻿using Application.DataAccess;
+using Application.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
         protected readonly DbSet<User> dbSet;
@@ -53,6 +54,12 @@ namespace Infrastructure.Data.Repositories
         public Task<User> Delete(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _context.users.FirstOrDefaultAsync(c => c.ConsumerEmail == email);
+
         }
     }
 }
