@@ -52,8 +52,9 @@
             {
                 var service = new Service
                 {
+                    ServiceId = model.ServiceId,
                     HouseId = model.HouseId,
-                    TypeOfAccount = GetUkrainianTypeOfAccount(model.TypeOfAccount), // Отримати українське значення
+                    TypeOfAccount = GetUkrainianTypeOfAccount(model.TypeOfAccount), 
                     Price = model.Price
                 };
 
@@ -109,22 +110,62 @@
             }
         }
 
-        public ActionResult Delete(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Update(Service service)
         {
-            return View();
+            try
+            {
+                ModelState.Remove("House");
+                ModelState.Remove("TypeOfAccount");
+                if (ModelState.IsValid)
+                {
+                    var updatedService = await _serviceService.GetServiceByServiceId(service.ServiceId);
+
+                    updatedService.Price = service.Price;
+
+                    await _serviceService.UpdateService(updatedService);
+
+                    if (updatedService == null)
+                    {
+                        return NotFound();
+                    }
+
+                    _logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating a service in the database.");
+                throw;
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
+                var deletedService = await _serviceService.DeleteService(id);
+                if (deletedService == null)
+                {
+                    return NotFound(); 
+                }
+                _logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedService.ServiceId);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                _logger.LogError(ex, "Error occurred while deleting service");
+                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+                return RedirectToAction(nameof(Index)); 
             }
         }
     }

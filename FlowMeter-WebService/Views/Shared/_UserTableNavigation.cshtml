@@ -1,0 +1,14 @@
+﻿<nav class="navbar navbar-expand-lg navbar-light bg-light m-0 p-0">
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav d-flex justify-content-around w-100 h-100" style="background-color: #d7dbdb;">
+            <li class="nav-item flex-fill border border-dark">
+                <a class="nav-link text-center text-dark" asp-area="" asp-controller="Service" asp-action="Index">Services</a>
+            </li>
+            <li class="nav-item flex-fill border border-dark @if(ViewContext.RouteData.Values["controller"].ToString() == "Invoice" && ViewContext.RouteData.Values["action"].ToString() == "Index") {
+            <text>active</text>
+ }">
+                <a class="nav-link text-center text-dark" asp-area="" asp-controller="Invoice" asp-action="Index">Invoices</a>
+            </li>
+        </ul>
+    </div>
+</nav>

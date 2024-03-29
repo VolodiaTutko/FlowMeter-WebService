@@ -12,7 +12,7 @@
         public int? HouseId { get; set; }
 
         [Required]
-        [EnumDataType(typeof(ServiceType))] // Використовуємо EnumDataType
+        [EnumDataType(typeof(ServiceType))] 
         public string TypeOfAccount { get; set; }
 
         public int? Price { get; set; }
