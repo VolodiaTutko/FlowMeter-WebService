@@ -1,4 +1,4 @@
-﻿@model Application.Models.Consumer
+﻿@model FlowMeter_WebService.ViewModels.ConsumerInvoicesViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -17,7 +17,7 @@
                 <div class="card-body" style="background-color: #FAFAFA;">
                     <div class="form-group mb-3">
                         <label for="fullName">Full Name</label>
-                        <input type="text" class="form-control" id="fullName" value="@Model.ConsumerOwner" disabled>
+                        <input type="text" class="form-control" id="fullName" value="@Model.Consumer.ConsumerOwner" disabled>
                     </div>
                     <div class="form-group mb-3">
                         <label for="address">Address</label>
@@ -25,19 +25,65 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="personalAccount">Personal account number</label>
-                        <input type="text" class="form-control" id="personalAccount" value="@Model.PersonalAccount" disabled>
+                        <input type="text" class="form-control" id="personalAccount" value="@Model.Consumer.PersonalAccount" disabled>
                     </div>
                     <div class="form-group mb-3">
                         <label for="heatingArea">Flat heating area</label>
-                        <input type="text" class="form-control" id="heatingArea" value="@Model.HeatingArea" disabled>
+                        <input type="text" class="form-control" id="heatingArea" value="@Model.Consumer.HeatingArea" disabled>
                     </div>
                     <div class="form-group mb-3">
                         <label for="residentsCount">Number of residents</label>
-                        <input type="text" class="form-control" id="residentsCount" value="@Model.NumberOfPersons" disabled>
+                        <input type="text" class="form-control" id="residentsCount" value="@Model.Consumer.NumberOfPersons" disabled>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-8"></div>
+        <div class="col-8">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light m-0 p-0">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav d-flex justify-content-around w-100 h-100" style="background-color: #d7dbdb;">
+                        <li id="servicesTab" class="nav-item active-tab flex-fill border border-dark">
+                            <a class="nav-link text-center text-dark" onclick="showPartialViewServices()">Services</a>
+                        </li>
+                        <li id="invoicesTab" class="nav-item flex-fill border border-dark">
+                            <a class="nav-link text-center text-dark" onclick="showPartialViewInvoices()">Invoices</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div id="partialViewServices">
+                @Html.Partial("_UserServices")
+            </div>
+
+            <div id="partialViewInvoices" style="display: none;">
+                @Html.Partial("_UserInvoices")
+            </div>
+        </div>
     </div>
 </div>
+
+
+<script>
+    function showPartialViewServices() {
+        document.getElementById("partialViewServices").style.display = "block";
+        document.getElementById("partialViewInvoices").style.display = "none";
+        document.getElementById("servicesTab").classList.add("active-tab");
+        document.getElementById("invoicesTab").classList.remove("active-tab");
+    }
+
+    function showPartialViewInvoices() {
+        document.getElementById("partialViewServices").style.display = "none";
+        document.getElementById("partialViewInvoices").style.display = "block";
+        document.getElementById("servicesTab").classList.remove("active-tab");
+        document.getElementById("invoicesTab").classList.add("active-tab");
+    }
+</script>
+
+
+<style>
+    .active-tab {
+        background-color: #85b8ff;
+        color: #000;
+    }
+</style>

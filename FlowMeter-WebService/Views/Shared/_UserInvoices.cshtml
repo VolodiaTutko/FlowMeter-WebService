@@ -1,0 +1,42 @@
+﻿@model FlowMeter_WebService.ViewModels.ConsumerInvoicesViewModel
+
+
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th class="text-center">
+                Month/Year
+            </th>
+            <th class="text-center">
+                Invoice Filename
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Receipts != null && Model.Receipts.Any())
+        {
+            @foreach (var item in Model.Receipts)
+            {
+                <tr>
+                    <td class="text-center">
+                        @item.Date.ToString("MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                    </td>
+                    <td class="text-center">
+                        @($"invoice-{item.Date.ToString("yyyy-MM")}.pdf")
+                    </td>
+                    <td>
+                        <form method="post" asp-action="Download" asp-route-id="@item.ReceiptId">
+                            <button type="submit" class="btn btn-primary w-100">Download</button>
+                            <input type="text" id="ReceiptId" class="form-control" name="ReceiptId" value=@item.ReceiptId hidden>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No invoices found.</p>
+        }
+    </tbody>
+</table>

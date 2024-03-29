@@ -6,6 +6,8 @@
     {
         Task<House> GetByIdAsync(int id);
 
+        Task<House> GetByAddress(string houseAddress);
+
         Task<List<House>> All();
 
         Task<House> Add(House house);

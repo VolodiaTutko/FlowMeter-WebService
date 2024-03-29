@@ -15,11 +15,11 @@
             <div class="form-group row mt-3">
                 <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
                 <div class="col-md-6">
-                    <input class="form-control" list="houses" id="HouseId" name="HouseId" placeholder="Введіть адресу будинку">
+                    <input class="form-control" list="houses" id="HouseAddress" name="HouseAddress" placeholder="Введіть адресу будинку">
                     <datalist id="houses">
                         @foreach (var item in houseOptions)
                         {
-                            <option value="@item.HouseId">@item.HouseAddress</option>
+                            <option value="@item.HouseAddress"></option>
                         }
                     </datalist>
                 </div>

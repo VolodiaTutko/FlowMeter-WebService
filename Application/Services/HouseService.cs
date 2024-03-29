@@ -67,6 +67,11 @@
             return await _houseRepository.GetByIdAsync(id);
         }
 
+        public async Task<House> GetHouseByAddress(string houseAddress)
+        {
+            return await _houseRepository.GetByAddress(houseAddress);   
+        }
+
         public async Task<List<House>> GetList()
         {
             try

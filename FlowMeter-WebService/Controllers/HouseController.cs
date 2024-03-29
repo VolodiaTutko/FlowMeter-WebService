@@ -66,7 +66,7 @@
             return RedirectToAction(nameof(Index), model);
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Update(int id)
         {
             return View();
         }
@@ -114,22 +114,31 @@
             }
         }
 
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        //public ActionResult Delete(int id)
+        //{
+        //    return View();
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
+                var deletedHouse = await _houseService.DeleteHouse(id);
+                if (deletedHouse == null)
+                {
+                    return NotFound();
+                }
+
+                _logger.LogInformation("House with address: {HouseAddress} deleted successfully", deletedHouse.HouseAddress);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                _logger.LogError(ex, "Error occurred while deleting house");
+                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+                return RedirectToAction(nameof(Index));
             }
         }
     }
