@@ -23,7 +23,7 @@
 
         public async Task<List<Consumer>> All()
         {
-            var consumer = await dbSet.ToListAsync();
+            var consumer = await dbSet.OrderBy(x => x.PersonalAccount).ToListAsync();
             return consumer;
         }
 

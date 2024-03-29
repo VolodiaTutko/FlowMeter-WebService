@@ -22,6 +22,6 @@
         public string Type { get; set; }
 
         [ForeignKey(nameof(PersonalAccount))]
-        public Consumer Consumer { get; set; }
+        public Consumer Consumer { get; set; } 
     }
 }

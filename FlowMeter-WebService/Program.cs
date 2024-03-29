@@ -21,14 +21,12 @@ builder.Host.UseSerilog((context, loggerConfig) =>
     .Enrich.WithMachineName();
 });
 
-
 builder.Services.AddControllersWithViews();
 
 AppDbContextExtensions.AddApplicationDbContext(
 builder.Services,
   (builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
 
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IHouseService, HouseService>();
@@ -45,6 +43,7 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
+<<<<<<< HEAD
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -60,6 +59,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 //    options.LoginPath = "/Account/Login";
 //    options.AccessDeniedPath = "/Account/AccessDenied";
 //});
+=======
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+>>>>>>> d72d9d3295e5f2ecfe9e8af0eabd39c9a91e1488
 
 var app = builder.Build();
 
