@@ -7,22 +7,22 @@
     public class MeterRepository : IMeterRepository
     {
         private readonly AppDbContext _context;
-        protected readonly DbSet<Meter> dbSet;
+        private readonly DbSet<Meter> _dbSet;
 
         public MeterRepository(AppDbContext context)
         {
             _context = context;
-            dbSet = context.Set<Meter>();
+            _dbSet = context.Set<Meter>();
         }
 
-        public Task<Meter> GetByIdAsync(int id)
+        public async Task<Meter> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(c => c.MeterId == id);
         }
 
         public async Task<List<Meter>> All()
         {
-            var consumer = await dbSet.ToListAsync();
+            var consumer = await _dbSet.ToListAsync();
             return consumer;
         }
 
@@ -30,7 +30,6 @@
         {
             _context.meters.Add(meter);
             _context.SaveChanges();
-            await _context.SaveChangesAsync();
             return meter;
         }
 

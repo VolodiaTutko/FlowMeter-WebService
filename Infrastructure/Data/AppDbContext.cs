@@ -19,6 +19,8 @@
         public DbSet<Admin> admins { get; set; }
         public DbSet<Consumer> consumers { get; set; }
         public DbSet<Meter> meters { get; set; }
+
+        public DbSet<MeterRecord> meterRecords { get; set; }
         public DbSet<House> houses { get; set; }
         public DbSet<Payment> payments { get; set; }
         public DbSet<Receipt> receipts { get; set; }

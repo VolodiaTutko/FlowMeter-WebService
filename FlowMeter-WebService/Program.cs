@@ -30,6 +30,9 @@ builder.Services,
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IHouseService, HouseService>();
 
+//builder.Services.AddScoped<IMeterRepository, MeterRepository>();
+//builder.Services.AddScoped<IMeterService, MeterService>();
+
 builder.Services.AddScoped<IConsumerRepository, ConsumerRepository>();
 builder.Services.AddScoped<IConsumerService, ConsumerService>();
 
