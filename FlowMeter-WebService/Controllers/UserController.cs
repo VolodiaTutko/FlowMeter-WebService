@@ -33,7 +33,6 @@ namespace FlowMeter_WebService.Controllers
                 var house = await _houseService.GetHouseById(consumer.HouseId);
                 ViewBag.HouseAddress = house?.HouseAddress;
 
-                // Fetch receipts for the consumer
                 var receipts = await _invoiceService.GetInvoiceByPersonalAccount(personalAccountToFind);
 
                 var viewModel = new ConsumerInvoicesViewModel
@@ -49,6 +48,7 @@ namespace FlowMeter_WebService.Controllers
                 return NotFound();
             }
         }
+
         public async Task<ActionResult> Download(int id)
         {
             var receipt = await _invoiceService.GetInvoiceById(id);

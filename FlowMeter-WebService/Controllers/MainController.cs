@@ -17,17 +17,19 @@ namespace FlowMeter_WebService.Controllers
         {
             return View();
         }
+
         public IActionResult LogInUser()
         {
             var p = "_UserLogIn.cshtml";
             return View("~/Views/Auth/Index.cshtml", p);
-            
         }
+
         public IActionResult LogInAdmin()
         {
             var p = "_AdminLogIn.cshtml";
             return View("~/Views/Auth/Index.cshtml", p);
         }
+
         public IActionResult SignUp()
         {
             var p = "_SignUp.cshtml";

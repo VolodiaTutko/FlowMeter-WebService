@@ -21,8 +21,9 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<ConsumerService>>();
             var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockHouseService = new Mock<IHouseService>();
-            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
             var consumer = new Consumer { PersonalAccount = "TestAccount" };
 
             mockConsumerRepository.Setup(repo => repo.Add(It.IsAny<Consumer>())).ReturnsAsync(consumer);
@@ -40,8 +41,9 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<ConsumerService>>();
             var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockHouseService = new Mock<IHouseService>();
-            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
             var consumer = new Consumer { PersonalAccount = "TestAccount" };
 
             mockConsumerRepository.Setup(repo => repo.Add(It.IsAny<Consumer>())).ThrowsAsync(new Exception("Simulated exception"));
@@ -56,8 +58,9 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<ConsumerService>>();
             var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockHouseService = new Mock<IHouseService>();
-            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
             var consumers = new List<Consumer>
             {
                 new Consumer { PersonalAccount = "Account1" },
@@ -87,7 +90,7 @@ namespace TestProject
             };
 
             mockConsumerRepository.Setup(repo => repo.All()).ReturnsAsync(consumers);
-            var consumerService = new ConsumerService(mockConsumerRepository.Object, null, null);
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, null, null, null);
 
             // Act
             var result = await consumerService.GetConsumerOptions();
@@ -103,10 +106,11 @@ namespace TestProject
             // Arrange
             var consumerId = "123";
             var mockRepository = new Mock<IConsumerRepository>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockHouseService = new Mock<IHouseService>();
             var mockLogger = new Mock<ILogger<ConsumerService>>();
 
-            var service = new ConsumerService(mockRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var service = new ConsumerService(mockRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
 
             var consumerToDelete = new Consumer { PersonalAccount = consumerId };
             mockRepository.Setup(repo => repo.Delete(consumerId))
@@ -126,10 +130,11 @@ namespace TestProject
             // Arrange
             var consumerId = "123";
             var mockRepository = new Mock<IConsumerRepository>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockHouseService = new Mock<IHouseService>();
             var mockLogger = new Mock<ILogger<ConsumerService>>();
 
-            var service = new ConsumerService(mockRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var service = new ConsumerService(mockRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
             mockRepository.Setup(repo => repo.Delete(consumerId))
                           .ThrowsAsync(new Exception("Simulated exception"));
 
@@ -142,9 +147,10 @@ namespace TestProject
         {
             // Arrange
             var mockLogger = new Mock<ILogger<ConsumerService>>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockConsumerRepository = new Mock<IConsumerRepository>();
             var mockHouseService = new Mock<IHouseService>();
-            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
             var updatedConsumer = new Consumer { PersonalAccount = "TestAccount", ConsumerOwner = "New Owner" };
 
             mockConsumerRepository.Setup(repo => repo.Update(It.IsAny<Consumer>())).ReturnsAsync(updatedConsumer);
@@ -163,8 +169,9 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<ConsumerService>>();
             var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockHouseService = new Mock<IHouseService>();
-            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
             var updatedConsumer = new Consumer { PersonalAccount = "TestAccount", ConsumerOwner = "New Owner" };
 
             mockConsumerRepository.Setup(repo => repo.Update(It.IsAny<Consumer>())).ThrowsAsync(new Exception("Simulated exception"));
@@ -180,8 +187,9 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<ConsumerService>>();
             var mockConsumerRepository = new Mock<IConsumerRepository>();
+            var mockUserRepository = new Mock<IUserRepository>();
             var mockHouseService = new Mock<IHouseService>();
-            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockLogger.Object);
+            var consumerService = new ConsumerService(mockConsumerRepository.Object, mockHouseService.Object, mockUserRepository.Object, mockLogger.Object);
             var existingConsumer = new Consumer { PersonalAccount = "ExistingAccount", ConsumerOwner = "Old Owner" };
             var updatedConsumer = new Consumer { PersonalAccount = "ExistingAccount", ConsumerOwner = "New Owner" };
 

@@ -10,13 +10,15 @@
     {
         private readonly ILogger<ConsumerService> _logger;
         private readonly IConsumerRepository _consumerRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IHouseService _houseService;
 
-        public ConsumerService(IConsumerRepository consumerRepository, IHouseService houseService, ILogger<ConsumerService> logger)
+        public ConsumerService(IConsumerRepository consumerRepository, IHouseService houseService, IUserRepository userRepository,  ILogger<ConsumerService> logger)
         {
             _consumerRepository = consumerRepository;
             _houseService = houseService;
             _logger = logger;
+            _userRepository = userRepository;
         }
 
         public async Task<Consumer> AddConsumer(Consumer consumer)
@@ -30,6 +32,36 @@
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding a consumer to the database.");
+                throw;
+            }
+        }
+
+        public async Task<Consumer> CreateConsumer(Consumer model, string houseAddress)
+        {
+            try
+            {
+                var houseModel = await _houseService.GetHouseByAddress(houseAddress);
+                model.HouseId = houseModel.HouseId;
+
+                var consumer = new Consumer
+                {
+                    PersonalAccount = model.PersonalAccount,
+                    Flat = model.Flat,
+                    ConsumerOwner = model.ConsumerOwner,
+                    HeatingArea = model.HeatingArea,
+                    HouseId = model.HouseId,
+                    NumberOfPersons = model.NumberOfPersons,
+                    ConsumerEmail = model.ConsumerEmail
+                };
+
+                await AddConsumer(consumer);
+                _logger.LogInformation("Consumer created successfully with PersonalAccount: {ConsumerId}", consumer.PersonalAccount);
+
+                return consumer;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating consumer");
                 throw;
             }
         }
@@ -59,7 +91,29 @@
         {
             try
             {
-                var updatedConsumer = await _consumerRepository.Update(consumer);
+                var existingConsumer = await _consumerRepository.GetByIdAsync(consumer.PersonalAccount);
+                if (existingConsumer == null)
+                {
+                    throw new ArgumentException("Consumer not found");
+                }
+
+                if (existingConsumer.ConsumerEmail != consumer.ConsumerEmail)
+                {
+                    // Check if the email is already associated with another consumer
+                    var consumerWithEmailExists = await _userRepository.GetByEmailAsync(consumer.ConsumerEmail);
+                    if (consumerWithEmailExists != null)
+                    {
+                        _logger.LogInformation("User with this email already exists.");
+                        return existingConsumer;
+                    }
+                }
+
+                // Update consumer details
+                existingConsumer.ConsumerOwner = consumer.ConsumerOwner;
+                existingConsumer.NumberOfPersons = consumer.NumberOfPersons;
+                existingConsumer.ConsumerEmail = consumer.ConsumerEmail;
+
+                var updatedConsumer = await _consumerRepository.Update(existingConsumer);
                 _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
                 return updatedConsumer;
             }
@@ -72,17 +126,9 @@
 
         public async Task<Consumer> DeleteConsumer(string id)
         {
-            try
-            {
-                var addedConsumer = await _consumerRepository.Delete(id);
-                _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} deleted successfully", addedConsumer.PersonalAccount);
-                return addedConsumer;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while deleting a consumer from the database.");
-                throw;
-            }
+
+            var addedConsumer = await _consumerRepository.Delete(id);
+            return addedConsumer;
         }
 
         public async Task<List<SelectHouseDTO>> GetHouseOptions()

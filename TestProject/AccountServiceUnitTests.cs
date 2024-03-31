@@ -15,15 +15,16 @@
     public class AccountServiceUnitTests
     {
         [Fact]
-        public async Task AddAccount_SuccessfullyAddsAccount()
+        public async Task CreateAccount_SuccessfullyCreatesAccount()
         {
             // Arrange
             var mockRepository = new Mock<IAccountRepository>();
-            var accountToAdd = new Account { AccountID = 1, PersonalAccount = "TestAccount" };
+            var mockLogger = new Mock<ILogger<AccountService>>();
+            var accountToAdd = new Account { PersonalAccount = "TestAccount" };
             var addedAccount = new Account { AccountID = 1, PersonalAccount = "TestAccount" };
 
-            mockRepository.Setup(repo => repo.Add(accountToAdd)).ReturnsAsync(addedAccount);
-            var service = new AccountService(mockRepository.Object);
+            mockRepository.Setup(repo => repo.Add(It.IsAny<Account>())).ReturnsAsync(addedAccount);
+            var service = new AccountService(mockRepository.Object, mockLogger.Object);
 
             // Act
             var result = await service.AddAccount(accountToAdd);
@@ -33,15 +34,16 @@
         }
 
         [Fact]
-        public async Task AddAccount_ThrowsExceptionOnFailure()
+        public async Task CreateAccount_ThrowsExceptionOnFailure()
         {
             // Arrange
             var mockRepository = new Mock<IAccountRepository>();
-            var accountToAdd = new Account { AccountID = 1, PersonalAccount = "TestAccount" };
+            var mockLogger = new Mock<ILogger<AccountService>>();
+            var accountToAdd = new Account { PersonalAccount = "TestAccount" };
 
             // Simulate repository throwing exception
-            mockRepository.Setup(repo => repo.Add(accountToAdd)).ThrowsAsync(new Exception("Failed to add account"));
-            var service = new AccountService(mockRepository.Object);
+            mockRepository.Setup(repo => repo.Add(It.IsAny<Account>())).ThrowsAsync(new Exception("Failed to add account"));
+            var service = new AccountService(mockRepository.Object, mockLogger.Object);
 
             // Act and Assert
             await Assert.ThrowsAsync<Exception>(async () => await service.AddAccount(accountToAdd));
