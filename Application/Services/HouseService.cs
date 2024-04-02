@@ -4,6 +4,7 @@
     using Application.DTOS;
     using Application.Models;
     using Application.Services.Interfaces;
+    using Microsoft.AspNetCore.Http.HttpResults;
     using Microsoft.Extensions.Logging;
 
     public class HouseService: IHouseService
@@ -17,20 +18,19 @@
             _logger = logger;
         }
 
-        public async Task<House> AddHouse(House house)
+        public async Task<Result<House, Error>> AddHouse(House house)
         {
             try
             {
                 var addedHouse = await _houseRepository.Add(house);
-                _logger.LogInformation("Added a new house to the database with ID: {HouseId}", addedHouse.HouseId);
-                return addedHouse;
+                return Result<House, Error>.Ok(addedHouse);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding a house to the database.");
-                throw;
+                return Result<House, Error>.Err(new Error("DB001", "Database error occurred while adding the house."));
             }
         }
+
 
         public async Task<House> UpdateHouse(House house)
         {
@@ -90,5 +90,7 @@
             allHouses.ForEach(item => options.Add(new SelectHouseDTO(item)));
             return options;
         }
+
+        
     }
 }

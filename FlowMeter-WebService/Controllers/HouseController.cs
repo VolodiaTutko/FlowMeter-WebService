@@ -1,5 +1,6 @@
 ﻿namespace FlowMeter_WebService.Controllers
 {
+  
     using Application.Models;
     using Application.Services;
     using Application.Services.Interfaces;
@@ -37,33 +38,21 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(House model)
         {
-            if (!ModelState.IsValid)
+            var result = await _houseService.AddHouse(model);
+
+            if (result.IsOk)
             {
-                return RedirectToAction(nameof(Index), model);
-            }
-
-            try
-            {
-                var house = new House
-                {
-                    HouseAddress = model.HouseAddress,
-                    HeatingAreaOfHouse = model.HeatingAreaOfHouse,
-                    NumberOfFlat = model.NumberOfFlat,
-                    NumberOfResidents = model.NumberOfResidents,
-                };
-
-                await _houseService.AddHouse(house);
-                _logger.LogInformation("House created successfully with ID: {HouseAddress}", house.HouseAddress);
-
+                var addedHouse = result.Value;
+                _logger.LogInformation("House created successfully with HouseAddress: {HouseAddress}", addedHouse.HouseAddress);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Error occurred while creating house");
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+                var error = result.Error;
+                _logger.LogError("Error occurred while creating house: {ErrorMessage}", error.Description);
+                ModelState.AddModelError(string.Empty, $"Error: {error.Description}");
+                return RedirectToAction(nameof(Index), model);
             }
-
-            return RedirectToAction(nameof(Index), model);
         }
 
         public ActionResult Update(int id)
