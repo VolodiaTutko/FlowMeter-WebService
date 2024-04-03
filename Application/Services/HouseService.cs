@@ -36,9 +36,7 @@
         {
             try
             {
-                var updatedHouse = await _houseRepository.Update(house);
-
-                
+                var updatedHouse = await _houseRepository.Update(house);                
                 return Result<House, Error>.Ok(updatedHouse);
             }
             catch (Exception ex)
