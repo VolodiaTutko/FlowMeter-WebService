@@ -63,7 +63,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("PersonalAccount");
 
-                    b.ToTable("accounts");
+                    b.ToTable("accounts", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Accrual", b =>
@@ -91,7 +91,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("PersonalAccount");
 
-                    b.ToTable("accruals");
+                    b.ToTable("accruals", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Admin", b =>
@@ -105,7 +105,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("AdminEmail");
 
-                    b.ToTable("admins");
+                    b.ToTable("admins", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Consumer", b =>
@@ -138,7 +138,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("HouseId");
 
-                    b.ToTable("consumers");
+                    b.ToTable("consumers", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.House", b =>
@@ -165,7 +165,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("HouseId");
 
-                    b.ToTable("houses");
+                    b.ToTable("houses", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Meter", b =>
@@ -196,7 +196,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("CountersId");
 
-                    b.ToTable("meters");
+                    b.ToTable("meters", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Payment", b =>
@@ -225,7 +225,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("PersonalAccount");
 
-                    b.ToTable("payments");
+                    b.ToTable("payments", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Receipt", b =>
@@ -250,7 +250,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("PersonalAccount");
 
-                    b.ToTable("receipts");
+                    b.ToTable("receipts", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Service", b =>
@@ -275,7 +275,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("HouseId");
 
-                    b.ToTable("services");
+                    b.ToTable("services", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.User", b =>
@@ -296,7 +296,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("Application.Models.Account", b =>
