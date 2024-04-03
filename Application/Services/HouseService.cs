@@ -32,33 +32,36 @@
         }
 
 
-        public async Task<House> UpdateHouse(House house)
+        public async Task<Result<House, Error>> UpdateHouse(House house)
         {
             try
             {
                 var updatedHouse = await _houseRepository.Update(house);
-                _logger.LogInformation("House with Address: {HouseAddress} updated successfully", updatedHouse.HouseAddress);
-                return updatedHouse;
+
+                
+                return Result<House, Error>.Ok(updatedHouse);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating a house in the database.");
-                throw;
+                return Result<House, Error>.Err(new Error("DB002", "Database error occurred while updating the house."));
             }
         }
 
-        public async Task<House> DeleteHouse(int id)
+        public async Task<Result<House, Error>> DeleteHouse(int id)
         {
             try
             {
                 var deletedHouse = await _houseRepository.Delete(id);
-                _logger.LogInformation("House with Address: {HouseAddress} deleted successfully", deletedHouse.HouseAddress);
-                return deletedHouse;
+                if (deletedHouse == null)
+                {
+                    return Result<House, Error>.Err(new Error("NotFound", "House not found"));
+                }
+
+                return Result<House, Error>.Ok(deletedHouse);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while deleting a house from the database.");
-                throw;
+                return Result<House, Error>.Err(new Error("DeleteError", $"Error occurred while deleting house: {ex.Message}"));
             }
         }
 

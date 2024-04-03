@@ -9,9 +9,9 @@ namespace Application.Services.Interfaces
     {
         Task<Result<House, Error>> AddHouse(House house);
 
-        Task<House> UpdateHouse(House house);
+        Task<Result<House, Error>> UpdateHouse(House house);
 
-        Task<House> DeleteHouse(int id);
+        Task<Result<House, Error>> DeleteHouse(int id);
 
         Task<House> GetHouseById(int id);
 

@@ -6,6 +6,7 @@
     using Application.Services.Interfaces;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     public class HouseController : Controller
     {
@@ -43,7 +44,7 @@
             if (result.IsOk)
             {
                 var addedHouse = result.Value;
-                _logger.LogInformation("House created successfully with HouseAddress: {HouseAddress}", addedHouse.HouseAddress);
+                _logger.LogInformation("House created successfully with HouseAddress: {HouseAddress}", result.Value.HouseAddress);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -62,71 +63,56 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Update(House house)
+        public async Task<IActionResult> Update(House house)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                ModelState.Remove("Flat");
-                ModelState.Remove("HeatingArea");
-                ModelState.Remove("HouseId");
-                ModelState.Remove("ConsumerEmail");
-                ModelState.Remove("House");
-                if (ModelState.IsValid)
-                {
-                    var updatedHouse = await _houseService.GetHouseById(house.HouseId);
-
-                    updatedHouse.HouseAddress = house.HouseAddress != null ? house.HouseAddress : updatedHouse.HouseAddress;
-                    updatedHouse.HeatingAreaOfHouse = house.HeatingAreaOfHouse != null ? house.HeatingAreaOfHouse : updatedHouse.HeatingAreaOfHouse;
-                    updatedHouse.NumberOfFlat = house.NumberOfFlat != null ? house.NumberOfFlat : updatedHouse.NumberOfFlat;
-                    updatedHouse.NumberOfResidents = house.NumberOfResidents != null ? house.NumberOfResidents : updatedHouse.NumberOfResidents;
-
-                    await _houseService.UpdateHouse(updatedHouse);
-
-                    if (updatedHouse == null)
-                    {
-                        return NotFound();
-                    }
-
-                    _logger.LogInformation("House with Address: {HouseAddress} updated successfully", updatedHouse.HouseAddress);
-
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                return View(house);
             }
-            catch (Exception ex)
+
+            var result = await _houseService.UpdateHouse(house);
+
+            if (result.IsOk)
             {
-                _logger.LogError(ex, "An error occurred while updating a house in the database.");
-                throw;
+                _logger.LogInformation("House with {houseAddress} updated successfully", result.Value.HouseAddress);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                var error = result.Error;
+                _logger.LogError(error.Description);
+                ModelState.AddModelError("", error.Description);
+                return View(house);
             }
         }
 
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
+
+        public ActionResult Delete()
+        {
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
-            try
-            {
-                var deletedHouse = await _houseService.DeleteHouse(id);
-                if (deletedHouse == null)
-                {
-                    return NotFound();
-                }
+            var result = await _houseService.DeleteHouse(id);
 
-                _logger.LogInformation("House with address: {HouseAddress} deleted successfully", deletedHouse.HouseAddress);
+            if (!ModelState.IsValid)
+            {
+                return View(result.Value);
+            }
+
+            if (result.IsOk)
+            {
+                _logger.LogInformation("House with address: {HouseAddress} deleted successfully", result.Value.HouseAddress);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Error occurred while deleting house");
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+                var error = result.Error;
+                _logger.LogError(error.Description);
+                ModelState.AddModelError("", error.Description);
                 return RedirectToAction(nameof(Index));
             }
         }
