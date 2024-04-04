@@ -5,22 +5,15 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
-    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-    public class AppDbContext : IdentityDbContext, DbContext
+    public class AppDbContext : IdentityDbContext
     {
         public AppDbContext(DbContextOptions options)
-       : base(options)
-        {
-            
-        }
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-       : base(options)
+        : base(options)
         {
 
         }
-
-
 
         public DbSet<Account> accounts { get; set; }
         public DbSet<Accrual> accruals { get; set; }

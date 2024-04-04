@@ -2,8 +2,43 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container" style="width: 100%;">
+    <div class="row">
+        <div class="col-d-12">
+            <div class="card">
+                <div class="position-relative">
+                    <img src="../Source/6007453.jpg" alt="Background image" class="card-img-top" style="width: 100%;">
+                    @* <div class="card-body position-absolute" style="top: 0; left: 0; right: 0; bottom: 0;"> *@
+                    <div class="card-body position-absolute top-50 " style="background: rgba(255,255,255,0.8);width: 100%;">
+                        <div class="row align-items-center">
+                            <div class="col ">
+                                <h5 class="card-title d-flex justify-content-center ">FlowMeter-WebService</h5>
+                            </div>
+                            <div class="col d-flex justify-content-around">
+                                <a class="btn btn-outline-secondary" asp-controller="Auth" asp-action="LogInUser">Log in as Consumer</a>
+                                <a class="btn btn-outline-secondary" asp-controller="Auth" asp-action="SignUp">Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            <!-- 2-5 -->
+            <h5 class="card-title ">Дуже важлива інфа про нашу компанію Дуже важлива інфа про нашу компанію Дуже важлива інфа про нашу компанію</h5>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            <!-- 7-10 -->
+            <h5 class="card-title ">Дуже важлива інфа про нашу компанію2</h5>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <div class="col d-flex justify-content-center mt-2">
+        <a class="btn btn-outline-secondary" asp-controller="Auth" asp-action="LogInAdmin">Log in as Admin</a>
+    </div>
 </div>
 
