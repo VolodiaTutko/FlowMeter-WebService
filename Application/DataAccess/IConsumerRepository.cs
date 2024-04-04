@@ -6,6 +6,8 @@
     {
         Task<Consumer> GetByIdAsync(string id);
 
+        Task<Consumer> GetByEmailAsync(string consumerEmail);
+
         Task<List<Consumer>> All();
 
         Task<Consumer> Add(Consumer consumer);

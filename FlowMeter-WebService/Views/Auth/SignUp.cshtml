@@ -1,19 +1,21 @@
-﻿<div class="container">
+﻿@model FlowMeter_WebService.ViewModels.SignupEmailViewModel
+
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-3 text-center my-4 ">
             <h2>Verify your email</h2>
             <h5>Please verify your email</h5>
-            <form action="@Url.Action("SignUp", "Auth")" method="post" class="align-items-center flex-column">
+            <form method="post" class="align-items-center flex-column">
                 <div class="form-group row mt-3">
                     <div class="col-md-12">
-                        <input type="text" id="InputLogIn" class="form-control" name="HouseAddress" placeholder="Login">
+                        <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail" placeholder="Enter your email">
                     </div>
                 </div>
                 <div class="form-group col mt-3">
                     <button type="submit" class="btn btn-outline-secondary">Submit</button>
                 </div>
                 <div class="form-group row mt-3">
-                    <a class="mx-auto">Back to home</a>
+                    <a class="link-primary" asp-area="" asp-controller="Home" asp-action="Index">Back to home</a>
                 </div>
             </form>
         </div>
