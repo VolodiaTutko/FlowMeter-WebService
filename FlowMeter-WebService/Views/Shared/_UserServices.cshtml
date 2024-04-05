@@ -1,17 +1,22 @@
-﻿<table class="table table-bordered">
+﻿@model FlowMeter_WebService.ViewModels.ConsumerInvoicesViewModel
+
+
+<table class="table table-bordered">
     <thead class="table-light">
         <tr>
-            <th class="text-center">
-                Service Type
-            </th>
-            <th class="text-center">
-                Cost per unit
-            </th>
-            <th class="text-center">
-                Current value of indicator
-            </th>
+            <th class="text-center">Service Type</th>
+            <th class="text-center">Cost per unit</th>
+            <th class="text-center">Current value of indicator</th>
         </tr>
     </thead>
     <tbody>
+        @foreach (var serviceType in Model.ServiceType)
+        {
+            <tr>
+                <td class="text-center">@serviceType.Key</td>
+                <td class="text-center">@serviceType.Value</td>
+                <td class="text-center">@Model.Meters[serviceType.Key]</td>
+            </tr>
+        }
     </tbody>
 </table>

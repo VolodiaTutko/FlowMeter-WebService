@@ -27,5 +27,10 @@ namespace Infrastructure.Data.Repositories
             await _context.SaveChangesAsync();
             return account;
         }
+
+        public async Task<Account> GetByIdAsync(string id)
+        {
+            return await _context.accounts.FirstOrDefaultAsync(c => c.PersonalAccount == id);
+        }
     }
 }

@@ -1,10 +1,10 @@
-﻿namespace Application.DataAccess
-{
-    using Application.Models;
+﻿using Application.Models;
 
+namespace Application.DataAccess
+{
     public interface IMeterRepository
     {
-        Task<Meter> GetByIdAsync(int id);
+        Task<Meter> GetByCounterAccountAsync(string id);
 
         Task<List<Meter>> All();
 

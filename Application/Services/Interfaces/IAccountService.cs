@@ -11,6 +11,8 @@ namespace Application.Services.Interfaces
     {
         Task<Account> AddAccount(Account account);
 
+        Task<Account> GetAccountByPerconalAccount(string id);
+
         Task<Account> CreateAccount(Account account);
     }
 }

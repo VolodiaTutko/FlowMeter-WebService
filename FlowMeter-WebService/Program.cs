@@ -62,6 +62,9 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
+builder.Services.AddScoped<IMeterRepository, MeterRepository>();
+builder.Services.AddScoped<IMeterService, MeterService>();
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging(options => {

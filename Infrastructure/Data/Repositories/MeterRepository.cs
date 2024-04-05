@@ -1,9 +1,15 @@
-﻿namespace Infrastructure.Data.Repositories
-{
-    using Application.DataAccess;
-    using Application.Models;
-    using Microsoft.EntityFrameworkCore;
+﻿using Application.DataAccess;
+using Application.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+
+namespace Infrastructure.Data.Repositories
+{  
     public class MeterRepository : IMeterRepository
     {
         private readonly AppDbContext _context;
@@ -15,9 +21,9 @@
             dbSet = context.Set<Meter>();
         }
 
-        public Task<Meter> GetByIdAsync(int id)
+        public async Task<Meter> GetByCounterAccountAsync(string id)
         {
-            throw new NotImplementedException();
+            return await _context.meters.FirstOrDefaultAsync(c => c.CounterAccount == id);
         }
 
         public async Task<List<Meter>> All()
@@ -34,14 +40,34 @@
             return meter;
         }
 
-        public Task<Meter> Update(Meter meter)
+        public async Task<Meter> Update(Meter meter)
         {
-            throw new NotImplementedException();
+            var existingMeter = await _context.meters.FindAsync(meter.CountersId);
+            if (existingMeter == null)
+            {
+                throw new InvalidOperationException("Meter not found");
+            }
+
+            existingMeter.CurrentIndicator = meter.CurrentIndicator;
+            existingMeter.TypeOfAccount = meter.TypeOfAccount;
+            existingMeter.Role = meter.Role;
+            existingMeter.Date = meter.Date;
+
+            await _context.SaveChangesAsync();
+            return existingMeter;
         }
 
-        public Task<Meter> Delete(int id)
+        public async Task<Meter> Delete(int id)
         {
-            throw new NotImplementedException();
+            var meter = await _context.meters.FindAsync(id);
+            if (meter == null)
+            {
+                throw new InvalidOperationException("Meter not found");
+            }
+
+            _context.meters.Remove(meter);
+            await _context.SaveChangesAsync();
+            return meter;
         }
 
     }

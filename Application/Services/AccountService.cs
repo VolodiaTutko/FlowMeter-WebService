@@ -28,6 +28,11 @@ namespace Application.Services
             return addedAccount;
         }
 
+        public async Task<Account> GetAccountByPerconalAccount(string id)
+        {
+            return await _accountRepository.GetByIdAsync(id);
+        }
+
         public async Task<Account> CreateAccount(Account model)
         {
             try
