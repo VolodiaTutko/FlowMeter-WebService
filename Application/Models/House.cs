@@ -10,9 +10,10 @@
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int HouseId { get; set; }
 
+        [Required]
         [MaxLength(80)]
         public string HouseAddress { get; set; }
-
+        
         public int? HeatingAreaOfHouse { get; set; }
 
         public int? NumberOfFlat { get; set; }

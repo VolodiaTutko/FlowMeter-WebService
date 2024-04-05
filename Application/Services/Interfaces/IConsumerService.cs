@@ -5,7 +5,9 @@
 
     public interface IConsumerService
     {
-        public Task<Consumer> AddConsumer(Consumer consumer);
+        Task<Consumer> AddConsumer(Consumer consumer);
+
+        Task<Consumer> CreateConsumer(Consumer model, string houseAddress);
 
         Task<Consumer> UpdateConsumer(Consumer consumer);
 

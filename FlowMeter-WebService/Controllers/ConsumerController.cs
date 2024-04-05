@@ -3,22 +3,29 @@
     using Application.Models;
     using Application.Services;
     using Application.Services.Interfaces;
+    using Infrastructure.Data;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using Microsoft.Extensions.Logging;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Linq;
 
     public class ConsumerController : Controller
     {
         private IConsumerService _consumerService;
         private IAccountService _accountService;
+        private IHouseService _houseService;
         private readonly ILogger<ConsumerController> _logger;
+        private IUserService _userService;
 
-        public ConsumerController(IConsumerService service, IAccountService account, ILogger<ConsumerController> logger)
+        public ConsumerController(IConsumerService service, IAccountService account, IHouseService houseService, ILogger<ConsumerController> logger, IUserService userService)
         {
             _consumerService = service;
             _accountService = account;
+            _houseService = houseService;
             _logger = logger;
+            _userService = userService;
         }
 
         public async Task<ActionResult> Index()
@@ -34,9 +41,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Consumer model)
+        public async Task<IActionResult> Create(Consumer model, string houseAddress)
         {
+            var houseModel = await _houseService.GetHouseByAddress(houseAddress);
             ModelState.Remove("House");
+            model.HouseId = houseModel.HouseId;
             if (!ModelState.IsValid)
             {
                 foreach (var modelState in ModelState.Values)
@@ -46,112 +55,49 @@
                         _logger.LogError($"Validation error: {error.ErrorMessage}");
                     }
                 }
+
                 return RedirectToAction(nameof(Index), model);
             }
 
-            try
-            {
-                var consumer = new Consumer
-                {
-                    PersonalAccount = model.PersonalAccount,
-                    Flat = model.Flat,
-                    ConsumerOwner = model.ConsumerOwner,
-                    HeatingArea = model.HeatingArea,
-                    HouseId = model.HouseId,
-                    NumberOfPersons = model.NumberOfPersons,
-                    ConsumerEmail = model.ConsumerEmail
-                };
+            await _consumerService.CreateConsumer(model, houseAddress);
 
-                await _consumerService.AddConsumer(consumer);
-                _logger.LogInformation("Consumer created successfully with PersonalAccount: {ConsumerId}", consumer.PersonalAccount);
+            var accountModel = new Account{ PersonalAccount = model.PersonalAccount };
+            await _accountService.CreateAccount(accountModel);
 
-                var account = new Account
-                {
-                    PersonalAccount = model.PersonalAccount,
-                    HotWater = null,
-                    ColdWater = null,
-                    Heating = null,
-                    Electricity = null,
-                    Gas = null,
-                    PublicService = null
-                };
-
-                await _accountService.AddAccount(account);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating consumer");
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-            }
-
-            return RedirectToAction(nameof(Index), model);
+            return RedirectToAction(nameof(Index));
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(Consumer consumer)
         {
-            try
+            ModelState.Remove("Flat");
+            ModelState.Remove("HeatingArea");
+            ModelState.Remove("HouseId");
+            ModelState.Remove("House");
+            if (ModelState.IsValid)
             {
-                ModelState.Remove("Flat");
-                ModelState.Remove("HeatingArea");
-                ModelState.Remove("HouseId");
-                ModelState.Remove("ConsumerEmail");
-                ModelState.Remove("House");
-                if (ModelState.IsValid)
-                {
-                    var updatedConsumer = await _consumerService.GetConsumerByPersonalAccount(consumer.PersonalAccount);
-
-                    updatedConsumer.PersonalAccount = consumer.PersonalAccount;
-                    updatedConsumer.ConsumerOwner = consumer.ConsumerOwner;
-                    updatedConsumer.NumberOfPersons = consumer.NumberOfPersons;
-
-                    await _consumerService.UpdateConsumer(updatedConsumer);
-
-                    if (updatedConsumer == null)
-                    {
-                        return NotFound();
-                    }
-
-                    _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
-
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                var updatedConsumer = await _consumerService.UpdateConsumer(consumer);
+                return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while updating a consumer in the database.");
-                throw;
-            }
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(string id)
         {
-            try
+            var deletedConsumer = await _consumerService.DeleteConsumer(id);
+            if (deletedConsumer == null)
             {
-                var deletedConsumer = await _consumerService.DeleteConsumer(id);
-                if (deletedConsumer == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            }
 
-                _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} deleted successfully", deletedConsumer.PersonalAccount);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting consumer");
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-                return RedirectToAction(nameof(Index));
-            }
+            _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} deleted successfully", deletedConsumer.PersonalAccount);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

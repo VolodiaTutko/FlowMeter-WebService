@@ -4,7 +4,6 @@
     ViewData["Title"] = "Index";
 }
 
-
 <h1>User Info</h1>
 
 <div class="container">
@@ -39,46 +38,49 @@
             </div>
         </div>
         <div class="col-8">
-            <table class="table table-bordered">
-                <thead class="table-light">
-                    <tr>
-                        <th class="text-center">
-                            Month/Year
-                        </th>
-                        <th class="text-center">
-                            Invoice Filename
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.Receipts != null && Model.Receipts.Any())
-                    {
-                        @foreach (var item in Model.Receipts)
-                        {
-                            <tr>
-                                <td class="text-center">
-                                    @item.Date.ToString("MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
-                                </td>
-                                <td class="text-center">
-                                    @($"invoice-{item.Date.ToString("yyyy-MM")}.pdf")
-                                </td>
-                                <td>
-                                    <form method="post" asp-action="Download" asp-route-id="@item.ReceiptId">
-                                        <button type="submit" class="btn btn-primary w-100">Download</button>
-                                        <input type="text" id="ReceiptId" class="form-control" name="ReceiptId" value=@item.ReceiptId hidden>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <p>No invoices found.</p>
-                    }
-                </tbody>
-            </table>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light m-0 p-0">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav d-flex justify-content-around w-100 h-100" style="background-color: #d7dbdb;">
+                        <li id="servicesTab" class="nav-item active-tab flex-fill border border-dark">
+                            <a class="nav-link text-center text-dark" onclick="showPartialViewServices()">Services</a>
+                        </li>
+                        <li id="invoicesTab" class="nav-item flex-fill border border-dark">
+                            <a class="nav-link text-center text-dark" onclick="showPartialViewInvoices()">Invoices</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
+            <div id="partialViewServices">
+                @Html.Partial("_UserServices")
+            </div>
+
+            <div id="partialViewInvoices" style="display: none;">
+                @Html.Partial("_UserInvoices")
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    function showPartialViewServices() {
+        document.getElementById("partialViewServices").style.display = "block";
+        document.getElementById("partialViewInvoices").style.display = "none";
+        document.getElementById("servicesTab").classList.add("active-tab");
+        document.getElementById("invoicesTab").classList.remove("active-tab");
+    }
+
+    function showPartialViewInvoices() {
+        document.getElementById("partialViewServices").style.display = "none";
+        document.getElementById("partialViewInvoices").style.display = "block";
+        document.getElementById("servicesTab").classList.remove("active-tab");
+        document.getElementById("invoicesTab").classList.add("active-tab");
+    }
+</script>
+
+<style>
+    .active-tab {
+        background-color: #85b8ff;
+        color: #000;
+    }
+</style>

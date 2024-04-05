@@ -9,11 +9,13 @@
     public class ServiceController : Controller
     {
         private IServiceService _serviceService;
+        private IHouseService _houseService;
         private readonly ILogger<ServiceController> _logger;
 
-        public ServiceController(IServiceService service, ILogger<ServiceController> logger)
+        public ServiceController(IServiceService service, IHouseService houseService, ILogger<ServiceController> logger)
         {
             _serviceService = service;
+            _houseService = houseService;
             _logger = logger;
         }
 
@@ -35,10 +37,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Service model)
+        public async Task<IActionResult> Create(Service model, string houseAddress)
         {
+            var houseModel = await _houseService.GetHouseByAddress(houseAddress);
             ModelState.Remove("House");
-            //ModelState.Remove("User");
+            model.HouseId = houseModel.HouseId;
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(Index), model);
@@ -48,8 +51,9 @@
             {
                 var service = new Service
                 {
+                    ServiceId = model.ServiceId,
                     HouseId = model.HouseId,
-                    TypeOfAccount = GetUkrainianTypeOfAccount(model.TypeOfAccount), // Отримати українське значення
+                    TypeOfAccount = model.TypeOfAccount,
                     Price = model.Price
                 };
 
@@ -66,25 +70,6 @@
 
             return RedirectToAction(nameof(Index), model);
         }
-
-        private string GetUkrainianTypeOfAccount(string typeOfAccount)
-        {
-            switch (typeOfAccount)
-            {
-                case "ColdWater":
-                    return "Холодна вода";
-                case "HotWater":
-                    return "Гаряча вода";
-                case "Gas":
-                    return "Газ";
-                case "Electricity":
-                    return "Світло";
-                default:
-                    return string.Empty;
-            }
-        }
-
-
 
         public ActionResult Edit(int id)
         {
@@ -105,22 +90,62 @@
             }
         }
 
-        public ActionResult Delete(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Update(Service service)
         {
-            return View();
+            try
+            {
+                ModelState.Remove("House");
+                ModelState.Remove("TypeOfAccount");
+                if (ModelState.IsValid)
+                {
+                    var updatedService = await _serviceService.GetServiceByServiceId(service.ServiceId);
+
+                    updatedService.Price = service.Price;
+
+                    await _serviceService.UpdateService(updatedService);
+
+                    if (updatedService == null)
+                    {
+                        return NotFound();
+                    }
+
+                    _logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating a service in the database.");
+                throw;
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
+                var deletedService = await _serviceService.DeleteService(id);
+                if (deletedService == null)
+                {
+                    return NotFound(); 
+                }
+                _logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedService.ServiceId);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                _logger.LogError(ex, "Error occurred while deleting service");
+                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+                return RedirectToAction(nameof(Index)); 
             }
         }
     }

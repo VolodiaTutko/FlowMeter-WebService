@@ -12,5 +12,6 @@ namespace Application.DataAccess
         Task<Account> Add(Account account);
 
         Task<Account> GetAccountsByPersonal(string personalAccount);
+        Task<Account> GetByIdAsync(string id);
     }
 }

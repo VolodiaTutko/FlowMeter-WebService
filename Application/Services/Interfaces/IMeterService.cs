@@ -1,4 +1,4 @@
-﻿namespace Application.Services.Interfaces
+namespace Application.Services.Interfaces
 {
     using Application.DTOS;
     using Application.Models;
@@ -16,5 +16,7 @@
         public Task<MeterInfoDTO> GetMeterById(int id);
 
         public Task<List<MeterInfoDTO>> GetList();
+
+        Task<Meter> GetMeterByCounterAccount(string id);
     }
 }

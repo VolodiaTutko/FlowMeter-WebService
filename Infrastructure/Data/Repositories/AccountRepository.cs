@@ -28,10 +28,9 @@ namespace Infrastructure.Data.Repositories
             return account;
         }
 
-        public async Task<Account> GetAccountsByPersonal(string personal)
+        public async Task<Account> GetByIdAsync(string id)
         {
-            var account = await dbSet.FirstOrDefaultAsync(x => x.PersonalAccount == personal);
-            return account;
+            return await _context.accounts.FirstOrDefaultAsync(c => c.PersonalAccount == id);
         }
     }
 }

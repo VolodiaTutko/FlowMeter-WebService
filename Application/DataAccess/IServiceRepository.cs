@@ -6,6 +6,8 @@
     {
         Task<Service> GetByIdAsync(int id);
 
+        Task<IEnumerable<Service>> GetByHouseIdAsync(int id); 
+
         Task<List<Service>> All();
 
         Task<Service> Add(Service service);

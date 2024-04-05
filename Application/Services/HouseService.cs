@@ -4,6 +4,7 @@
     using Application.DTOS;
     using Application.Models;
     using Application.Services.Interfaces;
+    using Microsoft.AspNetCore.Http.HttpResults;
     using Microsoft.Extensions.Logging;
 
     public class HouseService: IHouseService
@@ -17,54 +18,61 @@
             _logger = logger;
         }
 
-        public async Task<House> AddHouse(House house)
+        public async Task<Result<House, Error>> AddHouse(House house)
         {
             try
             {
                 var addedHouse = await _houseRepository.Add(house);
-                _logger.LogInformation("Added a new house to the database with ID: {HouseId}", addedHouse.HouseId);
-                return addedHouse;
+                return Result<House, Error>.Ok(addedHouse);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding a house to the database.");
-                throw;
+                return Result<House, Error>.Err(new Error("DB001", "Database error occurred while adding the house."));
             }
         }
 
-        public async Task<House> UpdateHouse(House house)
+
+        public async Task<Result<House, Error>> UpdateHouse(House house)
         {
             try
             {
                 var updatedHouse = await _houseRepository.Update(house);
-                _logger.LogInformation("House with Address: {HouseAddress} updated successfully", updatedHouse.HouseAddress);
-                return updatedHouse;
+
+                
+                return Result<House, Error>.Ok(updatedHouse);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating a house in the database.");
-                throw;
+                return Result<House, Error>.Err(new Error("DB002", "Database error occurred while updating the house."));
             }
         }
 
-        public async Task<House> DeleteHouse(int id)
+        public async Task<Result<House, Error>> DeleteHouse(int id)
         {
             try
             {
                 var deletedHouse = await _houseRepository.Delete(id);
-                _logger.LogInformation("House with Address: {HouseAddress} deleted successfully", deletedHouse.HouseAddress);
-                return deletedHouse;
+                if (deletedHouse == null)
+                {
+                    return Result<House, Error>.Err(new Error("NotFound", "House not found"));
+                }
+
+                return Result<House, Error>.Ok(deletedHouse);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while deleting a house from the database.");
-                throw;
+                return Result<House, Error>.Err(new Error("DeleteError", $"Error occurred while deleting house: {ex.Message}"));
             }
         }
 
         public async Task<House> GetHouseById(int id)
         {
             return await _houseRepository.GetByIdAsync(id);
+        }
+
+        public async Task<House> GetHouseByAddress(string houseAddress)
+        {
+            return await _houseRepository.GetByAddress(houseAddress);   
         }
 
         public async Task<List<House>> GetList()
@@ -90,5 +98,7 @@
             allHouses.ForEach(item => options.Add(new SelectHouseDTO(item)));
             return options;
         }
+
+        
     }
 }

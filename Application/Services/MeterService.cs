@@ -1,4 +1,4 @@
-﻿namespace Application.Services
+namespace Application.Services
 {
     using Application.DataAccess;
     using Application.DTOS;
@@ -17,6 +17,11 @@
             this.meterRepository = meterRepo;
             this.meterRecRepository = meterRecRepo;
             this.logger = logger;
+        }
+
+        public async Task<Meter> GetMeterByCounterAccount(string id)
+        {
+            return await _meterRepository.GetByCounterAccountAsync(id);
         }
 
         public async Task<Meter> AddMeter(Meter meter)

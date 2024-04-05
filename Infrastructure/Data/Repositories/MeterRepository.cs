@@ -1,4 +1,14 @@
-﻿namespace Infrastructure.Data.Repositories
+using Application.DataAccess;
+using Application.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace Infrastructure.Data.Repositories
 {
     using System.Collections.Generic;
 
@@ -36,6 +46,7 @@
         }
 
         public async Task<Meter> Update(Meter meter)
+        public async Task<Meter> Update(Meter meter)
         {
             this._context.Update(meter);
             await this._context.SaveChangesAsync();
@@ -43,6 +54,7 @@
             return meter;
         }
 
+        public async Task<Meter> Delete(int id)
         public async Task<Meter> Delete(int id)
         {
             var meter = await this._dbSet.FindAsync(id);

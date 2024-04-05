@@ -1,9 +1,14 @@
-﻿namespace Infrastructure.Data.Repositories
-{
-    using Application.DataAccess;
-    using Application.Models;
-    using Microsoft.EntityFrameworkCore;
+﻿using Application.DataAccess;
+using Application.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace Infrastructure.Data.Repositories
+{
     public class ServiceRepository : IServiceRepository
     {
         private readonly AppDbContext _context;
@@ -15,9 +20,16 @@
             dbSet = context.Set<Service>();
         }
 
-        public Task<Service> GetByIdAsync(int id)
+        public async Task<Service> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.services.FirstOrDefaultAsync(c => c.ServiceId == id);
+        }
+
+        public async Task<IEnumerable<Service>> GetByHouseIdAsync(int id)
+        {
+            return await _context.services
+                .Where(c => c.HouseId == id)
+                .ToListAsync();
         }
 
         public async Task<List<Service>> All()
@@ -36,19 +48,30 @@
             }
             catch (Exception ex)
             {
-                // Обробка помилки
                 throw new Exception("Помилка при додаванні сервісу до бази даних.", ex);
             }
         }
 
-        public Task<Service> Update(Service service)
+        public async Task<Service> Update(Service service)
         {
-            throw new NotImplementedException();
+            _context.Update(service);
+            await _context.SaveChangesAsync();
+
+            return service;
         }
 
-        public Task<Service> Delete(int id)
+
+        public async Task<Service> Delete(int serviceId)
         {
-            throw new NotImplementedException();
+            var service = await dbSet.FindAsync(serviceId);
+            if (service == null)
+            {
+                return null;
+            }
+
+            _context.services.Remove(service);
+            await _context.SaveChangesAsync();
+            return service;
         }
     }
 }

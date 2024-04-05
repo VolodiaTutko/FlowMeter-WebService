@@ -20,6 +20,11 @@
             return await _context.houses.FirstOrDefaultAsync(c => c.HouseId == id);
         }
 
+        public async Task<House> GetByAddress(string houseAddress)
+        { 
+            return await _context.houses.FirstOrDefaultAsync(c => c.HouseAddress == houseAddress);
+        }
+
         public async Task<List<House>> All()
         {
             var houses = await dbSet.ToListAsync();
