@@ -67,11 +67,11 @@ namespace FlowMeter_WebService.Controllers
 
                 var meters = new Dictionary<string, decimal?>
                 {
-                    { hotWaterMeter?.TypeOfAccount.ToString(), hotWaterMeter?.CurrentIndicator },
-                    { coldWaterMeter?.TypeOfAccount.ToString(), coldWaterMeter?.CurrentIndicator },
-                    { electricityMeter?.TypeOfAccount.ToString(), electricityMeter?.CurrentIndicator },
-                    { heatingMeter?.TypeOfAccount.ToString(), heatingMeter?.CurrentIndicator },
-                    { gasMeter?.TypeOfAccount.ToString(), gasMeter?.CurrentIndicator }
+                    //{ hotWaterMeter?.TypeOfAccount.ToString(), hotWaterMeter?.CurrentIndicator },
+                    //{ coldWaterMeter?.TypeOfAccount.ToString(), coldWaterMeter?.CurrentIndicator },
+                    //{ electricityMeter?.TypeOfAccount.ToString(), electricityMeter?.CurrentIndicator },
+                    //{ heatingMeter?.TypeOfAccount.ToString(), heatingMeter?.CurrentIndicator },
+                    //{ gasMeter?.TypeOfAccount.ToString(), gasMeter?.CurrentIndicator }
                 };
 
                 var viewModel = new ConsumerInvoicesViewModel

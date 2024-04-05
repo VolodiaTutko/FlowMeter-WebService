@@ -44,8 +44,6 @@ namespace Infrastructure.Data.Repositories
             this._context.SaveChanges();
             return meter;
         }
-
-        public async Task<Meter> Update(Meter meter)
         public async Task<Meter> Update(Meter meter)
         {
             this._context.Update(meter);
@@ -53,8 +51,6 @@ namespace Infrastructure.Data.Repositories
 
             return meter;
         }
-
-        public async Task<Meter> Delete(int id)
         public async Task<Meter> Delete(int id)
         {
             var meter = await this._dbSet.FindAsync(id);
@@ -67,6 +63,10 @@ namespace Infrastructure.Data.Repositories
             await this._context.SaveChangesAsync();
             return meter;
         }
- 
+
+        public async Task<Meter> GetByCounterAccountAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

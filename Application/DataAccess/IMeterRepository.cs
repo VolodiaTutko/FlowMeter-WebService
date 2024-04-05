@@ -6,6 +6,8 @@ namespace Application.DataAccess
     {
         Task<Meter> GetByCounterAccountAsync(string id);
 
+        Task<Meter> GetByIdAsync(int id);
+
         Task<List<Meter>> All();
 
         Task<Meter> Add(Meter meter);
