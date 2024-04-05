@@ -23,8 +23,10 @@
             return View(meters);
         }
 
+        
+
         // POST: MeterController/Delete/5
-        [HttpPost]
+        [HttpDelete]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {

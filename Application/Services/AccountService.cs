@@ -24,5 +24,10 @@ namespace Application.Services
             var addedAccount = await _accountRepository.Add(account);
             return addedAccount;
         }
+
+        public async Task<Account> GetAccountsByPersonal(string personalAccount)
+        {
+            return await this._accountRepository.GetAccountsByPersonal(personalAccount);
+        }
     }
 }

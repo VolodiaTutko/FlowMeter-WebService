@@ -10,5 +10,7 @@ namespace Application.DataAccess
     public interface IAccountRepository
     {
         Task<Account> Add(Account account);
+
+        Task<Account> GetAccountsByPersonal(string personalAccount);
     }
 }

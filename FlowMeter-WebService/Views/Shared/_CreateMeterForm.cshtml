@@ -1,0 +1,48 @@
+﻿@using Application.DTOS
+@using Application.Services.Interfaces
+
+@{
+    IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
+    var houseOptions = await houseService.GetHouseOptions();
+
+    IConsumerService consumerServise = (IConsumerService)ViewContext.HttpContext.RequestServices.GetService(typeof(IConsumerService));
+    var consumerOptions = await consumerServise.GetConsumerOptions();
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group row mt-3">
+                <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
+                <div class="col-md-6">
+                    <input class="form-control" list="houses" id="HouseAddress" name="HouseAddress" placeholder="Введіть адресу будинку">
+                    <datalist id="houses">
+                        @foreach (var item in houseOptions)
+                        {
+                            <option value="@item.HouseAddress"></option>
+                        }
+                    </datalist>
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+                <div class="col-md-6">
+                    <input class="form-control" list="personalAccounts" id="PersonalAccount" name="PersonalAccount" placeholder="Введіть персональний рахунок">
+                    <datalist>
+                        @foreach (var item in consumerOptions)
+                        {
+                            <option value="@item.PersonalAccount">@item.PersonalAccount</option>
+                        }
+                    </datalist>
+                </div>
+            </div>
+            
+            <div class="form-group row mt-3">
+                <label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
+                <div class="col-md-6">
+                    <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
