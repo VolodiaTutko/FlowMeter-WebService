@@ -13,13 +13,15 @@ namespace FlowMeter_WebService.Controllers
         private readonly IConsumerService _consumerService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IEmailVerificationService _emailVerificationService;
  
-        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IEmailVerificationService emailVerificationService)
         {
             _consumerService = consumerService;
             _logger = logger;
             _signInManager = signInManager;
             _userManager = userManager;
+            _emailVerificationService = emailVerificationService;
         }
 
         [HttpGet]
@@ -33,12 +35,15 @@ namespace FlowMeter_WebService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(SignupEmailViewModel signupEmailViewModel)
         {
-            var emailUser = await _consumerService.GetConsumerByEmail(signupEmailViewModel.ConsumerEmail);
-
-            if (emailUser is not null)
+            var user = await _userManager.FindByEmailAsync(signupEmailViewModel.ConsumerEmail);
+            if (user != null && await _userManager.IsEmailConfirmedAsync(user))
             {
+                // Користувач вже зареєстрований і його електронна пошта підтверджена
                 return RedirectToAction("EmailVerification", "Auth", signupEmailViewModel);
             }
+
+            signupEmailViewModel.ValidationCode = await _emailVerificationService.SendVerificationCode(signupEmailViewModel.ConsumerEmail);
+
             return View("Error");
         }
 
@@ -51,12 +56,11 @@ namespace FlowMeter_WebService.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EmailVerification(SignupEmailViewModel signupEmailViewModel, List<int> VerificationCodes)
+        public async Task<IActionResult> EmailVerification(SignupEmailViewModel signupEmailViewModel, string[] VerificationCodes)
         {
-            List<int> myList = new List<int> { 1, 2, 3, 4, 5 };
-            if (signupEmailViewModel is not null && myList.SequenceEqual(VerificationCodes))
+            string concatenatedCodes = string.Join("", VerificationCodes);
+            if (signupEmailViewModel is not null && signupEmailViewModel.ValidationCode == concatenatedCodes)
             {
-
                 return RedirectToAction("SetPassword", "Auth", signupEmailViewModel);
             }
 
@@ -84,7 +88,6 @@ namespace FlowMeter_WebService.Controllers
             {
                 ConsumerEmail = signupEmailViewModel.ConsumerEmail,
                 UserName = signupEmailViewModel.ConsumerEmail
-                
             };
 
             var result = await _userManager.CreateAsync(user, signupEmailViewModel.Password);

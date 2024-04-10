@@ -16,5 +16,7 @@ namespace FlowMeter_WebService.ViewModels
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         [DataType(DataType.Password)]
         public string ReTypePassword { get; set; }
+
+        public string ValidationCode { get; set; }
     }
 }

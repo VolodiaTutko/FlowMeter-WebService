@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using System.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Application.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 
 builder.Services.AddAuthentication(options =>
 {
