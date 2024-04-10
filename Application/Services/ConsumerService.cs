@@ -71,6 +71,11 @@
             return await _consumerRepository.GetByIdAsync(personalAccount);
         }
 
+        public async Task<Consumer> GetConsumerByEmail(string consumerEmail)
+        {
+            return await _consumerRepository.GetByEmailAsync(consumerEmail);
+        }
+
         public async Task<List<Consumer>> GetList()
         {
             try

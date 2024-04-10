@@ -1,0 +1,41 @@
+﻿﻿<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-3 text-center my-4">
+            <h2>Verify your email</h2>
+            <h5>A verification code has been sent to your email</h5>
+            <h6>Please check your inbox and enter the verification code below to verify your email address.</h6>
+            <form method="post" class="align-items-center flex-column">
+                <div class="form-group row mt-3">
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        <div class="col">
+                            <input type="text" pattern="[0-9]*" class="form-control verification-code" name="VerificationCodes[@i]" maxlength="1" data-index="@i">
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group col mt-3">
+                    <button type="submit" class="btn btn-outline-secondary">Verify</button>
+                </div>
+                <div class="form-group row mt-3">
+                    <a class="mx-auto">Back to home</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var inputs = document.querySelectorAll('.verification-code');
+
+        inputs.forEach(function (input) {
+            input.addEventListener('input', function () {
+                var index = parseInt(input.getAttribute('data-index'));
+                if (input.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+        });
+    });
+</script>

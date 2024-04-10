@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240404132930_RemovedUserId")]
+    partial class RemovedUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,15 +173,21 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Application.Models.Meter", b =>
                 {
-                    b.Property<int>("MeterId")
+                    b.Property<int>("CountersId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MeterId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CountersId"));
 
                     b.Property<string>("CounterAccount")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal?>("CurrentIndicator")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -188,33 +197,9 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("MeterId");
+                    b.HasKey("CountersId");
 
                     b.ToTable("meters");
-                });
-
-            modelBuilder.Entity("Application.Models.MeterRecord", b =>
-                {
-                    b.Property<int>("MeterRecordId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MeterRecordId"));
-
-                    b.Property<decimal>("CurrentIndicator")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("MeterId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("MeterRecordId");
-
-                    b.HasIndex("MeterId");
-
-                    b.ToTable("meterRecords");
                 });
 
             modelBuilder.Entity("Application.Models.Payment", b =>
@@ -547,17 +532,6 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("House");
-                });
-
-            modelBuilder.Entity("Application.Models.MeterRecord", b =>
-                {
-                    b.HasOne("Application.Models.Meter", "Meter")
-                        .WithMany()
-                        .HasForeignKey("MeterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Meter");
                 });
 
             modelBuilder.Entity("Application.Models.Payment", b =>

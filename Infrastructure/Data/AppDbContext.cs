@@ -1,18 +1,19 @@
 ﻿namespace Infrastructure.Data
 {
     using Application.Models;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-       : base(options)
+        public AppDbContext(DbContextOptions options)
+        : base(options)
         {
-        }
 
-        
+        }
 
         public DbSet<Account> accounts { get; set; }
         public DbSet<Accrual> accruals { get; set; }
@@ -26,5 +27,6 @@
         public DbSet<Receipt> receipts { get; set; }
         public DbSet<Service> services { get; set; }
         public DbSet<User> users { get; set; }
+
     }
 }

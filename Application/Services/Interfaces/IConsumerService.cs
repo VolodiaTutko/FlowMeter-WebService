@@ -15,6 +15,8 @@
 
         Task<Consumer> GetConsumerByPersonalAccount(string personalAccount);
 
+        Task<Consumer> GetConsumerByEmail(string consumerEmail);
+
         public Task<List<Consumer>> GetList();
 
         Task<List<SelectConsumerDTO>> GetConsumerOptions();

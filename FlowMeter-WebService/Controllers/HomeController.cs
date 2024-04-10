@@ -3,6 +3,7 @@ namespace FlowMeter_WebService.Controllers
     using System.Diagnostics;
 
     using Application.Models;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : Controller
@@ -19,6 +20,7 @@ namespace FlowMeter_WebService.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

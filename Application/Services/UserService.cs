@@ -26,7 +26,7 @@ namespace Application.Services
             try
             {
                 var addedUser = await _userRepository.Add(user);
-                _logger.LogInformation("Adding a new service with User {UserId}.", addedUser.UserID);
+                _logger.LogInformation("Adding a new service with User {UserId}.", addedUser.Id);
                 return addedUser;
             }
             catch (Exception ex)
@@ -61,7 +61,7 @@ namespace Application.Services
             try
             {
                 var updatedUser = await _userRepository.Update(user);
-                _logger.LogInformation("User with PersonalAccount: {PersonalAccount} updated successfully", updatedUser.UserID);
+                _logger.LogInformation("User with PersonalAccount: {PersonalAccount} updated successfully", updatedUser.Id);
                 return updatedUser;
             }
             catch (Exception ex)

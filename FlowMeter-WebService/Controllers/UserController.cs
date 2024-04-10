@@ -32,7 +32,7 @@ namespace FlowMeter_WebService.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string personalAccountToFind = "2343252333";
+            string personalAccountToFind = "7894561230";
 
             var consumer = await _consumerService.GetConsumerByPersonalAccount(personalAccountToFind);
 

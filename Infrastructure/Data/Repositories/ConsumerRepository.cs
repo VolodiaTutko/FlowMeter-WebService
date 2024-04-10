@@ -21,6 +21,11 @@
             return await _context.consumers.FirstOrDefaultAsync(c => c.PersonalAccount == personalAccount);
         }
 
+        public async Task<Consumer> GetByEmailAsync(string consumerEmail)
+        {
+            return await _context.consumers.FirstOrDefaultAsync(c => c.ConsumerEmail == consumerEmail);
+        }
+
         public async Task<List<Consumer>> All()
         {
             var consumer = await dbSet.OrderBy(x => x.PersonalAccount).ToListAsync();
