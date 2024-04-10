@@ -14,15 +14,15 @@ namespace FlowMeter_WebService.Controllers
         private readonly IConsumerService _consumerService;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSenderService _emailSenderService;
  
-        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<User> signInManager, UserManager<User> userManager, IEmailSender emailSender)
+        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<User> signInManager, UserManager<User> userManager, IEmailSenderService emailSenderService)
         {
             _consumerService = consumerService;
             _logger = logger;
             _signInManager = signInManager;
             _userManager = userManager;
-            _emailSender = emailSender;
+            _emailSenderService = emailSenderService;
         }
 
         [HttpGet]
@@ -37,46 +37,63 @@ namespace FlowMeter_WebService.Controllers
         public async Task<IActionResult> SignUp(SignupEmailViewModel signupEmailViewModel)
         {
             var emailUser = await _consumerService.GetConsumerByEmail(signupEmailViewModel.ConsumerEmail);
+            signupEmailViewModel.ValidationCode = await _emailSenderService.SendVerificationCode(signupEmailViewModel.ConsumerEmail);
 
             if (emailUser is not null)
             {
-                return RedirectToAction("EmailVerification", "Auth", signupEmailViewModel);
+                TempData["ConsumerEmail"] = signupEmailViewModel.ConsumerEmail;
+                TempData["ValidationCode"] = signupEmailViewModel.ValidationCode;
+                return RedirectToAction("EmailVerification", "Auth");
             }
+
             return View("Error");
         }
 
         [HttpGet]
         public IActionResult EmailVerification()
         {
-            return View();
+            string consumerEmail = TempData["ConsumerEmail"] as string;
+            string validationCode = TempData["ValidationCode"] as string;
+
+            if (consumerEmail == null || validationCode == null)
+            {
+                return RedirectToAction("SignUp");
+            }
+
+            var viewModel = new SignupEmailViewModel
+            {
+                ConsumerEmail = consumerEmail,
+                ValidationCode = validationCode
+            };
+
+            return View(viewModel);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EmailVerification(SignupEmailViewModel signupEmailViewModel, string[] VerificationCodes)
+        public async Task<IActionResult> EmailVerification([FromForm]SignupEmailViewModel signupEmailViewModel, string[] VerificationCodes)
         {
             string concatenatedCodes = string.Join("", VerificationCodes);
-            string validationCode = "12345";
+            string validationCode = signupEmailViewModel.ValidationCode;
             if (signupEmailViewModel is not null && validationCode == concatenatedCodes)
             {
-
-                return RedirectToAction("SetPassword", "Auth", signupEmailViewModel);
+                return RedirectToAction("SetPassword", "Auth", new { ConsumerEmail = signupEmailViewModel.ConsumerEmail, ValidationCode = validationCode });
             }
 
-            return View();
+            return View(signupEmailViewModel);
         }
 
         [HttpGet]
-        public IActionResult SetPassword()
+        public IActionResult SetPassword(string consumerEmail, string validationCode)
         {
-            return View();
+            return View(new SignupEmailViewModel { ConsumerEmail = consumerEmail, ValidationCode = validationCode });
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SetPassword(SignupEmailViewModel signupEmailViewModel)
+        public async Task<IActionResult> SetPassword([FromForm]SignupEmailViewModel signupEmailViewModel)
         {
             if (signupEmailViewModel.Password != signupEmailViewModel.ReTypePassword)
             {
@@ -88,9 +105,10 @@ namespace FlowMeter_WebService.Controllers
             {
                 ConsumerEmail = signupEmailViewModel.ConsumerEmail,
                 Email = signupEmailViewModel.ConsumerEmail,
-                UserName = signupEmailViewModel.ConsumerEmail
+                UserName = signupEmailViewModel.ConsumerEmail,
             };
 
+            user.EmailConfirmed = true;
             var result = await _userManager.CreateAsync(user, signupEmailViewModel.Password);
             if (result.Succeeded)
             {
@@ -165,7 +183,7 @@ namespace FlowMeter_WebService.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackurl = Url.Action("ResetPassword", "Auth", new { userId = user.Id, code, user.ConsumerEmail }, protocol:HttpContext.Request.Scheme);
 
-                await _emailSender.SendEmailAsync(model.ConsumerEmail, "Reset Password", 
+                await _emailSenderService.SendEmailAsync(model.ConsumerEmail, "Reset Password", 
                     $"Please reset your password by clicking here: <a href='{callbackurl}'>link</a>");
 
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));

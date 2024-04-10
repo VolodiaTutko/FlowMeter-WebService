@@ -42,8 +42,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddScoped<IEmailSender, EmailSenderService>();
+builder.Services.AddSingleton(builder.Configuration.GetSection("SmtpSettings").Get<SmtpSettings>());
+builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
 
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IHouseService, HouseService>();

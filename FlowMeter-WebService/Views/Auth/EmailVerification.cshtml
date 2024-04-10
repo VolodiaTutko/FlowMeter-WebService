@@ -1,10 +1,14 @@
-﻿﻿<div class="container">
+﻿@model FlowMeter_WebService.ViewModels.SignupEmailViewModel
+
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-3 text-center my-4">
             <h2>Verify your email</h2>
             <h5>A verification code has been sent to your email</h5>
             <h6>Please check your inbox and enter the verification code below to verify your email address.</h6>
             <form method="post" class="align-items-center flex-column">
+                <input type="hidden" asp-for="ConsumerEmail" />
+                <input type="hidden" asp-for="ValidationCode" />
                 <div class="form-group row mt-3">
                     @for (int i = 0; i < 5; i++)
                     {

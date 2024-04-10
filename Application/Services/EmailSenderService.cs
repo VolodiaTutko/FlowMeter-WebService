@@ -1,23 +1,34 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.Models;
+using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class EmailSenderService : IEmailSender
+    public class EmailSenderService : IEmailSenderService
     {
         private readonly IConfiguration _config;
+        private readonly SmtpClient _smtpClient;
+        private readonly SmtpSettings _smtpSettings;
+        private readonly Random _random;
 
-        public EmailSenderService(IConfiguration config)
+        public EmailSenderService(IConfiguration config, SmtpSettings smtpSettings)
         {
             _config = config;
+            _smtpSettings = smtpSettings;
+            _random = new Random();
+            _smtpClient = new SmtpClient
+            {
+                Host = _smtpSettings.Host,
+                Port = _smtpSettings.Port,
+                EnableSsl = _smtpSettings.EnableSsl,
+                Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password)
+            };
         }
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
@@ -47,6 +58,20 @@ namespace Application.Services
 
                 await client.SendMailAsync(message);
             }
+        }
+
+        public async Task<string> SendVerificationCode(string recipientEmail)
+        {
+            string verificationCode = _random.Next(10000, 99999).ToString();
+            MailMessage mailMessage = new MailMessage(_smtpSettings.Username, recipientEmail)
+            {
+                Subject = "Email Verification Code",
+                Body = $"Your verification code is: {verificationCode}"
+            };
+
+            _smtpClient.SendMailAsync(mailMessage);
+
+            return verificationCode;
         }
     }
 }
