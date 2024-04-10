@@ -1,47 +1,37 @@
-﻿ @model IEnumerable<Application.Models.Consumer>
+﻿@model IEnumerable<Application.DTOS.MeterInfoDTO>
 
 @{
     ViewData["Title"] = "Index";
-    ViewBag.PartialViewName = "_CreateConsumerForm";
-    ViewBag.ModalTitle = "Create new consumer";
+    ViewBag.PartialViewName = "_CreateMeterForm";
+    ViewBag.ModalTitle = "Add new meter";
 }
 
 @Html.Partial("_TableNavigation")
 
 <h1>Consumers</h1>
 
-<div class="container">
-    <div class="row">
-        <div class="col-2">
-            @Html.Partial("_CreateModal")
-        </div>
-    </div>
-</div>
-
+@Html.Partial("_CreateModal")
 
 <table class="table table-bordered">
     <thead class="table-light">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PersonalAccount)
+                @Html.DisplayNameFor(model => model.MeterId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.House.HouseAddress)
+                @Html.DisplayNameFor(model => model.CounterAccount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Flat)
+                @Html.DisplayNameFor(model => model.TypeOfAccount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ConsumerOwner)
+                @Html.DisplayNameFor(model => model.Role)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HeatingArea)
+                @Html.DisplayNameFor(model => model.CurrentIndicator)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfPersons)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ConsumerEmail)
+                @Html.DisplayNameFor(model => model.LastModified)
             </th>
             <th></th>
         </tr>
@@ -53,37 +43,34 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.PersonalAccount)
+                        @Html.DisplayFor(modelItem => item.MeterId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.House.HouseAddress)
+                        @Html.DisplayFor(modelItem => item.CounterAccount)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Flat)
+                        @Html.DisplayFor(modelItem => item.TypeOfAccount)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ConsumerOwner)
+                        @Html.DisplayFor(modelItem => item.Role)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.HeatingArea)
+                        @Html.DisplayFor(modelItem => item.CurrentIndicator)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.NumberOfPersons)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ConsumerEmail)
+                        @Html.DisplayFor(modelItem => item.LastModified)
                     </td>
                     <td>
                         <div class="container">
                             <div class="row">
                                 <div class="col">
-                                    <button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.PersonalAccount">Edit</button>
-                                    <form asp-action="Update" asp-route-id="@item.PersonalAccount" method="post">
-                                        <div class="modal fade" id="updateModal-@item.PersonalAccount" tabindex="-1" aria-labelledby="updateModalLabel-@item.PersonalAccount" aria-hidden="true">
+                                    <button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.MeterId">Edit</button>
+                                    <form asp-action="Update" asp-route-id="@item.MeterId" method="post">
+                                        <div class="modal fade" id="updateModal-@item.MeterId" tabindex="-1" aria-labelledby="updateModalLabel-@item.MeterId" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="updateModalLabel-@item.PersonalAccount">@ViewBag.ModalTitle</h1>
+                                                        <h1 class="modal-title fs-5" id="updateModalLabel-@item.MeterId">@ViewBag.ModalTitle</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -91,9 +78,9 @@
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <div class="form-group row mt-3">
-                                                                        <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+                                                                        <label for="CounterAccount" class="col-form-label col-md-6">Персональний рахунок</label>
                                                                         <div class="col-md-6">
-                                                                            <input type="text" id="PersonalAccount" class="form-control" name="PersonalAccount" value=@item.PersonalAccount readonly>
+                                                                            <input type="text" id="CounterAccount" class="form-control" name="PersonalAccount" value=@item.MeterId readonly>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group row mt-3">
@@ -108,12 +95,6 @@
                                                                             <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="form-group row mt-3">
-                                                                        <label for="NumberOfPersons" class="col-form-label col-md-6">Email</label>
-                                                                        <div class="col-md-6">
-                                                                                            <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail">
-                                                                        </div>
-                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -121,23 +102,21 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-primary">Submit</button>
-                                                        @Html.ValidationSummary()
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </form>
-                                    
                                 </div>
 
                                 <div class="col">
-                                    <form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.PersonalAccount" method="get">
+                                    <form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.MeterId" method="get">
                                         <button type="submit" class="btn btn-info w-100">Details</button>
                                     </form>
                                 </div>
 
                                 <div class="col">
-                                    <form method="post" asp-action="Delete" asp-route-id="@item.PersonalAccount" onsubmit="return confirm('Are you sure you want to delete this consumer?');">
+                                    <form method="post" asp-action="Delete" asp-route-id="@item.MeterId" onsubmit="return confirm('Are you sure you want to delete this counter and all of its records?');">
                                         <button type="submit" class="btn btn-danger w-100">Delete</button>
                                     </form>
                                 </div>
@@ -151,7 +130,7 @@
         }
         else
         {
-            <td>No consumers found.</td>
+            <p>No consumers found.</p>
         }
     </tbody>
 </table>

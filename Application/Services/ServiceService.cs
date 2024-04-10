@@ -40,6 +40,11 @@
             return await _serviceRepository.GetByIdAsync(serviceId);
         }
 
+        public async Task<IEnumerable<Service>> GetServiceByHouseId(int houseId)
+        {
+            return await _serviceRepository.GetByHouseIdAsync(houseId);
+        }
+
         public async Task<Service> DeleteService(int id)
         {
             try
@@ -86,6 +91,25 @@
                 throw;
             }
         }
+
+        /*public async Task<Dictionary<string, int?>> GetDictionary(int id)
+        {
+            try
+            {
+                var allServices = await _serviceRepository.GetByHouseIdAsync(id);
+                var serviceTypeDictionary = allServices
+                    .Where(service => service != null)
+                    .ToDictionary(service => service.TypeOfAccount, service => service.Price);
+
+                _logger.LogInformation("Retrieved {Count} services from the database.", serviceTypeDictionary.Count);
+                return serviceTypeDictionary;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving services from the database.");
+                throw;
+            }
+        }*/
 
         public async Task<List<SelectHouseDTO>> GetHouseOptions()
         {

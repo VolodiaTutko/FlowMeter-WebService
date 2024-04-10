@@ -1,5 +1,17 @@
-﻿namespace Infrastructure.Data.Repositories
+using Application.DataAccess;
+using Application.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace Infrastructure.Data.Repositories
 {
+    using System.Collections.Generic;
+
     using Application.DataAccess;
     using Application.Models;
     using Microsoft.EntityFrameworkCore;
@@ -7,42 +19,54 @@
     public class MeterRepository : IMeterRepository
     {
         private readonly AppDbContext _context;
-        protected readonly DbSet<Meter> dbSet;
+        private readonly DbSet<Meter> _dbSet;
 
         public MeterRepository(AppDbContext context)
         {
             _context = context;
-            dbSet = context.Set<Meter>();
+            _dbSet = context.Set<Meter>();
         }
 
-        public Task<Meter> GetByIdAsync(int id)
+        public async Task<Meter> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FirstOrDefaultAsync(c => c.MeterId == id);
         }
 
         public async Task<List<Meter>> All()
         {
-            var consumer = await dbSet.ToListAsync();
-            return consumer;
+            var meters = await _dbSet.ToListAsync();
+            return meters;
         }
 
         public async Task<Meter> Add(Meter meter)
         {
-            _context.meters.Add(meter);
-            _context.SaveChanges();
-            await _context.SaveChangesAsync();
+            this._dbSet.Add(meter);
+            this._context.SaveChanges();
+            return meter;
+        }
+        public async Task<Meter> Update(Meter meter)
+        {
+            this._context.Update(meter);
+            await this._context.SaveChangesAsync();
+
+            return meter;
+        }
+        public async Task<Meter> Delete(int id)
+        {
+            var meter = await this._dbSet.FindAsync(id);
+            if (meter == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            this._dbSet.Remove(meter);
+            await this._context.SaveChangesAsync();
             return meter;
         }
 
-        public Task<Meter> Update(Meter meter)
+        public async Task<Meter> GetByCounterAccountAsync(string id)
         {
             throw new NotImplementedException();
         }
-
-        public Task<Meter> Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

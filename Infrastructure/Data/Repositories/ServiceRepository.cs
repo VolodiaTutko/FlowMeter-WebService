@@ -1,9 +1,14 @@
-﻿namespace Infrastructure.Data.Repositories
-{
-    using Application.DataAccess;
-    using Application.Models;
-    using Microsoft.EntityFrameworkCore;
+﻿using Application.DataAccess;
+using Application.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace Infrastructure.Data.Repositories
+{
     public class ServiceRepository : IServiceRepository
     {
         private readonly AppDbContext _context;
@@ -18,6 +23,13 @@
         public async Task<Service> GetByIdAsync(int id)
         {
             return await _context.services.FirstOrDefaultAsync(c => c.ServiceId == id);
+        }
+
+        public async Task<IEnumerable<Service>> GetByHouseIdAsync(int id)
+        {
+            return await _context.services
+                .Where(c => c.HouseId == id)
+                .ToListAsync();
         }
 
         public async Task<List<Service>> All()

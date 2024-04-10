@@ -13,6 +13,8 @@
 
         Task<Service> GetServiceByServiceId(int serviceId);
 
+        Task<IEnumerable<Service>> GetServiceByHouseId(int houseId);
+
         public Task<List<Service>> GetList();
     }
 }

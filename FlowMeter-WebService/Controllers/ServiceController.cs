@@ -42,7 +42,6 @@
             var houseModel = await _houseService.GetHouseByAddress(houseAddress);
             ModelState.Remove("House");
             model.HouseId = houseModel.HouseId;
-            //ModelState.Remove("User");
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(Index), model);
@@ -54,7 +53,7 @@
                 {
                     ServiceId = model.ServiceId,
                     HouseId = model.HouseId,
-                    TypeOfAccount = GetUkrainianTypeOfAccount(model.TypeOfAccount), 
+                    TypeOfAccount = model.TypeOfAccount,
                     Price = model.Price
                 };
 
@@ -71,25 +70,6 @@
 
             return RedirectToAction(nameof(Index), model);
         }
-
-        private string GetUkrainianTypeOfAccount(string typeOfAccount)
-        {
-            switch (typeOfAccount)
-            {
-                case "ColdWater":
-                    return "Холодна вода";
-                case "HotWater":
-                    return "Гаряча вода";
-                case "Gas":
-                    return "Газ";
-                case "Electricity":
-                    return "Світло";
-                default:
-                    return string.Empty;
-            }
-        }
-
-
 
         public ActionResult Edit(int id)
         {
