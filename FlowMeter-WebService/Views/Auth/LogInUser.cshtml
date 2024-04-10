@@ -1,24 +1,34 @@
-﻿<div class="container">
+﻿@model FlowMeter_WebService.ViewModels.LoginViewModel
+
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-3 text-center my-4 ">
             <h2>Login to the account</h2>
             <h5>Please enter your email and password to log in to your account</h5>
-            <form action="@Url.Action("LogInUser", "Auth")" method="post" class="align-items-center flex-column">
+            <form method="post" class="align-items-center flex-column" asp-controller="Auth" asp-action="LogInUser">
                 <div class="form-group row mt-3">
                     <div class="col-md-12">
-                        <input type="text" id="InputLogIn" class="form-control" name="HouseAddress" placeholder="Login">
+                        <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail" placeholder="Login">
+                        <span asp-validation-for="ConsumerEmail" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-3">
                     <div class="col-md-12">
-                        <input type="password" id="InputPassword" class="form-control" name="Password" placeholder="Password">
+                        <input type="password" id="Password" class="form-control" name="Password" placeholder="Password">
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group col mt-3">
                     <button type="submit" class="btn btn-outline-secondary">Log In</button>
                 </div>
+                <div class="form-group col mt-3">
+                    <a asp-action="SignUp">Sign up as a new consumer?</a>
+                </div>
                 <div class="form-group row mt-3">
-                    <a class="mx-auto">Back to home</a>
+                    <a asp-action="ForgotPassword">Forgot your password?</a>
+                </div>
+                <div class="form-group row mt-3">
+                    <a class="link-primary" asp-area="" asp-controller="Home" asp-action="Index">Back to home</a>
                 </div>
             </form>
         </div>

@@ -11,10 +11,10 @@ namespace FlowMeter_WebService.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IConsumerService _consumerService;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
  
-        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<User> signInManager, UserManager<User> userManager)
         {
             _consumerService = consumerService;
             _logger = logger;
@@ -51,10 +51,11 @@ namespace FlowMeter_WebService.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EmailVerification(SignupEmailViewModel signupEmailViewModel, List<int> VerificationCodes)
+        public async Task<IActionResult> EmailVerification(SignupEmailViewModel signupEmailViewModel, string[] VerificationCodes)
         {
-            List<int> myList = new List<int> { 1, 2, 3, 4, 5 };
-            if (signupEmailViewModel is not null && myList.SequenceEqual(VerificationCodes))
+            string concatenatedCodes = string.Join("", VerificationCodes);
+            string validationCode = "12345";
+            if (signupEmailViewModel is not null && validationCode == concatenatedCodes)
             {
 
                 return RedirectToAction("SetPassword", "Auth", signupEmailViewModel);
@@ -83,8 +84,8 @@ namespace FlowMeter_WebService.Controllers
             var user = new User()
             {
                 ConsumerEmail = signupEmailViewModel.ConsumerEmail,
+                Email = signupEmailViewModel.ConsumerEmail,
                 UserName = signupEmailViewModel.ConsumerEmail
-                
             };
 
             var result = await _userManager.CreateAsync(user, signupEmailViewModel.Password);
@@ -97,16 +98,63 @@ namespace FlowMeter_WebService.Controllers
             return View(signupEmailViewModel);
         }
 
-
-
+        [HttpGet]
         public IActionResult LogInUser()
         {
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Lockout()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogInUser(LoginViewModel loginViewModel)
+        {
+            var result = await _signInManager.PasswordSignInAsync(loginViewModel.ConsumerEmail, loginViewModel.Password, loginViewModel.RememberMe, lockoutOnFailure: true);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (result.IsLockedOut)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                return View(loginViewModel);
+            }
+        }
+
         public IActionResult LogInAdmin()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            return View(model);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
 

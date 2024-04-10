@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using System.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Application.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +25,21 @@ builder.Host.UseSerilog((context, loggerConfig) =>
     .Enrich.WithMachineName();
 });
 
+builder.Services.Configure<IdentityOptions>(opt =>
+{
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.Lockout.MaxFailedAccessAttempts = 5;
+    opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30);
+    opt.SignIn.RequireConfirmedEmail = false;
+});
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IHouseService, HouseService>();
@@ -49,21 +61,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-.AddCookie(options =>
-{
-    options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/AccessDenied";
-});
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
 
