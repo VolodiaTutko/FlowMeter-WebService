@@ -14,6 +14,7 @@ using System.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Application.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "Flowmetercookie";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    options.Cookie.HttpOnly = true;
+    options.LoginPath = "/Auth/LogInUser";
+    options.LogoutPath = "/Auth/Logout";
+    options.AccessDeniedPath = "/Auth/LogInUser";
+    options.SlidingExpiration = true;
+});
 
 builder.Services.AddSingleton(builder.Configuration.GetSection("SmtpSettings").Get<SmtpSettings>());
 builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
