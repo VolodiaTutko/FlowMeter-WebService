@@ -13,21 +13,29 @@ namespace FlowMeter_WebService.Controllers
         private readonly ILogger<AuthController> _logger;
         private readonly IConsumerService _consumerService;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailSenderService _emailSenderService;
  
-        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<User> signInManager, UserManager<User> userManager, IEmailSenderService emailSenderService)
+        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<User> signInManager,
+            UserManager<User> userManager, IEmailSenderService emailSenderService, RoleManager<IdentityRole> roleManager)
         {
             _consumerService = consumerService;
             _logger = logger;
             _signInManager = signInManager;
             _userManager = userManager;
             _emailSenderService = emailSenderService;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
-        public IActionResult SignUp()
+        public async Task<IActionResult> SignUp()
         {
+            if (!_roleManager.RoleExistsAsync(SD.Admin).GetAwaiter().GetResult())
+            {
+                await _roleManager.CreateAsync(new IdentityRole(SD.Admin));
+                await _roleManager.CreateAsync(new IdentityRole(SD.User));
+            }
             return View();
         }
 
@@ -112,6 +120,7 @@ namespace FlowMeter_WebService.Controllers
             var result = await _userManager.CreateAsync(user, signupEmailViewModel.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, SD.User);// If you want add admin change SD.User -> SD.Admin.  
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }
