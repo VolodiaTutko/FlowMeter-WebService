@@ -4,6 +4,7 @@ using FlowMeter_WebService.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Diagnostics;
 
 namespace FlowMeter_WebService.Controllers
@@ -36,7 +37,25 @@ namespace FlowMeter_WebService.Controllers
                 await _roleManager.CreateAsync(new IdentityRole(SD.Admin));
                 await _roleManager.CreateAsync(new IdentityRole(SD.User));
             }
+            var userExist = await _userManager.FindByEmailAsync("Flowmeter@gamil.com");
+            if (userExist == null)
+            {
+                var user = new User()
+                {
+                    ConsumerEmail = "Flowmeter@gamil.com",
+                    Email = "Flowmeter@gamil.com",
+                    UserName = "Flowmeter@gamil.com",
+                };
+
+                user.EmailConfirmed = true;
+                var result = await _userManager.CreateAsync(user, "Fm123456@");
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, SD.Admin);  
+                }
+            }
             return View();
+
         }
 
 
@@ -120,7 +139,7 @@ namespace FlowMeter_WebService.Controllers
             var result = await _userManager.CreateAsync(user, signupEmailViewModel.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, SD.User);// If you want add admin change SD.User -> SD.Admin.  
+                await _userManager.AddToRoleAsync(user, SD.User); 
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }
@@ -144,25 +163,64 @@ namespace FlowMeter_WebService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogInUser(LoginViewModel loginViewModel)
         {
-            var result = await _signInManager.PasswordSignInAsync(loginViewModel.ConsumerEmail, loginViewModel.Password, loginViewModel.RememberMe, lockoutOnFailure: true);
-            if (result.Succeeded)
+            var user = await _userManager.FindByEmailAsync(loginViewModel.ConsumerEmail);
+            var role = await _userManager.GetRolesAsync(user);
+            if (role[0] == SD.User)
             {
-                return RedirectToAction("Index", "Home");
+                var result = await _signInManager.PasswordSignInAsync(loginViewModel.ConsumerEmail, loginViewModel.Password, loginViewModel.RememberMe, lockoutOnFailure: true);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                if (result.IsLockedOut)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                    return View(loginViewModel);
+                }
             }
-            if (result.IsLockedOut)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt");
-                return View(loginViewModel);
-            }
+            ModelState.AddModelError(string.Empty, "Invalid role  attempt");
+            return View(loginViewModel);
         }
 
+        [HttpGet]
         public IActionResult LogInAdmin()
         {
             return View();
+        }
+
+        [HttpPost]
+        
+        public async Task<IActionResult> LogInAdmin(LoginViewModel loginViewModel)
+        {
+            
+            
+            var user = await _userManager.FindByEmailAsync(loginViewModel.ConsumerEmail);
+            var role = await _userManager.GetRolesAsync(user);
+            if (role[0] == SD.Admin)
+            {
+                var result = await _signInManager.PasswordSignInAsync(loginViewModel.ConsumerEmail, loginViewModel.Password, loginViewModel.RememberMe, lockoutOnFailure: true);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                if (result.IsLockedOut)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                    return View(loginViewModel);
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid role  attempt");
+            return View(loginViewModel);
         }
 
         [HttpGet]
