@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 
-namespace FlowMeter_WebService
+namespace Application.Utils
 {
     public static class SD
     {

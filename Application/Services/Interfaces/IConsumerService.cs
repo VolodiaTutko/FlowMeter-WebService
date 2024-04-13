@@ -2,6 +2,7 @@
 {
     using Application.DTOS;
     using Application.Models;
+    using Application.ViewModels;
 
     public interface IConsumerService
     {
@@ -9,7 +10,7 @@
 
         Task<Consumer> CreateConsumer(Consumer model, string houseAddress);
 
-        Task<Consumer> UpdateConsumer(Consumer consumer);
+        Task<Consumer> UpdateConsumer(ConsumerUpdateViewModel consumer);
 
         Task<Consumer> DeleteConsumer(string id);
 

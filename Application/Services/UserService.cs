@@ -18,7 +18,7 @@ namespace Application.Services
         public UserService(IUserRepository userRepository, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
-             _logger = logger;
+            _logger = logger;
         }
 
         public async Task<User> AddUser(User user)
@@ -56,6 +56,7 @@ namespace Application.Services
         {
             return await _userRepository.GetByEmailAsync(email);
         }
+
         public async Task<User> UpdateUser(User user)
         {
             try

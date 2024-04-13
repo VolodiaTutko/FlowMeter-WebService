@@ -1,6 +1,6 @@
 ﻿using Application.Models;
 
-namespace FlowMeter_WebService.ViewModels
+namespace Application.ViewModels
 {
     public class ConsumerInvoicesViewModel
     {

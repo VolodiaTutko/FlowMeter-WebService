@@ -23,10 +23,10 @@
 
         [Required]
         public int NumberOfPersons { get; set; }
+
         public string ConsumerEmail { get; set; }
 
         [ForeignKey(nameof(HouseId))]
         public House House { get; set; }
     }
 }
-

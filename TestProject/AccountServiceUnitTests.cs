@@ -48,5 +48,23 @@
             // Act and Assert
             await Assert.ThrowsAsync<Exception>(async () => await service.AddAccount(accountToAdd));
         }
+
+        [Fact]
+        public async Task GetAccountByPersonalAccount_ReturnsCorrectAccount()
+        {
+            // Arrange
+            var mockRepository = new Mock<IAccountRepository>();
+            var mockLogger = new Mock<ILogger<AccountService>>();
+            var expectedAccount = new Account { AccountID = 1, PersonalAccount = "TestAccount" };
+
+            mockRepository.Setup(repo => repo.GetByIdAsync("TestAccount")).ReturnsAsync(expectedAccount);
+            var service = new AccountService(mockRepository.Object, mockLogger.Object);
+
+            // Act
+            var result = await service.GetAccountByPerconalAccount("TestAccount");
+
+            // Assert
+            Assert.Equal(expectedAccount, result);
+        }
     }
 }

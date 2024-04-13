@@ -7,7 +7,6 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using System;
-    
 
     public class PaymentController : Controller
     {
@@ -46,29 +45,19 @@
                 return RedirectToAction(nameof(Index), model);
             }
 
-            try
+            Random random = new Random();
+            var payment = new Payment
             {
-                Random random = new Random();
-                var payment = new Payment
-                {
-                    Amount = model.Amount,
-                    Date = DateTime.UtcNow.Date,
-                    PersonalAccount = model.PersonalAccount,
-                    Type = model.Type
-                };
+                Amount = model.Amount,
+                Date = DateTime.UtcNow.Date,
+                PersonalAccount = model.PersonalAccount,
+                Type = model.Type
+            };
 
-                await _paymentService.AddPayment(payment);
-                _logger.LogInformation("Payment created successfully with ID: {PaymentId}", payment.PaymentID);
+            await _paymentService.AddPayment(payment);
+            _logger.LogInformation("Payment created successfully with ID: {PaymentId}", payment.PaymentID);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating payment");
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-            }
-
-            return RedirectToAction(nameof(Index), model);
+            return RedirectToAction(nameof(Index));
         }
 
         public ActionResult Edit(int id)

@@ -23,30 +23,19 @@
             return View(meters);
         }
 
-        
-
         // POST: MeterController/Delete/5
         [HttpDelete]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
-            try
+            var deletedMeter = await this.meterService.DeleteMeter(id);
+            if (deletedMeter == null)
             {
-                var deletedMeter = await this.meterService.DeleteMeter(id);
-                if (deletedMeter == null)
-                {
-                    return this.NotFound();
-                }
+                return this.NotFound();
+            }
 
-                this.logger.LogInformation("Meter with id: {MeterId} deleted successfully", deletedMeter.MeterId);
-                return this.RedirectToAction(nameof(this.Index));
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Error occurred while deleting meter with id: {id}", id);
-                this.ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-                return this.RedirectToAction(nameof(this.Index));
-            }
+            this.logger.LogInformation("Meter with id: {MeterId} deleted successfully", deletedMeter.MeterId);
+            return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: MeterController/Details/5
@@ -66,14 +55,7 @@
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: MeterController/Edit/5
@@ -87,14 +69,7 @@
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

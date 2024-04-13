@@ -57,6 +57,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddSingleton(builder.Configuration.GetSection("SmtpSettings").Get<SmtpSettings>());
 builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IHouseService, HouseService>();
 

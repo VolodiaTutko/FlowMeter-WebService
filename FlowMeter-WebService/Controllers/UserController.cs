@@ -1,9 +1,8 @@
 ﻿using Application.Services;
 using Application.Services.Interfaces;
-using FlowMeter_WebService.ViewModels;
+using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using FlowMeter_WebService.ViewModels;
 using Application.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
@@ -106,17 +105,9 @@ namespace FlowMeter_WebService.Controllers
                 return NotFound();
             }
 
-            try
-            {
-                var fileBytes = receipt.PDF;
-                var fileName = $"invoice_{receipt.PersonalAccount}_{receipt.Date.ToString("yyyyMMdd")}.pdf";
-                return File(fileBytes, "application/pdf", fileName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while downloading the invoice.");
-                return StatusCode(500);
-            }
+            var fileBytes = receipt.PDF;
+            var fileName = $"invoice_{receipt.PersonalAccount}_{receipt.Date.ToString("yyyyMMdd")}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
         }
     }
 }

@@ -47,28 +47,18 @@
                 return RedirectToAction(nameof(Index), model);
             }
 
-            try
+            var service = new Service
             {
-                var service = new Service
-                {
-                    ServiceId = model.ServiceId,
-                    HouseId = model.HouseId,
-                    TypeOfAccount = model.TypeOfAccount,
-                    Price = model.Price
-                };
+                ServiceId = model.ServiceId,
+                HouseId = model.HouseId,
+                TypeOfAccount = model.TypeOfAccount,
+                Price = model.Price
+            };
 
-                await _serviceService.AddService(service);
-                _logger.LogInformation("Service created successfully: {ServiceId}", service.ServiceId);
+            await _serviceService.AddService(service);
+            _logger.LogInformation("Service created successfully: {ServiceId}", service.ServiceId);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating service");
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-            }
-
-            return RedirectToAction(nameof(Index), model);
+            return RedirectToAction(nameof(Index));
         }
 
         public ActionResult Edit(int id)
@@ -80,50 +70,35 @@
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(Service service)
         {
-            try
+            ModelState.Remove("House");
+            ModelState.Remove("TypeOfAccount");
+            if (ModelState.IsValid)
             {
-                ModelState.Remove("House");
-                ModelState.Remove("TypeOfAccount");
-                if (ModelState.IsValid)
+                var updatedService = await _serviceService.GetServiceByServiceId(service.ServiceId);
+
+                updatedService.Price = service.Price;
+
+                await _serviceService.UpdateService(updatedService);
+
+                if (updatedService == null)
                 {
-                    var updatedService = await _serviceService.GetServiceByServiceId(service.ServiceId);
-
-                    updatedService.Price = service.Price;
-
-                    await _serviceService.UpdateService(updatedService);
-
-                    if (updatedService == null)
-                    {
-                        return NotFound();
-                    }
-
-                    _logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
-
-                    return RedirectToAction(nameof(Index));
+                    return NotFound();
                 }
-                else
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+
+                _logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
+
+                return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "An error occurred while updating a service in the database.");
-                throw;
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -131,22 +106,13 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
-            try
+            var deletedService = await _serviceService.DeleteService(id);
+            if (deletedService == null)
             {
-                var deletedService = await _serviceService.DeleteService(id);
-                if (deletedService == null)
-                {
-                    return NotFound(); 
-                }
-                _logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedService.ServiceId);
-                return RedirectToAction(nameof(Index));
+                return NotFound(); 
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting service");
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-                return RedirectToAction(nameof(Index)); 
-            }
+            _logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedService.ServiceId);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

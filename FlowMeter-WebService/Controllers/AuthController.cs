@@ -1,6 +1,6 @@
 ﻿using Application.Models;
 using Application.Services.Interfaces;
-using FlowMeter_WebService.ViewModels;
+using Application.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,50 +12,31 @@ namespace FlowMeter_WebService.Controllers
     public class AuthController : Controller
     {
         private readonly ILogger<AuthController> _logger;
+        private readonly IAuthService _authService;
         private readonly IConsumerService _consumerService;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailSenderService _emailSenderService;
  
-        public AuthController(ILogger<AuthController> logger, IConsumerService consumerService, SignInManager<User> signInManager,
+        public AuthController(ILogger<AuthController> logger, IAuthService authService, IConsumerService consumerService, SignInManager<User> signInManager,
             UserManager<User> userManager, IEmailSenderService emailSenderService, RoleManager<IdentityRole> roleManager)
         {
             _consumerService = consumerService;
+            _authService = authService;
             _logger = logger;
             _signInManager = signInManager;
             _userManager = userManager;
             _emailSenderService = emailSenderService;
             _roleManager = roleManager;
+
+            Task.Run(async () => await SD.CheckAndCreateRoles(_roleManager)).Wait();
         }
 
         [HttpGet]
         public async Task<IActionResult> SignUp()
         {
-            if (!_roleManager.RoleExistsAsync(SD.Admin).GetAwaiter().GetResult())
-            {
-                await _roleManager.CreateAsync(new IdentityRole(SD.Admin));
-                await _roleManager.CreateAsync(new IdentityRole(SD.User));
-            }
-            var userExist = await _userManager.FindByEmailAsync("Flowmeter@gamil.com");
-            if (userExist == null)
-            {
-                var user = new User()
-                {
-                    ConsumerEmail = "Flowmeter@gamil.com",
-                    Email = "Flowmeter@gamil.com",
-                    UserName = "Flowmeter@gamil.com",
-                };
-
-                user.EmailConfirmed = true;
-                var result = await _userManager.CreateAsync(user, "Fm123456@");
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, SD.Admin);  
-                }
-            }
             return View();
-
         }
 
 
@@ -187,17 +168,15 @@ namespace FlowMeter_WebService.Controllers
         }
 
         [HttpGet]
-        public IActionResult LogInAdmin()
+        public async Task<IActionResult> LogInAdmin()
         {
+            await _authService.CreateAdminAsync();
             return View();
         }
 
         [HttpPost]
-        
         public async Task<IActionResult> LogInAdmin(LoginViewModel loginViewModel)
         {
-            
-            
             var user = await _userManager.FindByEmailAsync(loginViewModel.ConsumerEmail);
             var role = await _userManager.GetRolesAsync(user);
             if (role[0] == SD.Admin)

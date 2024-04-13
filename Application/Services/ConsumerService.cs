@@ -5,6 +5,7 @@
     using Application.Models;
     using Application.Services.Interfaces;
     using Microsoft.Extensions.Logging;
+    using Application.ViewModels;
 
     public class ConsumerService : IConsumerService
     {
@@ -23,47 +24,31 @@
 
         public async Task<Consumer> AddConsumer(Consumer consumer)
         {
-            try
-            {
-                var addedConsumer = await _consumerRepository.Add(consumer);
-                _logger.LogInformation("Added a new consumer to the database with PersonalAccount: {PersonalAccount}", addedConsumer.PersonalAccount);
-                return addedConsumer;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while adding a consumer to the database.");
-                throw;
-            }
+            var addedConsumer = await _consumerRepository.Add(consumer);
+            _logger.LogInformation("Added a new consumer to the database with PersonalAccount: {PersonalAccount}", addedConsumer.PersonalAccount);
+            return addedConsumer;
         }
 
         public async Task<Consumer> CreateConsumer(Consumer model, string houseAddress)
         {
-            try
+            var houseModel = await _houseService.GetHouseByAddress(houseAddress);
+            model.HouseId = houseModel.HouseId;
+
+            var consumer = new Consumer
             {
-                var houseModel = await _houseService.GetHouseByAddress(houseAddress);
-                model.HouseId = houseModel.HouseId;
+                PersonalAccount = model.PersonalAccount,
+                Flat = model.Flat,
+                ConsumerOwner = model.ConsumerOwner,
+                HeatingArea = model.HeatingArea,
+                HouseId = model.HouseId,
+                NumberOfPersons = model.NumberOfPersons,
+                ConsumerEmail = model.ConsumerEmail
+            };
 
-                var consumer = new Consumer
-                {
-                    PersonalAccount = model.PersonalAccount,
-                    Flat = model.Flat,
-                    ConsumerOwner = model.ConsumerOwner,
-                    HeatingArea = model.HeatingArea,
-                    HouseId = model.HouseId,
-                    NumberOfPersons = model.NumberOfPersons,
-                    ConsumerEmail = model.ConsumerEmail
-                };
+            await AddConsumer(consumer);
+            _logger.LogInformation("Consumer created successfully with PersonalAccount: {ConsumerId}", consumer.PersonalAccount);
 
-                await AddConsumer(consumer);
-                _logger.LogInformation("Consumer created successfully with PersonalAccount: {ConsumerId}", consumer.PersonalAccount);
-
-                return consumer;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating consumer");
-                throw;
-            }
+            return consumer;
         }
 
         public async Task<Consumer> GetConsumerByPersonalAccount(string personalAccount)
@@ -78,55 +63,39 @@
 
         public async Task<List<Consumer>> GetList()
         {
-            try
-            {
-                var all = await _consumerRepository.All();
-                var filteredList = all.Where(item => item != null).ToList();
-                _logger.LogInformation("Retrieved {Count} consumers from the database.", filteredList.Count);
-                return filteredList;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while retrieving consumers from the database.");
-                throw;
-            }
+            var all = await _consumerRepository.All();
+            var filteredList = all.Where(item => item != null).ToList();
+            _logger.LogInformation("Retrieved {Count} consumers from the database.", filteredList.Count);
+            return filteredList;
         }
 
-        public async Task<Consumer> UpdateConsumer(Consumer consumer)
+        public async Task<Consumer> UpdateConsumer(ConsumerUpdateViewModel consumer)
         {
-            try
+            var existingConsumer = await _consumerRepository.GetByIdAsync(consumer.PersonalAccount);
+            if (existingConsumer == null)
             {
-                var existingConsumer = await _consumerRepository.GetByIdAsync(consumer.PersonalAccount);
-                if (existingConsumer == null)
-                {
-                    throw new ArgumentException("Consumer not found");
-                }
-
-                if (existingConsumer.ConsumerEmail != consumer.ConsumerEmail)
-                {
-                    // Check if the email is already associated with another consumer
-                    var consumerWithEmailExists = await _userRepository.GetByEmailAsync(consumer.ConsumerEmail);
-                    if (consumerWithEmailExists != null)
-                    {
-                        _logger.LogInformation("User with this email already exists.");
-                        return existingConsumer;
-                    }
-                }
-
-                // Update consumer details
-                existingConsumer.ConsumerOwner = consumer.ConsumerOwner;
-                existingConsumer.NumberOfPersons = consumer.NumberOfPersons;
-                existingConsumer.ConsumerEmail = consumer.ConsumerEmail;
-
-                var updatedConsumer = await _consumerRepository.Update(existingConsumer);
-                _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
-                return updatedConsumer;
+                throw new ArgumentException("Consumer not found");
             }
-            catch (Exception ex)
+
+            if (existingConsumer.ConsumerEmail != consumer.ConsumerEmail)
             {
-                _logger.LogError(ex, "An error occurred while updating a consumer in the database.");
-                throw;
+                // Check if the email is already associated with another consumer
+                var consumerWithEmailExists = await _userRepository.GetByEmailAsync(consumer.ConsumerEmail);
+                if (consumerWithEmailExists != null)
+                {
+                    _logger.LogInformation("User with this email already exists.");
+                    return existingConsumer;
+                }
             }
+
+            // Update consumer details
+            existingConsumer.ConsumerOwner = consumer.ConsumerOwner;
+            existingConsumer.NumberOfPersons = consumer.NumberOfPersons;
+            existingConsumer.ConsumerEmail = consumer.ConsumerEmail;
+
+            var updatedConsumer = await _consumerRepository.Update(existingConsumer);
+            _logger.LogInformation("Consumer with PersonalAccount: {PersonalAccount} updated successfully", updatedConsumer.PersonalAccount);
+            return updatedConsumer;
         }
 
         public async Task<Consumer> DeleteConsumer(string id)

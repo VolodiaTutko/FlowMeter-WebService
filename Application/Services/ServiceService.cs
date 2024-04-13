@@ -57,10 +57,10 @@
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting a service from the database.");
-                throw; 
+                throw;
             }
         }
-        
+
         public async Task<Service> UpdateService(Service service)
         {
             try

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FlowMeter_WebService.ViewModels
+namespace Application.ViewModels
 {
     public class LoginViewModel
     {

@@ -3,6 +3,7 @@
     using Application.Models;
     using Application.Services;
     using Application.Services.Interfaces;
+    using Application.ViewModels;
     using Infrastructure.Data;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -70,12 +71,8 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Update(Consumer consumer)
+        public async Task<ActionResult> Update(ConsumerUpdateViewModel consumer)
         {
-            ModelState.Remove("Flat");
-            ModelState.Remove("HeatingArea");
-            ModelState.Remove("HouseId");
-            ModelState.Remove("House");
             if (ModelState.IsValid)
             {
                 var updatedConsumer = await _consumerService.UpdateConsumer(consumer);

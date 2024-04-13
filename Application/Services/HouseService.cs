@@ -38,7 +38,6 @@
             {
                 var updatedHouse = await _houseRepository.Update(house);
 
-                
                 return Result<House, Error>.Ok(updatedHouse);
             }
             catch (Exception ex)
@@ -98,7 +97,5 @@
             allHouses.ForEach(item => options.Add(new SelectHouseDTO(item)));
             return options;
         }
-
-        
     }
 }
