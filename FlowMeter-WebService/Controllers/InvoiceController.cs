@@ -1,5 +1,6 @@
 ﻿using Application.Models;
 using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowMeter_WebService.Controllers
@@ -16,6 +17,7 @@ namespace FlowMeter_WebService.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
             var invoice = await _invoiceService.GetList();

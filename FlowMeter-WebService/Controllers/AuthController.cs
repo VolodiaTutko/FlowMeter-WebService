@@ -1,6 +1,8 @@
 ﻿using Application.Models;
 using Application.Services.Interfaces;
+using Application.Utils;
 using Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -129,6 +131,7 @@ namespace FlowMeter_WebService.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult LogInUser()
         {
             return View();
@@ -168,6 +171,7 @@ namespace FlowMeter_WebService.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> LogInAdmin()
         {
             await _authService.CreateAdminAsync();

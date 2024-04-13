@@ -5,6 +5,7 @@
     using Application.Services.Interfaces;
     using Application.ViewModels;
     using Infrastructure.Data;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -29,6 +30,7 @@
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
             var consumer = await _consumerService.GetList();

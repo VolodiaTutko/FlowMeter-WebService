@@ -3,6 +3,7 @@
     using Application.Models;
     using Application.Services;
     using Application.Services.Interfaces;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
             var service = await _serviceService.GetList();

@@ -48,10 +48,19 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.Name = "Flowmetercookie";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
     options.Cookie.HttpOnly = true;
-    options.LoginPath = "/Auth/LogInUser";
-    options.LogoutPath = "/Auth/Logout";
-    options.AccessDeniedPath = "/Auth/LogInUser";
+    options.LoginPath = "/Auth/LogInAdmin";
+    options.AccessDeniedPath = "/Auth/AccessDenied";
     options.SlidingExpiration = true;
+    options.Events = new CookieAuthenticationEvents
+    {
+        OnRedirectToLogin = context =>
+        {
+            string loginPath = context.Request.Path.StartsWithSegments("/User") ? "/Auth/LogInUser" : "/Auth/LogInAdmin";
+            context.Response.Redirect(loginPath);
+
+            return Task.CompletedTask;
+        },
+    };
 });
 
 builder.Services.AddSingleton(builder.Configuration.GetSection("SmtpSettings").Get<SmtpSettings>());

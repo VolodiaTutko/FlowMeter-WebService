@@ -4,6 +4,7 @@
     using Application.Services;
     using Application.Services.Interfaces;
     using Humanizer;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using System;
@@ -19,6 +20,7 @@
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
             var payment = await _paymentService.GetList();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Application.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlowMeter_WebService.Controllers
 {
@@ -32,6 +33,7 @@ namespace FlowMeter_WebService.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);

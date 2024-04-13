@@ -2,6 +2,7 @@
 {
     using Application.Services;
     using Application.Services.Interfaces;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@
         }
 
         // GET: MeterController
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
             var meters = await this.meterService.GetList();
