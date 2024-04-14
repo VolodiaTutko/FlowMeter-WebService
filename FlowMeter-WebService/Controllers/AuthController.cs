@@ -46,8 +46,20 @@ namespace FlowMeter_WebService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(SignupEmailViewModel signupEmailViewModel)
         {
+            if (signupEmailViewModel.ConsumerEmail == null)
+            {
+                return View(signupEmailViewModel);
+            }
+
             var emailUser = await _consumerService.GetConsumerByEmail(signupEmailViewModel.ConsumerEmail);
+            var registeredUser = await _userManager.FindByEmailAsync(signupEmailViewModel.ConsumerEmail);
             signupEmailViewModel.ValidationCode = await _emailSenderService.SendVerificationCode(signupEmailViewModel.ConsumerEmail);
+
+            if (registeredUser != null)
+            {
+                ModelState.AddModelError(nameof(signupEmailViewModel.ConsumerEmail), "User with this email address already exists");
+                return View(signupEmailViewModel);
+            }
 
             if (emailUser is not null)
             {
@@ -56,7 +68,8 @@ namespace FlowMeter_WebService.Controllers
                 return RedirectToAction("EmailVerification", "Auth");
             }
 
-            return View("Error");
+            ModelState.AddModelError(nameof(signupEmailViewModel.ConsumerEmail), "No user with this email address was found. Please contact the administrator");
+            return View(signupEmailViewModel);
         }
 
         [HttpGet]
@@ -79,25 +92,40 @@ namespace FlowMeter_WebService.Controllers
             return View(viewModel);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EmailVerification([FromForm]SignupEmailViewModel signupEmailViewModel, string[] VerificationCodes)
+        public async Task<IActionResult> EmailVerification([FromForm] SignupEmailViewModel signupEmailViewModel, string[] VerificationCodes)
         {
             string concatenatedCodes = string.Join("", VerificationCodes);
             string validationCode = signupEmailViewModel.ValidationCode;
-            if (signupEmailViewModel is not null && validationCode == concatenatedCodes)
-            {
-                return RedirectToAction("SetPassword", "Auth", new { ConsumerEmail = signupEmailViewModel.ConsumerEmail, ValidationCode = validationCode });
-            }
 
-            return View(signupEmailViewModel);
+            if (signupEmailViewModel != null && validationCode == concatenatedCodes)
+            {
+                TempData["ConsumerEmail"] = signupEmailViewModel.ConsumerEmail;
+                return RedirectToAction("SetPassword", "Auth");
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(signupEmailViewModel.ValidationCode), "Invalid verification code.");
+                return View(signupEmailViewModel);
+            }
         }
 
         [HttpGet]
-        public IActionResult SetPassword(string consumerEmail, string validationCode)
+        public IActionResult SetPassword()
         {
-            return View(new SignupEmailViewModel { ConsumerEmail = consumerEmail, ValidationCode = validationCode });
+            string consumerEmail = TempData["ConsumerEmail"] as string;
+            if (consumerEmail == null)
+            {
+                return RedirectToAction("SignUp");
+            }
+
+            var viewModel = new SignupEmailViewModel
+            {
+                ConsumerEmail = consumerEmail
+            };
+
+            return View(viewModel);
         }
 
 
@@ -105,9 +133,13 @@ namespace FlowMeter_WebService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword([FromForm]SignupEmailViewModel signupEmailViewModel)
         {
+            if (string.IsNullOrEmpty(signupEmailViewModel.Password) && string.IsNullOrEmpty(signupEmailViewModel.ReTypePassword))
+            {
+                return View(signupEmailViewModel);
+            }
+
             if (signupEmailViewModel.Password != signupEmailViewModel.ReTypePassword)
             {
-                ModelState.AddModelError("ReTypePassword", "Passwords do not match.");
                 return View(signupEmailViewModel);
             }
 
@@ -132,8 +164,9 @@ namespace FlowMeter_WebService.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult LogInUser()
+        public IActionResult LogInUser(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
@@ -145,64 +178,85 @@ namespace FlowMeter_WebService.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogInUser(LoginViewModel loginViewModel)
+        public async Task<IActionResult> LogInUser(LoginViewModel loginViewModel, string returnUrl = null)
         {
-            var user = await _userManager.FindByEmailAsync(loginViewModel.ConsumerEmail);
-            var role = await _userManager.GetRolesAsync(user);
-            if (role[0] == SD.User)
+            ViewData["ReturnUrl"] = returnUrl;
+            returnUrl = returnUrl ?? Url.Content("~/");
+
+            if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(loginViewModel.ConsumerEmail, loginViewModel.Password, loginViewModel.RememberMe, lockoutOnFailure: true);
-                if (result.Succeeded)
+                var user = await _userManager.FindByEmailAsync(loginViewModel.ConsumerEmail);
+                if (user != null)
                 {
-                    return RedirectToAction("Index", "Home");
-                }
-                if (result.IsLockedOut)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
-                    return View(loginViewModel);
+                    var role = await _userManager.GetRolesAsync(user);
+                    if (role.Contains(SD.User))
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(loginViewModel.ConsumerEmail, loginViewModel.Password, loginViewModel.RememberMe, lockoutOnFailure: true);
+                        if (result.Succeeded)
+                        {
+                            return LocalRedirect(returnUrl);
+                        }
+
+                        if (result.IsLockedOut)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(nameof(loginViewModel.Password), "Invalid email or password.");
+                            return View(loginViewModel);
+                        }
+                    }
                 }
             }
-            ModelState.AddModelError(string.Empty, "Invalid role  attempt");
+
+            ModelState.AddModelError(nameof(loginViewModel.Password), "Invalid role attempt");
             return View(loginViewModel);
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> LogInAdmin()
+        public async Task<IActionResult> LogInAdmin(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             await _authService.CreateAdminAsync();
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> LogInAdmin(LoginViewModel loginViewModel)
+        public async Task<IActionResult> LogInAdmin(LoginViewModel loginViewModel, string returnUrl = null)
         {
+            if (loginViewModel.ConsumerEmail == null || loginViewModel.Password == null)
+            {
+                return View(loginViewModel);
+            }
+
+            ViewData["ReturnUrl"] = returnUrl;
+            returnUrl = returnUrl ?? Url.Content("~/");
             var user = await _userManager.FindByEmailAsync(loginViewModel.ConsumerEmail);
             var role = await _userManager.GetRolesAsync(user);
+
             if (role[0] == SD.Admin)
             {
                 var result = await _signInManager.PasswordSignInAsync(loginViewModel.ConsumerEmail, loginViewModel.Password, loginViewModel.RememberMe, lockoutOnFailure: true);
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return LocalRedirect(returnUrl);
                 }
+
                 if (result.IsLockedOut)
                 {
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                    ModelState.AddModelError(nameof(loginViewModel.Password), "Invalid email or password.");
                     return View(loginViewModel);
                 }
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid role  attempt");
+            ModelState.AddModelError(nameof(loginViewModel.Password), "Invalid role attempt");
             return View(loginViewModel);
         }
 
@@ -222,16 +276,22 @@ namespace FlowMeter_WebService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
+            if (model.ConsumerEmail == null)
+            {
+                return View(model);
+            }
+
+            var registeredUser = await _userManager.FindByEmailAsync(model.ConsumerEmail);
+            if (registeredUser == null)
+            {
+                ModelState.AddModelError(nameof(model.ConsumerEmail), "No user with this email address was found.");
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.ConsumerEmail);
-                if (user == null)
-                {
-                    return RedirectToAction("ForgotPasswordConfirmation");
-                }
-
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackurl = Url.Action("ResetPassword", "Auth", new { userId = user.Id, code, user.ConsumerEmail }, protocol:HttpContext.Request.Scheme);
+                var code = await _userManager.GeneratePasswordResetTokenAsync(registeredUser);
+                var callbackurl = Url.Action("ResetPassword", "Auth", new { userId = registeredUser.Id, code, registeredUser.ConsumerEmail }, protocol:HttpContext.Request.Scheme);
 
                 await _emailSenderService.SendEmailAsync(model.ConsumerEmail, "Reset Password", 
                     $"Please reset your password by clicking here: <a href='{callbackurl}'>link</a>");
@@ -264,6 +324,16 @@ namespace FlowMeter_WebService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+            if (string.IsNullOrEmpty(model.Password) && string.IsNullOrEmpty(model.ReTypePassword))
+            {
+                return View(model);
+            }
+
+            if (model.Password != model.ReTypePassword)
+            {
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.ConsumerEmail);

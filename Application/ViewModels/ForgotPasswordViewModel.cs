@@ -4,7 +4,7 @@ namespace Application.ViewModels
 {
     public class ForgotPasswordViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Please enter the email")]
         [EmailAddress]
         public string ConsumerEmail { get; set; }
     }

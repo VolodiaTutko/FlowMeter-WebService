@@ -4,11 +4,11 @@ namespace Application.ViewModels
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Please enter the email")]
         [EmailAddress]
         public string ConsumerEmail { get; set; }
 
-        [Required(ErrorMessage = "Incorrect password")]
+        [Required(ErrorMessage = "Please enter the password")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

@@ -1,24 +1,28 @@
-﻿<div class="container">
+﻿@model Application.ViewModels.LoginViewModel
+
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-3 text-center my-4 ">
             <h2>Login to the account</h2>
             <h5>Please enter your email and password to log in to your account</h5>
-            <form action="@Url.Action("LogInAdmin", "Auth")" method="post" class="align-items-center flex-column">
+            <form method="post" class="align-items-center flex-column" asp-route-returnUrl="@ViewData["ReturnUrl"]">
                 <div class="form-group row mt-3">
                     <div class="col-md-12">
                         <input type="text" id="InputLogIn" class="form-control" name="ConsumerEmail" placeholder="Login">
+                        <span asp-validation-for="ConsumerEmail" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mt-3">
                     <div class="col-md-12">
                         <input type="password" id="InputPassword" class="form-control" name="Password" placeholder="Password">
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group col mt-3">
                     <button type="submit" class="btn btn-outline-secondary">Log In</button>
                 </div>
                 <div class="form-group row mt-3">
-                    <a class="mx-auto">Back to home</a>
+                    <a class="link-primary" asp-area="" asp-controller="Home" asp-action="Index">Back to home</a>
                 </div>
             </form>
         </div>

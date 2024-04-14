@@ -3,14 +3,19 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-3 text-center my-4 ">
-            <h2>Verify your email</h2>
-            <h5>Please verify your email</h5>
+            <h2>Enter your email</h2>
+            <h5>Please enter your email</h5>
             <form method="post" class="align-items-center flex-column">
                 <div class="form-group row mt-3">
                     <div class="col-md-12">
                         <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail" placeholder="Enter your email">
                     </div>
                 </div>
+
+                <div class="text-danger">
+                    @Html.ValidationMessageFor(model => model.ConsumerEmail)
+                </div>
+
                 <div class="form-group col mt-3">
                     <button type="submit" class="btn btn-outline-secondary">Submit</button>
                 </div>

@@ -51,16 +51,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Auth/LogInAdmin";
     options.AccessDeniedPath = "/Auth/AccessDenied";
     options.SlidingExpiration = true;
-    options.Events = new CookieAuthenticationEvents
-    {
-        OnRedirectToLogin = context =>
-        {
-            string loginPath = context.Request.Path.StartsWithSegments("/User") ? "/Auth/LogInUser" : "/Auth/LogInAdmin";
-            context.Response.Redirect(loginPath);
-
-            return Task.CompletedTask;
-        },
-    };
 });
 
 builder.Services.AddSingleton(builder.Configuration.GetSection("SmtpSettings").Get<SmtpSettings>());
