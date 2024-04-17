@@ -21,7 +21,7 @@ namespace Application.Services
 
         public async Task<Meter> GetMeterByCounterAccount(string id)
         {
-            return await meterRepository.GetByCounterAccountAsync(id);
+            return await this.meterRepository.GetByCounterAccountAsync(id);
         }
 
         public async Task<Meter> AddMeter(Meter meter)
@@ -118,11 +118,6 @@ namespace Application.Services
                 this.logger.LogError(ex, "An error occurred while fetching the list of meters.");
                 throw;
             }
-        }
-
-        Task<Meter> IMeterService.GetMeterByCounterAccount(string id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

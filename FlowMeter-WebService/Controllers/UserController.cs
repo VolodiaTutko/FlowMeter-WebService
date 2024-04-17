@@ -23,93 +23,99 @@ namespace FlowMeter_WebService.Controllers
 
         public UserController(IConsumerService consumerService, IHouseService houseService, IInvoiceService invoiceService, IServiceService serviceService, IAccountService accountService, IMeterService meterService, ILogger<UserController> logger, UserManager<User> userManager)
         {
-            _consumerService = consumerService;
-            _houseService = houseService;
-            _invoiceService = invoiceService;
-            _serviceService = serviceService;
-            _accountService = accountService;
-            _meterService = meterService;
-            _userManager = userManager;
-            _logger = logger;
+            this._consumerService = consumerService;
+            this._houseService = houseService;
+            this._invoiceService = invoiceService;
+            this._serviceService = serviceService;
+            this._accountService = accountService;
+            this._meterService = meterService;
+            this._userManager = userManager;
+            this._logger = logger;
         }
 
         [Authorize(Roles = "User")]
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+            var currentUser = await this._userManager.GetUserAsync(this.User);
             if (currentUser != null)
             {
-                var consumer = await _consumerService.GetConsumerByEmail(currentUser.ConsumerEmail);
+                var consumer = await this._consumerService.GetConsumerByEmail(currentUser.ConsumerEmail);
 
 
                 if (consumer != null)
                 {
-                    var house = await _houseService.GetHouseById(consumer.HouseId);
-                    ViewBag.HouseAddress = house?.HouseAddress;
+                    var house = await this._houseService.GetHouseById(consumer.HouseId);
+                    this.ViewBag.HouseAddress = house?.HouseAddress;
 
-                    var receipts = await _invoiceService.GetInvoiceByPersonalAccount(consumer.PersonalAccount);
+                    var receipts = await this._invoiceService.GetInvoiceByPersonalAccount(consumer.PersonalAccount);
 
-                    //var services = await _serviceService.GetServiceByHouseId(consumer.HouseId);
+                    var services = await this._serviceService.GetServiceByHouseId(consumer.HouseId);
 
-                    //var serviceTypePrices = new Dictionary<string, int?>();
-                    //foreach (var service in services)
-                    //{
-                    //    serviceTypePrices.Add(service.TypeOfAccount, service.Price);
-                    //}
+                    var serviceTypePrices = new Dictionary<string, int?>();
+                    foreach (var service in services)
+                    {
+                        serviceTypePrices.Add(service.TypeOfAccount, service.Price);
+                    }
 
-                    //var account = await _accountService.GetAccountByPerconalAccount(personalAccountToFind);
+                    var account = await this._accountService.GetAccountByPerconalAccount(consumer.PersonalAccount);
 
-                    //var hotWaterCounterAccount = account.HotWater;
-                    //var coldWaterCounterAccount = account.ColdWater;
-                    //var electricityCounterAccount = account.Electricity;
-                    //var heatingCounterAccount = account.Heating;
-                    //var gasCounterAccount = account.Gas;
+                    var hotWaterCounterAccount = account.HotWater;
+                    var coldWaterCounterAccount = account.ColdWater;
+                    var electricityCounterAccount = account.Electricity;
+                    var heatingCounterAccount = account.Heating;
+                    var gasCounterAccount = account.Gas;
 
-                    //var hotWaterMeter = await _meterService.GetMeterByCounterAccount(hotWaterCounterAccount);
-                    //var coldWaterMeter = await _meterService.GetMeterByCounterAccount(coldWaterCounterAccount);
-                    //var electricityMeter = await _meterService.GetMeterByCounterAccount(electricityCounterAccount);
-                    //var heatingMeter = await _meterService.GetMeterByCounterAccount(heatingCounterAccount);
-                    //var gasMeter = await _meterService.GetMeterByCounterAccount(gasCounterAccount);
+                    var hotWaterMeter = await this._meterService.GetMeterByCounterAccount(hotWaterCounterAccount);
+                    var coldWaterMeter = await this._meterService.GetMeterByCounterAccount(coldWaterCounterAccount);
+                    var electricityMeter = await this._meterService.GetMeterByCounterAccount(electricityCounterAccount);
+                    var heatingMeter = await this._meterService.GetMeterByCounterAccount(heatingCounterAccount);
+                    var gasMeter = await this._meterService.GetMeterByCounterAccount(gasCounterAccount);
 
-                    //var meters = new Dictionary<string, decimal?>
-                    //{
-                    //    { hotWaterMeter?.TypeOfAccount.ToString(), hotWaterMeter?.CurrentIndicator },
-                    //    { coldWaterMeter?.TypeOfAccount.ToString(), coldWaterMeter?.CurrentIndicator },
-                    //    { electricityMeter?.TypeOfAccount.ToString(), electricityMeter?.CurrentIndicator },
-                    //    { heatingMeter?.TypeOfAccount.ToString(), heatingMeter?.CurrentIndicator },
-                    //    { gasMeter?.TypeOfAccount.ToString(), gasMeter?.CurrentIndicator }
-                    //};
+                    var hotWaterMeterRecords = await this._meterService.GetMeterById(hotWaterMeter.MeterId);
+                    var coldWaterMeterRecords = await this._meterService.GetMeterById(coldWaterMeter.MeterId);
+                    var electricityMeterRecords = await this._meterService.GetMeterById(electricityMeter.MeterId);
+                    var heatingMeterRecords = await this._meterService.GetMeterById(heatingMeter.MeterId);
+                    var gasMeterRecords = await this._meterService.GetMeterById(gasMeter.MeterId);
+
+                    var meters = new Dictionary<string, decimal?>
+                    {
+                        { hotWaterMeter?.TypeOfAccount.ToString(), hotWaterMeterRecords?.CurrentIndicator },
+                        { coldWaterMeter?.TypeOfAccount.ToString(), coldWaterMeterRecords?.CurrentIndicator },
+                        { electricityMeter?.TypeOfAccount.ToString(), electricityMeterRecords?.CurrentIndicator },
+                        { heatingMeter?.TypeOfAccount.ToString(), heatingMeterRecords?.CurrentIndicator },
+                        { gasMeter?.TypeOfAccount.ToString(), gasMeterRecords?.CurrentIndicator },
+                    };
 
                     var viewModel = new ConsumerInvoicesViewModel
                     {
                         Consumer = consumer,
                         Receipts = receipts,
-                        //ServiceType = serviceTypePrices,
-                        //Meters = meters
+                        ServiceType = serviceTypePrices,
+                        Meters = meters,
                     };
 
-                    return View(viewModel);
+                    return this.View(viewModel);
                 }
                 else
                 {
-                    return NotFound();
+                    return this.NotFound();
                 }
             }
 
-            return View("Error");
+            return this.View("Error");
         }
 
         public async Task<ActionResult> Download(int id)
         {
-            var receipt = await _invoiceService.GetInvoiceById(id);
+            var receipt = await this._invoiceService.GetInvoiceById(id);
             if (receipt == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
             var fileBytes = receipt.PDF;
             var fileName = $"invoice_{receipt.PersonalAccount}_{receipt.Date.ToString("yyyyMMdd")}.pdf";
-            return File(fileBytes, "application/pdf", fileName);
+            return this.File(fileBytes, "application/pdf", fileName);
         }
     }
 }

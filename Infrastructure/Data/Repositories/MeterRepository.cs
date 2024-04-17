@@ -66,7 +66,8 @@ namespace Infrastructure.Data.Repositories
 
         public async Task<Meter> GetByCounterAccountAsync(string id)
         {
-            throw new NotImplementedException();
+            return await _context.meters
+                        .FirstOrDefaultAsync(r => r.CounterAccount == id);
         }
     }
 }
