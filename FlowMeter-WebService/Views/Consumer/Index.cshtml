@@ -10,13 +10,8 @@
 
 <h1>Consumers</h1>
 
-<div class="container">
-    <div class="row">
-        <div class="col-2">
-            @Html.Partial("_CreateModal")
-        </div>
-    </div>
-</div>
+
+@Html.Partial("_CreateModal")
 
 
 <table class="table table-bordered">
@@ -99,19 +94,22 @@
                                                                     <div class="form-group row mt-3">
                                                                         <label for="ConsumerOwner" class="col-form-label col-md-6">ПІБ власника</label>
                                                                         <div class="col-md-6">
-                                                                            <input type="text" id="ConsumerOwner" class="form-control" name="ConsumerOwner">
+                                                                            <input type="text" id="ConsumerOwner" class="form-control" name="ConsumerOwner" value=@item.ConsumerOwner>
+                                                                            <span id="consumerOwnerError-@item.PersonalAccount" class="text-danger"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group row mt-3">
                                                                         <label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
                                                                         <div class="col-md-6">
-                                                                            <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons">
+                                                                            <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons" value=@item.NumberOfPersons>
+                                                                            <span id="numberOfPersonsError-@item.PersonalAccount" class="text-danger"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group row mt-3">
-                                                                        <label for="NumberOfPersons" class="col-form-label col-md-6">Email</label>
+                                                                        <label for="ConumerEmail" class="col-form-label col-md-6">Email</label>
                                                                         <div class="col-md-6">
-                                                                                            <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail">
+                                                                            <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail" value=@item.ConsumerEmail>
+                                                                            <span id="consumerEmailError-@item.PersonalAccount" class="text-danger"></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -155,3 +153,49 @@
         }
     </tbody>
 </table>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var forms = document.querySelectorAll("form");
+
+        forms.forEach(function (form) {
+            form.addEventListener("submit", function (event) {
+                var item = form.closest("tr");
+                var consumerOwnerInput = form.querySelector("[name='ConsumerOwner']");
+                var numberOfPersonsInput = form.querySelector("[name='NumberOfPersons']");
+                var consumerEmailInput = form.querySelector("[name='ConsumerEmail']");
+
+                var consumerOwnerError = form.querySelector("#consumerOwnerError-" + item.querySelector("[name='PersonalAccount']").value);
+                var numberOfPersonsError = form.querySelector("#numberOfPersonsError-" + item.querySelector("[name='PersonalAccount']").value);
+                var consumerEmailError = form.querySelector("#consumerEmailError-" + item.querySelector("[name='PersonalAccount']").value);
+
+                var isValid = true;
+
+                if (consumerOwnerInput.value.trim() === "") {
+                    consumerOwnerError.textContent = "Поле ПІБ власника обов'язкове";
+                    isValid = false;
+                } else {
+                    consumerOwnerError.textContent = "";
+                }
+
+                if (numberOfPersonsInput.value.trim() === "") {
+                    numberOfPersonsError.textContent = "Поле К-ть зареєстр. осіб обов'язкове";
+                    isValid = false;
+                } else {
+                    numberOfPersonsError.textContent = "";
+                }
+
+                if (consumerEmailInput.value.trim() === "") {
+                    consumerEmailError.textContent = "Поле Email обов'язкове";
+                    isValid = false;
+                } else {
+                    consumerEmailError.textContent = "";
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    });
+</script>
