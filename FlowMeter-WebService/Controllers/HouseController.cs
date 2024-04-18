@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Mvc;
     using static System.Runtime.InteropServices.JavaScript.JSType;
 
+    [Authorize]
     public class HouseController : Controller
     {
         private IHouseService _houseService;

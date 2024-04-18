@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowMeter_WebService.Controllers
 {
+    [Authorize]
     public class InvoiceController : Controller
     {
 

@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Mvc;
     using System;
 
+    [Authorize]
     public class PaymentController : Controller
     {
         private IPaymentService _paymentService;

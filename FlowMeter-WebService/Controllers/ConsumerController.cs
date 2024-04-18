@@ -13,6 +13,7 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
+    [Authorize]
     public class ConsumerController : Controller
     {
         private IConsumerService _consumerService;

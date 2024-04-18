@@ -46,9 +46,9 @@ builder.Services.AddIdentity<User, IdentityRole>()
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "Flowmetercookie";
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(7);
     options.Cookie.HttpOnly = true;
-    options.LoginPath = "/Auth/LogInAdmin";
+    options.LoginPath = "/Home";
     options.AccessDeniedPath = "/Auth/AccessDenied";
     options.SlidingExpiration = true;
 });

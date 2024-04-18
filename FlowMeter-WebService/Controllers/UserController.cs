@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FlowMeter_WebService.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IConsumerService _consumerService;
