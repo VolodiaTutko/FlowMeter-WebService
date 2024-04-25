@@ -8,7 +8,7 @@
 
 @Html.Partial("_TableNavigation")
 
-<h1>Consumers</h1>
+<h1>Meters</h1>
 
 @Html.Partial("_CreateModal")
 
@@ -64,13 +64,13 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col">
-                                    <button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.MeterId">Edit</button>
-                                    <form asp-action="Update" asp-route-id="@item.MeterId" method="post">
+                                    <button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.MeterId">Record</button>
+                                    <form asp-action="RegisterRecordByAdmin" asp-route-id="@item.MeterId" method="post">
                                         <div class="modal fade" id="updateModal-@item.MeterId" tabindex="-1" aria-labelledby="updateModalLabel-@item.MeterId" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="updateModalLabel-@item.MeterId">@ViewBag.ModalTitle</h1>
+                                                        <h1 class="modal-title fs-5" id="updateModalLabel-@item.MeterId">Add new record</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -78,21 +78,19 @@
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <div class="form-group row mt-3">
-                                                                        <label for="CounterAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+                                                                        <label for="date" class="col-form-label col-md-6">Дата показника</label>
                                                                         <div class="col-md-6">
-                                                                            <input type="text" id="CounterAccount" class="form-control" name="PersonalAccount" value=@item.MeterId readonly>
+                                                                            <input type="date"
+                                                                                   class="date"
+                                                                                   name="date"
+                                                                                   id="date" />
                                                                         </div>
                                                                     </div>
+
                                                                     <div class="form-group row mt-3">
-                                                                        <label for="ConsumerOwner" class="col-form-label col-md-6">ПІБ власника</label>
+                                                                        <label for="indicator" class="col-form-label col-md-6">Показник</label>
                                                                         <div class="col-md-6">
-                                                                            <input type="text" id="ConsumerOwner" class="form-control" name="ConsumerOwner">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group row mt-3">
-                                                                        <label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons">
+                                                                            <input type="number" id="indicator" class="form-control" name="indicator">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -130,7 +128,7 @@
         }
         else
         {
-            <p>No consumers found.</p>
+            <p>No meters found.</p>
         }
     </tbody>
 </table>

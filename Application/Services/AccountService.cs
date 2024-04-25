@@ -33,6 +33,54 @@ namespace Application.Services
             return await _accountRepository.GetByIdAsync(id);
         }
 
+        public async Task SetConsumersCounter(Account account, string counterType, string accountcode)
+        {
+            if (account == null)
+            {
+                throw new Exception("Account not found");
+            }
+            PropertyInfo propertyInfo = account.GetType().GetProperty(counterType);
+            if (propertyInfo != null)
+            {
+                propertyInfo.SetValue(account, accountcode);
+            }
+
+            await _accountRepository.Update(account);
+        }
+
+        public bool CheckIfCounterConnected(Account account, ServiceType counterType)
+        {
+
+            if (account == null)
+            {
+                throw new Exception("Account not found");
+            }
+
+            PropertyInfo propertyInfo = account.GetType().GetProperty(ServiceTypeColumn.GetDisplayName(counterType));
+            if (propertyInfo != null)
+            {
+                return propertyInfo.GetValue(account) != null;
+            }
+
+            return false;
+        }
+
+        public bool CheckIfCounterConnected(Account account, string counterType)
+        {
+            if (account == null)
+            {
+                throw new Exception("Account not found");
+            }
+
+            PropertyInfo propertyInfo = account.GetType().GetProperty(counterType);
+            if (propertyInfo != null)
+            {
+                return propertyInfo.GetValue(account) != null;
+            }
+
+            return false;
+        }
+
         public async Task<Account> CreateAccount(Account model)
         {
             try

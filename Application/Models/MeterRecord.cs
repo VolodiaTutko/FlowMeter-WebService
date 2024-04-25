@@ -15,6 +15,9 @@
         [Required]
         public DateTime Date { get; set; }
 
+        //[Required]
+        //public string Method { get; set; }
+
         [Required]
         [ForeignKey("MeterId")]
         required public Meter Meter { get; set; }

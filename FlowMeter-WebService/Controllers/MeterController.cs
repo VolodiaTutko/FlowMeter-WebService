@@ -1,10 +1,13 @@
 ﻿namespace FlowMeter_WebService.Controllers
 {
+    using Application.DTOS;
+    using Application.Models;
     using Application.Services;
     using Application.Services.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     [Authorize]
     public class MeterController : Controller
@@ -56,8 +59,33 @@
         // POST: MeterController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(IFormCollection collection)
         {
+            var consumerValue = collection["Consumer"];
+            var serviceTypeValue = collection["ServiceType"];
+            var dateValue = DateTime.Parse(collection["date"]);
+            var indicatorValue = int.Parse(collection["indicator"]);
+
+            var createvm = new CreateMeterVm(serviceTypeValue, indicatorValue, dateValue, consumerValue);
+
+            var meter = await meterService.RegisterMeter(createvm);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: MeterController/RegisterRecordByAdmin
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterRecordByAdmin(int id, IFormCollection collection)
+        {
+            int MeterId = id;
+            var dateValue = DateTime.Parse(collection["date"]);
+            var indicatorValue = int.Parse(collection["indicator"]);
+
+            var record = new NewMeterRecordVm(indicatorValue, dateValue, MeterId);
+
+            await meterService.RegisterRecordAdmin(record);
+
             return RedirectToAction(nameof(Index));
         }
 
