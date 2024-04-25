@@ -1,5 +1,6 @@
 ﻿@using Application.DTOS
 @using Application.Services.Interfaces
+@using System.Text.Json;
 
 @{
     IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
@@ -7,42 +8,89 @@
 
     IConsumerService consumerServise = (IConsumerService)ViewContext.HttpContext.RequestServices.GetService(typeof(IConsumerService));
     var consumerOptions = await consumerServise.GetConsumerOptions();
+
+    IMeterService meterService = (IMeterService)ViewContext.HttpContext.RequestServices.GetService(typeof(IMeterService));
+    var accounts = await meterService.GetMeterAsignableAccounts();
+    var consumers = accounts.Select(a => a.Owner).ToList();
 }
 
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group row mt-3">
-                <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
+                <label for="Consumer" class="col-form-label col-md-6">Споживач</label>
                 <div class="col-md-6">
-                    <input class="form-control" list="houses" id="HouseAddress" name="HouseAddress" placeholder="Введіть адресу будинку">
-                    <datalist id="houses">
-                        @foreach (var item in houseOptions)
+                    <input class="form-control" list="consumerList" id="Consumer" name="Consumer" placeholder="Оберіть споживача">
+                    <datalist id="consumerList">
+                        @foreach (var account in accounts)
                         {
-                            <option value="@item.HouseAddress"></option>
+                            <option value="@account.OwnerId">@account.Owner</option>
                         }
                     </datalist>
                 </div>
             </div>
             <div class="form-group row mt-3">
-                <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+                <label for="ServiceType" class="col-form-label col-md-6">Лічильник для послуги (лише послуги без лічильників)</label>
                 <div class="col-md-6">
-                    <input class="form-control" list="personalAccounts" id="PersonalAccount" name="PersonalAccount" placeholder="Введіть персональний рахунок">
-                    <datalist>
-                        @foreach (var item in consumerOptions)
-                        {
-                            <option value="@item.PersonalAccount">@item.PersonalAccount</option>
-                        }
+                    <input class="form-control" list="ServiceTypeList" id="ServiceType" name="ServiceType" placeholder="Оберіть послугу">
+                    <datalist id="ServiceTypeList">
                     </datalist>
                 </div>
             </div>
-            
+
             <div class="form-group row mt-3">
-                <label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
+                <label for="date" class="col-form-label col-md-6">Дата початкового показника</label>
                 <div class="col-md-6">
-                    <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons">
+                    <input type="date"
+                           class="date"
+                           name="date"
+                           id="date" />
+                </div>
+            </div>
+
+            <div class="form-group row mt-3">
+                <label for="indicator" class="col-form-label col-md-6">Початковий показник</label>
+                <div class="col-md-6">
+					<input type="number" id="indicator" class="form-control" name="indicator">
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+    var accounts = @Html.Raw(JsonSerializer.Serialize(accounts));
+
+    document.getElementById("Consumer").addEventListener("change", updateServiceTypeOptions);
+
+    function updateServiceTypeOptions() {
+        var consumer = document.getElementById("Consumer").value;
+        var list = document.getElementById("ServiceTypeList");
+        while (list.firstChild) {
+            list.removeChild(list.firstChild);
+        }
+        if (consumer === "") {
+            var option = document.createElement('option');
+            option.value = "Оберіть послугу";
+            list.appendChild(option)
+        } else {
+            // Otherwise, filter service types based on the selected consumer
+            var filteredServiceTypes = getServiceTypesForConsumer(consumer);
+            // Populate options with filtered service types
+            filteredServiceTypes.forEach(function (serviceType) {
+                var option = document.createElement('option');
+                option.value = serviceType;
+                list.appendChild(option)
+            });
+        }
+    }
+
+    function getServiceTypesForConsumer(consumer) {
+        return accounts.filter(function (account) {
+			return account.OwnerId === consumer;
+        })[0].Untracked.map(function (service) {
+            return service.Type;
+		});
+    }
+</script>

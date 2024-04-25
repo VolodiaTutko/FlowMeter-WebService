@@ -2,6 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Reflection;
 
     public class Service
     {
@@ -31,5 +32,15 @@
         Gas,
         [Display(Name = "Світло")]
         Electricity
+    }
+
+    public static class ServiceTypeColumn
+    {
+        public static string GetDisplayName(ServiceType type)
+        {
+            MemberInfo memberInfo = typeof(ServiceType).GetMember(type.ToString())[0];
+            DisplayAttribute displayAttribute = (DisplayAttribute)memberInfo.GetCustomAttribute(typeof(DisplayAttribute));
+            return displayAttribute.Name;
+        }
     }
 }
