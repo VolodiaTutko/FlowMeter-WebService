@@ -1,0 +1,60 @@
+﻿@model House
+
+<form asp-action="Create" method="post">
+    <div class="modal fade" id="createModalHouse" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createModalLabel">Create new house</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row mt-3">
+                                    <label for="HouseAddress" class="col-form-label col-md-6">Адреса</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="HouseAddress" id="HouseAddress" class="form-control" name="HouseAddress">
+                                        <span asp-validation-for="HouseAddress" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="HeatingAreaOfHouse" class="col-form-label col-md-6">Опалювальна площа</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="HeatingAreaOfHouse" id="HeatingAreaOfHouse" class="form-control" name="HeatingAreaOfHouse">
+                                        <span asp-validation-for="HeatingAreaOfHouse" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="NumberOfFlat" class="col-form-label col-md-6">Кількість квартир</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="NumberOfFlat" id="NumberOfFlat" class="form-control" name="NumberOfFlat">
+                                        <span asp-validation-for="NumberOfFlat" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="NumberOfResidents" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="NumberOfResidents" id="NumberOfResidents" class="form-control" name="NumberOfResidents">
+                                        <span asp-validation-for="NumberOfResidents" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

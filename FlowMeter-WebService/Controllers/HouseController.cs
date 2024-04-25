@@ -7,9 +7,8 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using static System.Runtime.InteropServices.JavaScript.JSType;
-
-    [Authorize]
+	using static System.Runtime.InteropServices.JavaScript.JSType;
+	[Authorize]
     public class HouseController : Controller
     {
         private IHouseService _houseService;
@@ -42,12 +41,21 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(House model)
         {
+            
+           
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ShowModal = true;
+                return View(nameof(Index));
+            }
+
             var result = await _houseService.AddHouse(model);
 
             if (result.IsOk)
             {
                 var addedHouse = result.Value;
                 _logger.LogInformation("House created successfully with HouseAddress: {HouseAddress}", result.Value.HouseAddress);
+                TempData["message"] = "The house has been created successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -55,29 +63,33 @@
                 var error = result.Error;
                 _logger.LogError("Error occurred while creating house: {ErrorMessage}", error.Description);
                 ModelState.AddModelError(string.Empty, $"Error: {error.Description}");
+                TempData["error"] = "Failed to create the house";
                 return RedirectToAction(nameof(Index), model);
             }
-        }
+		}
 
-        public ActionResult Update(int id)
-        {
-            return View();
-        }
+		public ActionResult Update(int id)
+		{
+			return View();
+		}
 
-        [HttpPost]
+		[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(House house)
+        public async Task<IActionResult> Update(House? house)
         {
+            //var houses = await _houseService.GetList();
             if (!ModelState.IsValid)
             {
-                return View(house);
+                ViewBag.showModalUpdate = true;
+                return View(nameof(Index));
             }
-
-            var result = await _houseService.UpdateHouse(house);
+			
+			var result = await _houseService.UpdateHouse(house);
 
             if (result.IsOk)
             {
                 _logger.LogInformation("House with {houseAddress} updated successfully", result.Value.HouseAddress);
+                TempData["message"] = "The house has been edited successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -85,8 +97,9 @@
                 var error = result.Error;
                 _logger.LogError(error.Description);
                 ModelState.AddModelError("", error.Description);
-                return View(house);
-            }
+                TempData["error"] = "Failed to edit the house";
+				return View(nameof(Index));
+			}
         }
 
 
@@ -109,6 +122,7 @@
             if (result.IsOk)
             {
                 _logger.LogInformation("House with address: {HouseAddress} deleted successfully", result.Value.HouseAddress);
+                TempData["message"] = "The house has been deleted successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -116,6 +130,7 @@
                 var error = result.Error;
                 _logger.LogError(error.Description);
                 ModelState.AddModelError("", error.Description);
+                TempData["error"] = "Failed to delete the house";
                 return RedirectToAction(nameof(Index));
             }
         }
