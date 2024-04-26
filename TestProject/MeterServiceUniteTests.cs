@@ -1,77 +1,124 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Threading.Tasks;
-//using Application.DataAccess;
-//using Application.Models;
-//using Application.Services;
-//using Microsoft.Extensions.Logging;
-//using Moq;
-//using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Application.DataAccess;
+using Application.DTOS;
+using Application.Models;
+using Application.Services;
+using Application.Services.Interfaces;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
 
-//namespace TestProject
-//{
-//    public class MeterServiceUnitTests
-//    {
-//        [Fact]
-//        public async Task AddMeter_SuccessfullyAddsMeter()
-//        {
-//            // Arrange
-//            var mockMeterRepo = new Mock<IMeterRepository>();
-//            var mockMeterRecRepo = new Mock<IMeterRecordRepository>();
-//            var mockLogger = new Mock<ILogger<MeterService>>();
+namespace TestProject
+{
+    public class MeterServiceUnitTests
+    {
+        private readonly Mock<IMeterRepository> mockMeterRepository;
+        private readonly Mock<ILogger<MeterService>> mockLogger;
+        private readonly Mock<IConsumerRepository> mockConsumerRepository;
+        private readonly Mock<IMeterRecordRepository> mockMeterRecordRepository;
+        private readonly Mock<IAccountRepository> mockAccountRepository;
+        private readonly Mock<IAccountService> mockAccountService;
+        private readonly Mock<IServiceRepository> mockServiceRepository;
 
-//            var meterToAdd = new Meter { MeterId = 1, CounterAccount = "TestAccount" };
-//            var addedMeter = new Meter { MeterId = 1, CounterAccount = "TestAccount" };
+        private readonly MeterService meterService;
 
-//            mockMeterRepo.Setup(repo => repo.Add(It.IsAny<Meter>())).ReturnsAsync(addedMeter);
-//            var service = new MeterService(mockMeterRepo.Object, mockMeterRecRepo.Object, mockLogger.Object);
+        public MeterServiceUnitTests()
+        {
+            mockMeterRepository = new Mock<IMeterRepository>();
+            mockLogger = new Mock<ILogger<MeterService>>();
+            mockConsumerRepository = new Mock<IConsumerRepository>();
+            mockMeterRecordRepository = new Mock<IMeterRecordRepository>();
+            mockAccountRepository = new Mock<IAccountRepository>();
+            mockAccountService = new Mock<IAccountService>();
+            mockServiceRepository = new Mock<IServiceRepository>();
 
-//            // Act
-//            var result = await service.AddMeter(meterToAdd);
+            meterService = new MeterService(mockServiceRepository.Object, mockAccountService.Object,
+                                             mockMeterRepository.Object, mockConsumerRepository.Object,
+                                             mockMeterRecordRepository.Object, mockLogger.Object, mockAccountRepository.Object);
+        }
 
-//            // Assert
-//            Assert.Equal(addedMeter, result);
-//        }
+        [Fact]
+        public async Task GetMeterByCounterAccount_ShouldReturnMeter_WhenValidIdProvided()
+        {
+            // Arrange
+            string counterAccountId = "12345";
+            Meter expectedMeter = new Meter { MeterId = 1, CounterAccount = counterAccountId };
 
-//        [Fact]
-//        public async Task UpdateMeter_SuccessfullyUpdatesMeter()
-//        {
-//            // Arrange
-//            var mockMeterRepo = new Mock<IMeterRepository>();
-//            var mockMeterRecRepo = new Mock<IMeterRecordRepository>();
-//            var mockLogger = new Mock<ILogger<MeterService>>();
+            mockMeterRepository.Setup(repo => repo.GetByCounterAccountAsync(counterAccountId))
+                               .ReturnsAsync(expectedMeter);
 
-//            var meterToUpdate = new Meter { MeterId = 1, CounterAccount = "TestAccount" };
-//            var updatedMeter = new Meter { MeterId = 1, CounterAccount = "UpdatedTestAccount" };
+            // Act
+            Meter actualMeter = await meterService.GetMeterByCounterAccount(counterAccountId);
 
-//            mockMeterRepo.Setup(repo => repo.Update(It.IsAny<Meter>())).ReturnsAsync(updatedMeter);
-//            var service = new MeterService(mockMeterRepo.Object, mockMeterRecRepo.Object, mockLogger.Object);
+            // Assert
+            actualMeter.Equals(expectedMeter);
+        }
 
-//            // Act
-//            var result = await service.UpdateMeter(meterToUpdate);
 
-//            // Assert
-//            Assert.Equal(updatedMeter, result);
-//        }
+        [Fact]
+        public async Task AddMeter_ShouldAddMeterAndLog_WhenValidMeterProvided()
+        {
+            // Arrange
+            Meter meterToAdd = new Meter { MeterId = 0, CounterAccount = "12345" };
+            Meter expectedAddedMeter = new Meter { MeterId = 1, CounterAccount = "12345" };
 
-//        [Fact]
-//        public async Task DeleteMeter_SuccessfullyDeletesMeter()
-//        {
-//            // Arrange
-//            var mockMeterRepo = new Mock<IMeterRepository>();
-//            var mockMeterRecRepo = new Mock<IMeterRecordRepository>();
-//            var mockLogger = new Mock<ILogger<MeterService>>();
+            mockMeterRepository.Setup(repo => repo.Add(meterToAdd))
+                               .ReturnsAsync(expectedAddedMeter);
 
-//            var meterToDelete = new Meter { MeterId = 1, CounterAccount = "TestAccount" };
+            // Act
+            Meter actualAddedMeter = await meterService.AddMeter(meterToAdd);
 
-//            mockMeterRepo.Setup(repo => repo.Delete(It.IsAny<int>())).ReturnsAsync(meterToDelete);
-//            var service = new MeterService(mockMeterRepo.Object, mockMeterRecRepo.Object, mockLogger.Object);
+            // Assert
+            mockMeterRepository.Verify(repo => repo.Add(meterToAdd), Times.Once);
+            Assert.Equal(expectedAddedMeter, actualAddedMeter);
+        }
 
-//            // Act
-//            var result = await service.DeleteMeter(1);
+        [Fact]
+        public async Task DeleteMeter_ShouldDeleteMeterAndLog_WhenValidIdProvided()
+        {
+            // Arrange
+            int meterIdToDelete = 1;
+            Meter expectedDeletedMeter = new Meter { MeterId = meterIdToDelete, CounterAccount = "12345" };
 
-//            // Assert
-//            Assert.Equal(meterToDelete, result);
-//        }
-//    }
-//}
+            mockMeterRepository.Setup(repo => repo.Delete(meterIdToDelete))
+                               .ReturnsAsync(expectedDeletedMeter);
+
+            // Act
+            Meter actualDeletedMeter = await meterService.DeleteMeter(meterIdToDelete);
+
+            // Assert
+            mockMeterRepository.Verify(repo => repo.Delete(meterIdToDelete), Times.Once);
+            Assert.Equal(expectedDeletedMeter, actualDeletedMeter);
+        }
+
+
+        [Fact]
+        public async Task GetMeterByCounterAccount_ShouldReturnNull_WhenInvalidIdProvided()
+        {
+            // Arrange
+            string counterAccountId = "InvalidId";
+            mockMeterRepository.Setup(repo => repo.GetByCounterAccountAsync(counterAccountId))
+                .ReturnsAsync((Meter)null);
+
+            // Act
+            Meter actualMeter = await meterService.GetMeterByCounterAccount(counterAccountId);
+
+            // Assert
+            Assert.Null(actualMeter);
+        }
+
+        [Fact]
+        public async Task DeleteMeter_ShouldThrowException_WhenInvalidIdProvided()
+        {
+            // Arrange
+            int meterIdToDelete = -1;
+            mockMeterRepository.Setup(repo => repo.Delete(meterIdToDelete))
+                .ThrowsAsync(new ArgumentException("Invalid Meter ID"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => meterService.DeleteMeter(meterIdToDelete));
+        }
+    }
+}
