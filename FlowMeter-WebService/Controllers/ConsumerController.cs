@@ -52,6 +52,7 @@
             model.HouseId = houseModel.HouseId;
             if (!ModelState.IsValid)
             {
+                ViewBag.ShowModalCreate = true;
                 foreach (var modelState in ModelState.Values)
                 {
                     foreach (var error in modelState.Errors)
@@ -59,8 +60,7 @@
                         _logger.LogError($"Validation error: {error.ErrorMessage}");
                     }
                 }
-
-                return RedirectToAction(nameof(Index), model);
+                return View(nameof(Index));
             }
 
             await _consumerService.CreateConsumer(model, houseAddress);
@@ -76,12 +76,14 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(ConsumerUpdateViewModel consumer)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var updatedConsumer = await _consumerService.UpdateConsumer(consumer);
-                return RedirectToAction(nameof(Index));
+				ViewBag.ShowModalUpdate = true;
+				var updatedConsumer = await _consumerService.UpdateConsumer(consumer);
+				return View(nameof(Index));
             }
 
+			TempData["message"] = "The house has been edited successfuly";
             return RedirectToAction(nameof(Index));
         }
 

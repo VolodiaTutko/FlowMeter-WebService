@@ -1,0 +1,92 @@
+﻿@using Application.DTOS
+@using Application.Services.Interfaces
+
+@{
+    IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
+    var houseOptions = await houseService.GetHouseOptions();
+}
+@model Consumer
+
+<form asp-action="Create" method="post">
+    <div class="modal fade" id="createModalConsumer" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createModalLabel">@ViewBag.ModalTitle</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row mt-3">
+                                    <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="PersonalAccount" id="PersonalAccount" class="form-control" name="PersonalAccount">
+                                        <span asp-validation-for="PersonalAccount" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="ConsumerOwner" class="col-form-label col-md-6">ПІБ власника</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="ConsumerOwner" id="ConsumerOwner" class="form-control" name="ConsumerOwner">
+                                        <span asp-validation-for="ConsumerOwner" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="ConsumerEmail" class="col-form-label col-md-6">Email</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail">
+                                        @* <span asp-validation-for="ConsumerEmail" class="text-danger small"></span> *@
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" list="houses" id="HouseAddress" name="HouseAddress" placeholder="Введіть адресу будинку">
+                                        <datalist id="houses">
+                                            @foreach (var item in houseOptions)
+                                            {
+                                                <option value="@item.HouseAddress"></option>
+                                            }
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="Flat" class="col-form-label col-md-6">№ квартири</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="Flat" id="Flat" class="form-control" name="Flat">
+                                        <span asp-validation-for="Flat" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="HeatingArea" class="col-form-label col-md-6">Опалювальна площа квартири</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="HeatingArea" id="HeatingArea" class="form-control" name="HeatingArea">
+                                        <span asp-validation-for="HeatingArea" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="NumberOfPersons" id="NumberOfPersons" class="form-control" name="NumberOfPersons">
+                                        <span asp-validation-for="NumberOfPersons" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

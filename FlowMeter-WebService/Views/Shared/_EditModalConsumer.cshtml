@@ -1,0 +1,59 @@
+﻿@model Consumer
+
+<form asp-action="Update" asp-route-id="@Model.PersonalAccount" method="post">
+	<div class="modal fade" id="updateModal-@Model.PersonalAccount" tabindex="-1" aria-labelledby="updateModalLabel-@Model.PersonalAccount" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="updateModalLabel-@Model.PersonalAccount">@ViewBag.ModalTitle</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group row mt-3">
+									<label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
+									<div class="col-md-6">
+										<input asp-for="PersonalAccount" id="PersonalAccount" class="form-control" name="PersonalAccount" value=@Model.PersonalAccount readonly>
+										<span asp-validation-for="PersonalAccount" class="text-danger small"></span>
+									</div>
+								</div>
+								<div class="form-group row mt-3">
+									<label for="ConsumerOwner" class="col-form-label col-md-6">ПІБ власника</label>
+									<div class="col-md-6">
+										<input asp-for="ConsumerOwner" id="ConsumerOwner" class="form-control" name="ConsumerOwner" value=@Model.ConsumerOwner>
+										<span asp-validation-for="ConsumerOwner" class="text-danger small"></span>
+									</div>	
+								</div>
+								<div class="form-group row mt-3">
+									<label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
+									<div class="col-md-6">
+										<input asp-for="NumberOfPersons" id="NumberOfPersons" class="form-control" name="NumberOfPersons" value=@Model.NumberOfPersons>
+										<span asp-validation-for="NumberOfPersons" class="text-danger small"></span>
+									</div>
+								</div>
+								<div class="form-group row mt-3">
+									<label for="ConumerEmail" class="col-form-label col-md-6">Email</label>
+									<div class="col-md-6">
+										<input asp-for="ConsumerEmail" id="ConsumerEmail" class="form-control" name="ConsumerEmail" value=@Model.ConsumerEmail>
+										<span asp-validation-for="ConsumerEmail" class="text-danger small"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+					@Html.ValidationSummary()
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

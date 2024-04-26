@@ -1,201 +1,126 @@
 ﻿ @model IEnumerable<Application.Models.Consumer>
 
 @{
-    ViewData["Title"] = "Index";
-    ViewBag.PartialViewName = "_CreateConsumerForm";
-    ViewBag.ModalTitle = "Create new consumer";
+	ViewData["Title"] = "Index";
 }
 
 @Html.Partial("_TableNavigation")
+<partial name="_Notification" />
 
 <h1>Consumers</h1>
 
+<p mt-3>
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModalConsumer">
+		Create new
+	</button>
+</p>
 
-@Html.Partial("_CreateModal")
-
+@Html.Partial("_CreateModalConsumer",new Consumer())
 
 <table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PersonalAccount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.House.HouseAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Flat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ConsumerOwner)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HeatingArea)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfPersons)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ConsumerEmail)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PersonalAccount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.House.HouseAddress)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Flat)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ConsumerOwner)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HeatingArea)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NumberOfPersons)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ConsumerEmail)
-                    </td>
-                    <td>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col">
-                                    <button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.PersonalAccount">Edit</button>
-                                    <form asp-action="Update" asp-route-id="@item.PersonalAccount" method="post">
-                                        <div class="modal fade" id="updateModal-@item.PersonalAccount" tabindex="-1" aria-labelledby="updateModalLabel-@item.PersonalAccount" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="updateModalLabel-@item.PersonalAccount">@ViewBag.ModalTitle</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="container">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <div class="form-group row mt-3">
-                                                                        <label for="PersonalAccount" class="col-form-label col-md-6">Персональний рахунок</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" id="PersonalAccount" class="form-control" name="PersonalAccount" value=@item.PersonalAccount readonly>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group row mt-3">
-                                                                        <label for="ConsumerOwner" class="col-form-label col-md-6">ПІБ власника</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" id="ConsumerOwner" class="form-control" name="ConsumerOwner" value=@item.ConsumerOwner>
-                                                                            <span id="consumerOwnerError-@item.PersonalAccount" class="text-danger"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group row mt-3">
-                                                                        <label for="NumberOfPersons" class="col-form-label col-md-6">К-ть зареєстр. осіб</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" id="NumberOfPersons" class="form-control" name="NumberOfPersons" value=@item.NumberOfPersons>
-                                                                            <span id="numberOfPersonsError-@item.PersonalAccount" class="text-danger"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group row mt-3">
-                                                                        <label for="ConumerEmail" class="col-form-label col-md-6">Email</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" id="ConsumerEmail" class="form-control" name="ConsumerEmail" value=@item.ConsumerEmail>
-                                                                            <span id="consumerEmailError-@item.PersonalAccount" class="text-danger"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                                        @Html.ValidationSummary()
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    
-                                </div>
+	<thead class="table-light">
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.PersonalAccount)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.House.HouseAddress)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Flat)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ConsumerOwner)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.HeatingArea)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.NumberOfPersons)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ConsumerEmail)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model != null && Model.Any())
+		{
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.PersonalAccount)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.House.HouseAddress)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Flat)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ConsumerOwner)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.HeatingArea)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.NumberOfPersons)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ConsumerEmail)
+					</td>
+					<td>
+						<div class="container">
+							<div class="row">
+								<div class="col">
+									<button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.PersonalAccount">Edit</button>
+									@Html.Partial("_EditModalConsumer", item)
 
-                                <div class="col">
-                                    <form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.PersonalAccount" method="get">
-                                        <button type="submit" class="btn btn-info w-100">Details</button>
-                                    </form>
-                                </div>
+								</div>
 
-                                <div class="col">
-                                    <form method="post" asp-action="Delete" asp-route-id="@item.PersonalAccount" onsubmit="return confirm('Are you sure you want to delete this consumer?');">
-                                        <button type="submit" class="btn btn-danger w-100">Delete</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
+								<div class="col">
+									<form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.PersonalAccount" method="get">
+										<button type="submit" class="btn btn-info w-100">Details</button>
+									</form>
+								</div>
+
+								<div class="col">
+									<form method="post" asp-action="Delete" asp-route-id="@item.PersonalAccount" onsubmit="return confirm('Are you sure you want to delete this consumer?');">
+										<button type="submit" class="btn btn-danger w-100">Delete</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</td>
 
 
-                </tr>
-            }
-        }
-        else
-        {
-            <td>No consumers found.</td>
-        }
-    </tbody>
+				</tr>
+			}
+		}
+		else
+		{
+		<td>No consumers found.</td>
+		}
+	</tbody>
 </table>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var forms = document.querySelectorAll("form");
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var showModalCreate = '@ViewBag.ShowModalCreate';
+			if (showModalCreate === 'True') {
+				var modal = new bootstrap.Modal(document.getElementById('createModalConsumer'));
+				modal.show();
+			}
 
-        forms.forEach(function (form) {
-            form.addEventListener("submit", function (event) {
-                var item = form.closest("tr");
-                var consumerOwnerInput = form.querySelector("[name='ConsumerOwner']");
-                var numberOfPersonsInput = form.querySelector("[name='NumberOfPersons']");
-                var consumerEmailInput = form.querySelector("[name='ConsumerEmail']");
-
-                var consumerOwnerError = form.querySelector("#consumerOwnerError-" + item.querySelector("[name='PersonalAccount']").value);
-                var numberOfPersonsError = form.querySelector("#numberOfPersonsError-" + item.querySelector("[name='PersonalAccount']").value);
-                var consumerEmailError = form.querySelector("#consumerEmailError-" + item.querySelector("[name='PersonalAccount']").value);
-
-                var isValid = true;
-
-                if (consumerOwnerInput.value.trim() === "") {
-                    consumerOwnerError.textContent = "Поле ПІБ власника обов'язкове";
-                    isValid = false;
-                } else {
-                    consumerOwnerError.textContent = "";
-                }
-
-                if (numberOfPersonsInput.value.trim() === "") {
-                    numberOfPersonsError.textContent = "Поле К-ть зареєстр. осіб обов'язкове";
-                    isValid = false;
-                } else {
-                    numberOfPersonsError.textContent = "";
-                }
-
-                if (consumerEmailInput.value.trim() === "") {
-                    consumerEmailError.textContent = "Поле Email обов'язкове";
-                    isValid = false;
-                } else {
-                    consumerEmailError.textContent = "";
-                }
-
-                if (!isValid) {
-                    event.preventDefault();
-                }
-            });
-        });
-    });
-</script>
+			var showModalUpdate = '@ViewBag.ShowModalUpdate';
+			if (showModalUpdate === 'True') {
+				var modal = new bootstrap.Modal(document.getElementById('updateModalHouse'));
+				modal.show();
+			}
+		});
+	</script>
+}

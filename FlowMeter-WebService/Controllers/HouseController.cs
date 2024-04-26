@@ -88,8 +88,8 @@
 
             if (result.IsOk)
             {
-                _logger.LogInformation("House with {houseAddress} updated successfully", result.Value.HouseAddress);
-                TempData["message"] = "The house has been edited successfully";
+                _logger.LogInformation("House with {houseAddress} updated successfuly", result.Value.HouseAddress);
+                TempData["message"] = "The house has been edited successfuly";
                 return RedirectToAction(nameof(Index));
             }
             else
