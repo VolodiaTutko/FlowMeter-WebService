@@ -46,7 +46,7 @@
             if (!ModelState.IsValid)
             {
                 ViewBag.ShowModal = true;
-                return View(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 
             var result = await _houseService.AddHouse(model);
@@ -81,7 +81,7 @@
             if (!ModelState.IsValid)
             {
                 ViewBag.showModalUpdate = true;
-                return View(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 			
 			var result = await _houseService.UpdateHouse(house);
@@ -98,7 +98,7 @@
                 _logger.LogError(error.Description);
                 ModelState.AddModelError("", error.Description);
                 TempData["error"] = "Failed to edit the house";
-				return View(nameof(Index));
+				return RedirectToAction(nameof(Index));
 			}
         }
 

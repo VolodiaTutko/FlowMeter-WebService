@@ -60,7 +60,7 @@
                         _logger.LogError($"Validation error: {error.ErrorMessage}");
                     }
                 }
-                return View(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 
             await _consumerService.CreateConsumer(model, houseAddress);
@@ -80,7 +80,7 @@
             {
 				ViewBag.ShowModalUpdate = true;
 				var updatedConsumer = await _consumerService.UpdateConsumer(consumer);
-				return View(nameof(Index));
+				return RedirectToAction(nameof(Index));
             }
 
 			TempData["message"] = "The house has been edited successfuly";
