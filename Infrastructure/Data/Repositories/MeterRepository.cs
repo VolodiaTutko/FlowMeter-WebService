@@ -59,7 +59,7 @@ namespace Infrastructure.Data.Repositories
                 throw new KeyNotFoundException();
             }
 
-            this._dbSet.Remove(meter);
+            _context.meters.Remove(meter);
             await this._context.SaveChangesAsync();
             return meter;
         }

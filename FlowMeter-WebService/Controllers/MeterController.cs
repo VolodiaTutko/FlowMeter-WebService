@@ -30,7 +30,7 @@
         }
 
         // POST: MeterController/Delete/5
-        [HttpDelete]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
