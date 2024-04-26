@@ -12,11 +12,14 @@
     <tbody>
         @foreach (var serviceType in Model.ServiceType)
         {
-            <tr>
-                <td class="text-center">@serviceType.Key</td>
-                <td class="text-center">@serviceType.Value</td>
-                <td class="text-center">@Model.Meters[serviceType.Key]</td>
-            </tr>
+            if (Model.Meters.ContainsKey(serviceType.Key))
+            {
+                <tr>
+                    <td class="text-center">@serviceType.Key</td>
+                    <td class="text-center">@serviceType.Value</td>
+                    <td class="text-center">@Model.Meters[serviceType.Key]</td>
+                </tr>
+            }
         }
     </tbody>
 </table>

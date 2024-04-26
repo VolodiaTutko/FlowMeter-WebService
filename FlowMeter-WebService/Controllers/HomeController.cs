@@ -3,6 +3,7 @@ namespace FlowMeter_WebService.Controllers
     using System.Diagnostics;
 
     using Application.Models;
+    using Application.Services.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 

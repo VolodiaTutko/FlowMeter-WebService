@@ -66,33 +66,45 @@ namespace FlowMeter_WebService.Controllers
                     var heatingCounterAccount = account.Heating;
                     var gasCounterAccount = account.Gas;
 
-                    var hotWaterMeter = await this._meterService.GetMeterByCounterAccount(hotWaterCounterAccount);
-                    var coldWaterMeter = await this._meterService.GetMeterByCounterAccount(coldWaterCounterAccount);
-                    var electricityMeter = await this._meterService.GetMeterByCounterAccount(electricityCounterAccount);
-                    var heatingMeter = await this._meterService.GetMeterByCounterAccount(heatingCounterAccount);
-                    var gasMeter = await this._meterService.GetMeterByCounterAccount(gasCounterAccount);
-
-                    var hotWaterMeterRecords = await this._meterService.GetMeterById(hotWaterMeter.MeterId);
-                    var coldWaterMeterRecords = await this._meterService.GetMeterById(coldWaterMeter.MeterId);
-                    var electricityMeterRecords = await this._meterService.GetMeterById(electricityMeter.MeterId);
-                    var heatingMeterRecords = await this._meterService.GetMeterById(heatingMeter.MeterId);
-                    var gasMeterRecords = await this._meterService.GetMeterById(gasMeter.MeterId);
-
-                    var meters = new Dictionary<string, decimal?>
+                    var accounts = new Dictionary<string, string>
                     {
-                        { hotWaterMeter?.TypeOfAccount.ToString(), hotWaterMeterRecords?.CurrentIndicator },
-                        { coldWaterMeter?.TypeOfAccount.ToString(), coldWaterMeterRecords?.CurrentIndicator },
-                        { electricityMeter?.TypeOfAccount.ToString(), electricityMeterRecords?.CurrentIndicator },
-                        { heatingMeter?.TypeOfAccount.ToString(), heatingMeterRecords?.CurrentIndicator },
-                        { gasMeter?.TypeOfAccount.ToString(), gasMeterRecords?.CurrentIndicator },
+                        { "HotWater", hotWaterCounterAccount },
+                        { "ColdWater", coldWaterCounterAccount },
+                        { "Electricity", electricityCounterAccount },
+                        { "Heating", heatingCounterAccount },
+                        { "Gas", gasCounterAccount },
                     };
+
+                    var existingMeters = new Dictionary<string, decimal?>();
+
+                    foreach (var acc in accounts)
+                    {
+                        if (acc.Value != null)
+                        {
+                            var meterInfo = await this._meterService.GetMeterInfoByAccount(acc.Value);
+                            if (meterInfo != null)
+                            {
+                                existingMeters.Add(acc.Key, meterInfo?.CurrentIndicator);
+                            } else
+                            {
+                            existingMeters.Add(acc.Key, 0);
+                            }
+                        } 
+                        else
+                        {
+                            if (services.Any(s => s.TypeOfAccount == acc.Key))
+                            {
+                                existingMeters.Add(acc.Key, 0);
+                            }
+                        }
+                    }
 
                     var viewModel = new ConsumerInvoicesViewModel
                     {
                         Consumer = consumer,
                         Receipts = receipts,
                         ServiceType = serviceTypePrices,
-                        Meters = meters,
+                        Meters = existingMeters,
                     };
 
                     return this.View(viewModel);

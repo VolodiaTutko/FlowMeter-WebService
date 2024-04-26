@@ -14,5 +14,11 @@ namespace Application.Services.Interfaces
         Task<Account> GetAccountByPerconalAccount(string id);
 
         Task<Account> CreateAccount(Account account);
+
+        Task SetConsumersCounter(Account account, string counterType, string accountcode);
+
+        bool CheckIfCounterConnected(Account account, ServiceType counterType);
+
+        bool CheckIfCounterConnected(Account account, string counterType);
     }
 }
