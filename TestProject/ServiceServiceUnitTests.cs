@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Application.DataAccess;
-using Application.DTOS;
+﻿using Application.DataAccess;
 using Application.Models;
 using Application.Services;
 using Application.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
 
 namespace TestProject
 {
@@ -23,7 +17,7 @@ namespace TestProject
             var mockServiceRepository = new Mock<IServiceRepository>();
             var mockHouseService = new Mock<IHouseService>();
             var serviceService = new ServiceService(mockServiceRepository.Object, mockHouseService.Object, mockLogger.Object);
-            var service = new Service { ServiceId = 1 };
+            var service = new Service { ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString() };
             mockServiceRepository.Setup(repo => repo.Add(It.IsAny<Service>())).ReturnsAsync(service);
 
             // Act
@@ -41,7 +35,7 @@ namespace TestProject
             var mockServiceRepository = new Mock<IServiceRepository>();
             var mockHouseService = new Mock<IHouseService>();
             var serviceService = new ServiceService(mockServiceRepository.Object, mockHouseService.Object, mockLogger.Object);
-            var service = new Service { ServiceId = 1 };
+            var service = new Service { ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString() };
             mockServiceRepository.Setup(repo => repo.Add(It.IsAny<Service>())).ThrowsAsync(new Exception("Simulated exception"));
 
             // Act & Assert
@@ -58,8 +52,8 @@ namespace TestProject
             var serviceService = new ServiceService(mockServiceRepository.Object, mockHouseService.Object, mockLogger.Object);
             var services = new List<Service>
             {
-                new Service {ServiceId = 1},
-                new Service {ServiceId = 2},
+                new Service { ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString()},
+                new Service { ServiceId = 2, TypeOfAccount = ServiceType.HotWater.ToString()},
                 null
             };
 
@@ -83,7 +77,7 @@ namespace TestProject
             var mockLogger = new Mock<ILogger<ServiceService>>();
 
             var serviceService = new ServiceService(mockRepository.Object, mockHouseService.Object, mockLogger.Object);
-            var serviceToDelete = new Service {ServiceId = 1};
+            var serviceToDelete = new Service { ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString() };
             mockRepository.Setup(repo => repo.Delete(serviceId)).ReturnsAsync(serviceToDelete);
 
             // Act
@@ -118,7 +112,7 @@ namespace TestProject
             var mockServiceRepository = new Mock<IServiceRepository>();
             var mockHouseService = new Mock<IHouseService>();
             var serviceService = new ServiceService(mockServiceRepository.Object, mockHouseService.Object, mockLogger.Object);
-            var updatedService = new Service {ServiceId = 1};
+            var updatedService = new Service {ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString() };
 
             mockServiceRepository.Setup(repo => repo.Update(It.IsAny<Service>())).ReturnsAsync(updatedService);
 
@@ -137,7 +131,7 @@ namespace TestProject
             var mockServiceRepository = new Mock<IServiceRepository>();
             var mockHouseService = new Mock<IHouseService>();
             var serviceService = new ServiceService(mockServiceRepository.Object, mockHouseService.Object, mockLogger.Object);
-            var updatedService = new Service {ServiceId = 1};
+            var updatedService = new Service {ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString() };
 
             mockServiceRepository.Setup(repo => repo.Update(It.IsAny<Service>())).ThrowsAsync(new Exception("Simulated exception"));
 

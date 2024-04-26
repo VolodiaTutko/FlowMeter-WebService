@@ -1,40 +1,45 @@
-﻿using Application.DataAccess;
-using Application.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="ServiceRepository.cs" company="FlowMeter">
+// Copyright (c) FlowMeter. All rights reserved.
+// </copyright>
 
 namespace Infrastructure.Data.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Application.DataAccess;
+    using Application.Models;
+    using Microsoft.EntityFrameworkCore;
+
     public class ServiceRepository : IServiceRepository
     {
-        private readonly AppDbContext _context;
-        protected readonly DbSet<Service> dbSet;
+        private readonly AppDbContext context;
+        private readonly DbSet<Service> dbSet;
 
         public ServiceRepository(AppDbContext context)
         {
-            _context = context;
-            dbSet = context.Set<Service>();
+            this.context = context;
+            this.dbSet = context.Set<Service>();
         }
 
         public async Task<Service> GetByIdAsync(int id)
         {
-            return await _context.services.FirstOrDefaultAsync(c => c.ServiceId == id);
+            return await this.context.services
+                .FirstOrDefaultAsync(c => c.ServiceId == id);
         }
 
         public async Task<IEnumerable<Service>> GetByHouseIdAsync(int id)
         {
-            return await _context.services
+            return await this.context.services
                 .Where(c => c.HouseId == id)
                 .ToListAsync();
         }
 
         public async Task<List<Service>> All()
         {
-            var service = await dbSet.ToListAsync();
+            var service = await this.dbSet.ToListAsync();
             return service;
         }
 
@@ -42,8 +47,8 @@ namespace Infrastructure.Data.Repositories
         {
             try
             {
-                _context.services.Add(service);
-                await _context.SaveChangesAsync();
+                this.context.services.Add(service);
+                await this.context.SaveChangesAsync();
                 return service;
             }
             catch (Exception ex)
@@ -54,23 +59,22 @@ namespace Infrastructure.Data.Repositories
 
         public async Task<Service> Update(Service service)
         {
-            _context.Update(service);
-            await _context.SaveChangesAsync();
+            this.context.Update(service);
+            await this.context.SaveChangesAsync();
 
             return service;
         }
 
-
         public async Task<Service> Delete(int serviceId)
         {
-            var service = await dbSet.FindAsync(serviceId);
+            var service = await this.dbSet.FindAsync(serviceId);
             if (service == null)
             {
                 return null;
             }
 
-            _context.services.Remove(service);
-            await _context.SaveChangesAsync();
+            this.context.services.Remove(service);
+            await this.context.SaveChangesAsync();
             return service;
         }
     }

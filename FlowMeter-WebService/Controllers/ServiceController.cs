@@ -1,7 +1,6 @@
 ﻿namespace FlowMeter_WebService.Controllers
 {
     using Application.Models;
-    using Application.Services;
     using Application.Services.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -10,44 +9,44 @@
     [Authorize]
     public class ServiceController : Controller
     {
-        private IServiceService _serviceService;
-        private IHouseService _houseService;
-        private readonly ILogger<ServiceController> _logger;
+        private readonly IServiceService serviceService;
+        private readonly IHouseService houseService;
+        private readonly ILogger<ServiceController> logger;
 
         public ServiceController(IServiceService service, IHouseService houseService, ILogger<ServiceController> logger)
         {
-            _serviceService = service;
-            _houseService = houseService;
-            _logger = logger;
+            this.serviceService = service;
+            this.houseService = houseService;
+            this.logger = logger;
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
-            var service = await _serviceService.GetList();
-            return View(service);
+            var service = await this.serviceService.GetList();
+            return this.View(service);
         }
 
         public ActionResult Details(int id)
         {
-            return View();
+            return this.View();
         }
 
         public ActionResult Create(Account a)
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Service model, string houseAddress)
         {
-            var houseModel = await _houseService.GetHouseByAddress(houseAddress);
-            ModelState.Remove("House");
+            var houseModel = await this.houseService.GetHouseByAddress(houseAddress);
+            this.ModelState.Remove("House");
             model.HouseId = houseModel.HouseId;
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index), model);
+                return this.RedirectToAction(nameof(this.Index), model);
             }
 
             var service = new Service
@@ -55,53 +54,53 @@
                 ServiceId = model.ServiceId,
                 HouseId = model.HouseId,
                 TypeOfAccount = model.TypeOfAccount,
-                Price = model.Price
+                Price = model.Price,
             };
 
-            await _serviceService.AddService(service);
-            _logger.LogInformation("Service created successfully: {ServiceId}", service.ServiceId);
+            await this.serviceService.AddService(service);
+            this.logger.LogInformation("Service created successfully: {ServiceId}", service.ServiceId);
 
-            return RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(this.Index));
         }
 
         public ActionResult Edit(int id)
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
-             return RedirectToAction(nameof(Index));
+             return this.RedirectToAction(nameof(this.Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(Service service)
         {
-            ModelState.Remove("House");
-            ModelState.Remove("TypeOfAccount");
-            if (ModelState.IsValid)
+            this.ModelState.Remove("House");
+            this.ModelState.Remove("TypeOfAccount");
+            if (this.ModelState.IsValid)
             {
-                var updatedService = await _serviceService.GetServiceByServiceId(service.ServiceId);
+                var updatedService = await this.serviceService.GetServiceByServiceId(service.ServiceId);
 
                 updatedService.Price = service.Price;
 
-                await _serviceService.UpdateService(updatedService);
+                await this.serviceService.UpdateService(updatedService);
 
                 if (updatedService == null)
                 {
-                    return NotFound();
+                    return this.NotFound();
                 }
 
-                _logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
+                this.logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
 
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(this.Index));
             }
             else
             {
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(this.Index));
             }
         }
 
@@ -109,13 +108,14 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
-            var deletedService = await _serviceService.DeleteService(id);
+            var deletedService = await this.serviceService.DeleteService(id);
             if (deletedService == null)
             {
-                return NotFound(); 
+                return this.NotFound();
             }
-            _logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedService.ServiceId);
-            return RedirectToAction(nameof(Index));
+
+            this.logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedService.ServiceId);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

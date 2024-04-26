@@ -1,4 +1,8 @@
-﻿namespace Application.Models
+﻿// <copyright file="Service.cs" company="FlowMeter">
+// Copyright (c) FlowMeter. All rights reserved.
+// </copyright>
+
+namespace Application.Models
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -11,10 +15,13 @@
 
         public int? HouseId { get; set; }
 
-        [Required]
-        [EnumDataType(typeof(ServiceType))] 
-        public string TypeOfAccount { get; set; }
+        [Required(ErrorMessage = "Це поле обов'язкове для заповнення.")]
+        [EnumDataType(typeof(ServiceType))]
 
+        required public string TypeOfAccount { get; set; }
+
+        [Required(ErrorMessage = "Це поле обов'язкове для заповнення.")]
+        [Range(0, double.MaxValue, ErrorMessage = "Будь ласка, введіть додатне число.")]
         public int? Price { get; set; }
 
         [ForeignKey(nameof(HouseId))]
@@ -30,6 +37,6 @@
         [Display(Name = "Газ")]
         Gas,
         [Display(Name = "Світло")]
-        Electricity
+        Electricity,
     }
 }

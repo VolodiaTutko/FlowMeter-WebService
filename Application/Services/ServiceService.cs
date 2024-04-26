@@ -5,58 +5,57 @@
     using Application.Models;
     using Application.Services.Interfaces;
     using Microsoft.Extensions.Logging;
-    using System.Threading.Channels;
 
     public class ServiceService : IServiceService
     {
-        private readonly ILogger<ServiceService> _logger;
-        private readonly IServiceRepository _serviceRepository;
-        private readonly IHouseService _houseService;
+        private readonly ILogger<ServiceService> logger;
+        private readonly IServiceRepository serviceRepository;
+        private readonly IHouseService houseService;
 
         public ServiceService(IServiceRepository serviceRepository, IHouseService houseService, ILogger<ServiceService> logger)
         {
-            _serviceRepository = serviceRepository;
-            _houseService = houseService;
-            _logger = logger;
+            this.serviceRepository = serviceRepository;
+            this.houseService = houseService;
+            this.logger = logger;
         }
 
         public async Task<Service> AddService(Service service)
         {
             try
             {
-                var addedService = await _serviceRepository.Add(service);
-                _logger.LogInformation("Adding a new service with ServiceId {ServiceId}.", addedService.ServiceId);
+                var addedService = await this.serviceRepository.Add(service);
+                this.logger.LogInformation("Adding a new service with ServiceId {ServiceId}.", addedService.ServiceId);
                 return addedService;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding a house to the database.");
+                this.logger.LogError(ex, "An error occurred while adding a house to the database.");
                 throw;
             }
         }
 
         public async Task<Service> GetServiceByServiceId(int serviceId)
         {
-            return await _serviceRepository.GetByIdAsync(serviceId);
+            return await this.serviceRepository.GetByIdAsync(serviceId);
         }
 
         public async Task<IEnumerable<Service>> GetServiceByHouseId(int houseId)
         {
-            return await _serviceRepository.GetByHouseIdAsync(houseId);
+            return await this.serviceRepository.GetByHouseIdAsync(houseId);
         }
 
         public async Task<Service> DeleteService(int id)
         {
             try
             {
-                var deletedService = await _serviceRepository.Delete(id);
+                var deletedService = await this.serviceRepository.Delete(id);
 
-                _logger.LogInformation("Service with ServiceId {ServiceId} deleted successfully.", deletedService.ServiceId);
+                this.logger.LogInformation("Service with ServiceId {ServiceId} deleted successfully.", deletedService.ServiceId);
                 return deletedService;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while deleting a service from the database.");
+                this.logger.LogError(ex, "An error occurred while deleting a service from the database.");
                 throw;
             }
         }
@@ -65,13 +64,13 @@
         {
             try
             {
-                var updatedService = await _serviceRepository.Update(service);
-                _logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
+                var updatedService = await this.serviceRepository.Update(service);
+                this.logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
                 return updatedService;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating a consumer in the database.");
+                this.logger.LogError(ex, "An error occurred while updating a consumer in the database.");
                 throw;
             }
         }
@@ -80,40 +79,21 @@
         {
             try
             {
-                var all = await _serviceRepository.All();
+                var all = await this.serviceRepository.All();
                 var filteredList = all.Where(item => item != null).ToList();
-                _logger.LogInformation("Retrieved {Count} services from the database.", filteredList.Count);
+                this.logger.LogInformation("Retrieved {Count} services from the database.", filteredList.Count);
                 return filteredList;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving services from the database.");
+                this.logger.LogError(ex, "An error occurred while retrieving services from the database.");
                 throw;
             }
         }
 
-        /*public async Task<Dictionary<string, int?>> GetDictionary(int id)
-        {
-            try
-            {
-                var allServices = await _serviceRepository.GetByHouseIdAsync(id);
-                var serviceTypeDictionary = allServices
-                    .Where(service => service != null)
-                    .ToDictionary(service => service.TypeOfAccount, service => service.Price);
-
-                _logger.LogInformation("Retrieved {Count} services from the database.", serviceTypeDictionary.Count);
-                return serviceTypeDictionary;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while retrieving services from the database.");
-                throw;
-            }
-        }*/
-
         public async Task<List<SelectHouseDTO>> GetHouseOptions()
         {
-            return await _houseService.GetHouseOptions();
+            return await this.houseService.GetHouseOptions();
         }
     }
 }

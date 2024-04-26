@@ -1,6 +1,5 @@
 ﻿namespace Application.Services.Interfaces
 {
-    using Application.DTOS;
     using Application.Models;
 
     public interface IServiceService
