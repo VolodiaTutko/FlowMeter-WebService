@@ -65,7 +65,7 @@ namespace Application.Services
                 Meter = addedMeter,
                 CurrentIndicator = createMeterVm.CurrentIndicator,
                 Date = createMeterVm.Date.ToUniversalTime(),
-                //Method = "initial admin"
+                Method = "initial admin"
             };
 
             var addedRecord = await AddMeterRecord(record, "initial admin");
@@ -87,7 +87,7 @@ namespace Application.Services
                 Meter = meter,
                 CurrentIndicator = createMeterRecordVm.CurrentIndicator,
                 Date = createMeterRecordVm.Date.ToUniversalTime(),
-                //Method = "admin"
+                Method = "admin"
             };
 
             var addedRecord = await AddMeterRecord(record, "admin");
@@ -109,7 +109,7 @@ namespace Application.Services
                 Meter = meter,
                 CurrentIndicator = createMeterRecordVm.CurrentIndicator,
                 Date = createMeterRecordVm.Date.ToUniversalTime(),
-                //Method = "consumer"
+                Method = "consumer"
             };
 
             var addedRecord = await AddMeterRecord(record, "consumer");
@@ -172,7 +172,7 @@ namespace Application.Services
 
         private async Task<MeterRecord> AddMeterRecord(MeterRecord record, string method)
         {
-            //record.Method = method;
+            record.Method = method;
             this.logger.LogInformation("Adding a new meter record for meter: {MeterId} to the database. Method: {method}", record.Meter.MeterId, method);
             try
             {
