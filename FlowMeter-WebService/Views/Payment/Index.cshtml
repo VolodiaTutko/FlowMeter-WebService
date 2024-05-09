@@ -12,60 +12,63 @@
 
 @Html.Partial("_CreateModal")
 
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Consumer.House.HouseAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PersonalAccount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Consumer.ConsumerOwner)
+
+<div class="table-responsive-sm">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consumer.House.HouseAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PersonalAccount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consumer.ConsumerOwner)
                 
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var item in Model)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Amount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Type)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Consumer.House.HouseAddress)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PersonalAccount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Consumer.ConsumerOwner)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Amount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Type)
-                    </td>
-                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Consumer.House.HouseAddress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PersonalAccount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Consumer.ConsumerOwner)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Amount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </td>
+                    </tr>
+                }
             }
-        }
-        else
-        {
-                <p>No payments found.</p>
-        }
-    </tbody>
-</table>
+            else
+            {
+                    <p>No payments found.</p>
+            }
+        </tbody>
+    </table>
+</div>

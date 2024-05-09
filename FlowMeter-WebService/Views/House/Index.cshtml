@@ -15,75 +15,76 @@
 
 @Html.Partial("_CreateModalHouse", new House())
 
-
-<table class="table table-bordered">
-	<thead class="table-light">
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.HouseAddress)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.HeatingAreaOfHouse)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.NumberOfFlat)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.NumberOfResidents)
-			</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		@if (Model != null && Model.Any())
-		{
-			@foreach (var item in Model)
+<div class="table-responsive-sm">
+	<table class="table table-bordered">
+		<thead class="table-light">
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.HouseAddress)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.HeatingAreaOfHouse)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.NumberOfFlat)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.NumberOfResidents)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model != null && Model.Any())
 			{
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.HouseAddress)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.HeatingAreaOfHouse)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.NumberOfFlat)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.NumberOfResidents)
-					</td>
-					<td>
-						<div class="container">
-							<div class="row">
-								<div class="col">
-									<button type="submit" data-bs-toggle="modal" data-bs-target="#updateModalHouse_@item.HouseId" class="btn btn-primary w-100">Edit</button>
-									@Html.Partial("_EditModalHouse", item)
-								</div>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							@Html.DisplayFor(modelItem => item.HouseAddress)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.HeatingAreaOfHouse)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.NumberOfFlat)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.NumberOfResidents)
+						</td>
+						<td>
+							<div class="container">
+								<div class="row">
+									<div class="col">
+										<button type="submit" data-bs-toggle="modal" data-bs-target="#updateModalHouse_@item.HouseId" class="btn btn-primary w-100">Edit</button>
+										@Html.Partial("_EditModalHouse", item)
+									</div>
 
-								<div class="col">
-									<form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.HouseId" method="get">
-										<button type="submit" class="btn btn-info w-100">Details</button>
-									</form>
-								</div>
+									<div class="col">
+										<form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.HouseId" method="get">
+											<button type="submit" class="btn btn-info w-100">Details</button>
+										</form>
+									</div>
 
-								<div class="col">
-									<form method="post" asp-controller="House" asp-action="Delete" asp-route-id="@item.HouseId" onsubmit="return confirm('Are you sure you want to delete this house?');">
-										<button type="submit" class="btn btn-danger w-100">Delete</button>
-									</form>
+									<div class="col">
+										<form method="post" asp-controller="House" asp-action="Delete" asp-route-id="@item.HouseId" onsubmit="return confirm('Are you sure you want to delete this house?');">
+											<button type="submit" class="btn btn-danger w-100">Delete</button>
+										</form>
+									</div>
 								</div>
 							</div>
-						</div>
-					</td>
-				</tr>
+						</td>
+					</tr>
 
+				}
 			}
-		}
-		else
-		{
-			<p>No houses found.</p>
-		}
-	</tbody>
-</table>
+			else
+			{
+				<p>No houses found.</p>
+			}
+		</tbody>
+	</table>
+</div>
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />

@@ -4,11 +4,21 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>User Info</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 d-flex flex-row">
+            <h1>User Info</h1>
+        </div>
+        <div class="col-md-6 d-flex flex-md-row-reverse">
+            <button type="submit" data-bs-toggle="modal" data-bs-target="#provideValues" class="btn btn-primary m-3">Provide indicator values</button>
+            @Html.Partial("_UserProvideValues")
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <div class="row">
-        <div class="col-4">
+        <div class="col-lg-4 col-12">
             <div class="card">
                 <div class="card-header text-center">
                     <i class="bi bi-person" style="font-size: 2rem;"></i>
@@ -37,19 +47,25 @@
                 </div>
             </div>
         </div>
-        <div class="col-8">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light m-0 p-0">
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav d-flex justify-content-around w-100 h-100" style="background-color: #d7dbdb;">
-                        <li id="servicesTab" class="nav-item active-tab flex-fill border border-dark">
-                            <a class="nav-link text-center text-dark" onclick="showPartialViewServices()">Services</a>
-                        </li>
-                        <li id="invoicesTab" class="nav-item flex-fill border border-dark">
-                            <a class="nav-link text-center text-dark" onclick="showPartialViewInvoices()">Invoices</a>
-                        </li>
-                    </ul>
+        <div class="col-lg-8 col-12">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-center p-2">
+                        <div class="w-100">
+                            <ul class="nav d-flex justify-content-around" style="background-color: #d7dbdb;">
+                                <li id="servicesTab" class="nav-item active-tab border border-dark w-50">
+                                    <a class="nav-link text-center text-dark" onclick="showPartialViewServices()">Services</a>
+                                </li>
+                                <li id="invoicesTab" class="nav-item border border-dark w-50">
+                                    <a class="nav-link text-center text-dark" onclick="showPartialViewInvoices()">Invoices</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </nav>
+            </div>
+
+
 
             <div id="partialViewServices">
                 @Html.Partial("_UserServices")

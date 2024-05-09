@@ -89,8 +89,31 @@
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: MeterController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterRecordByUser(IFormCollection collection)
+        {
+            try
+            {
+                int MeterId = int.Parse(collection["id"]);
+                var dateValue = DateTime.Parse(collection["date"]);
+                var indicatorValue = int.Parse(collection["indicator"]);
+
+                var record = new NewMeterRecordVm(indicatorValue, dateValue, MeterId);
+
+                await meterService.RegisterRecordConsumer(record);
+
+                return Redirect(Request.Headers["Referer"].ToString());
+            }
+            catch
+            {
+				return Redirect(Request.Headers["Referer"].ToString());
+			}
+		}
+
+
+		// GET: MeterController/Edit/5
+		public ActionResult Edit(int id)
         {
             return View();
         }
@@ -102,5 +125,34 @@
         {
             return RedirectToAction(nameof(Index));
         }
-    }
+
+
+		[HttpGet]
+		public async Task<IActionResult> GetMeterId(string serviceType)
+		{
+			try
+			{
+				var meterInfo = await meterService.GetMeterInfoByTypeOfAccount(serviceType);
+				return Ok(meterInfo.MeterId);
+			}
+			catch
+			{
+				return BadRequest();
+			}
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetCurrentIndicatorValue(string serviceType)
+		{
+			try
+			{
+				var meterInfo = await meterService.GetMeterInfoByTypeOfAccount(serviceType);
+				return Ok(meterInfo.CurrentIndicator);
+			}
+			catch
+			{
+				return BadRequest();
+			}
+		}
+	}
 }

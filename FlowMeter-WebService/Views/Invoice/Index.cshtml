@@ -13,69 +13,71 @@
                             
                         </form>
 
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ReceiptId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Consumer.House.HouseAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PersonalAccount)
+<div class="table-responsive-sm">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReceiptId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consumer.House.HouseAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PersonalAccount)
 
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Consumer.ConsumerOwner)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PDF)
-            </th>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consumer.ConsumerOwner)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PDF)
+                </th>
 
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var item in Model)
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ReceiptId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Consumer.House.HouseAddress)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PersonalAccount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Consumer.ConsumerOwner)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @($"invoice_{item.PersonalAccount}_{item.Date.ToString("yyyyMMdd")}.pdf")
-                    </td>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReceiptId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Consumer.House.HouseAddress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PersonalAccount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Consumer.ConsumerOwner)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @($"invoice_{item.PersonalAccount}_{item.Date.ToString("yyyyMMdd")}.pdf")
+                        </td>
 
-                    <td>
-                        <form method="post" asp-action="Download" asp-route-id="@item.ReceiptId">
-                            <button type="submit" class="btn btn-primary w-100">Download</button>
-                            <input type="text" id="ReceiptId" class="form-control" name="ReceiptId" value=@item.ReceiptId hidden>
-                        </form>
-                    </td>
-                </tr>
+                        <td>
+                            <form method="post" asp-action="Download" asp-route-id="@item.ReceiptId">
+                                <button type="submit" class="btn btn-primary w-100">Download</button>
+                                <input type="text" id="ReceiptId" class="form-control" name="ReceiptId" value=@item.ReceiptId hidden>
+                            </form>
+                        </td>
+                    </tr>
+                }
             }
-        }
-        else
-        {
-            <p>No invoices found.</p>
-        }
-    </tbody>
-</table>
+            else
+            {
+                <p>No invoices found.</p>
+            }
+        </tbody>
+    </table>
+</div>
