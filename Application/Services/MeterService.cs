@@ -271,7 +271,34 @@ namespace Application.Services
             }
         }
 
-        public async Task<List<MeterInfoDTO>> GetList()
+
+		public async Task<MeterInfoDTO> GetMeterInfoByTypeOfAccount(string acc)
+		{
+			try
+			{
+				var meter = await this.meterRepository.GetByTypeOfAccountAsync(acc);
+
+				var records = new List<MeterRecord>();
+
+				if (meter != null)
+				{
+					records = await this.meterRecRepository.GetListByMeterId(meter.MeterId);
+				}
+				else
+				{
+					throw new Exception("Meter not found");
+				}
+
+				return new MeterInfoDTO(meter, records);
+			}
+			catch (Exception ex)
+			{
+				this.logger.LogError(ex, "An error occurred while fetching meter with TypeOfAccount: {acc}", acc);
+				throw;
+			}
+		}
+
+		public async Task<List<MeterInfoDTO>> GetList()
         {
             try
             {

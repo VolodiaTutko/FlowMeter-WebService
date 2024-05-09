@@ -1,0 +1,113 @@
+﻿@using Application.DTOS
+@using Application.Services.Interfaces
+@using System.Text.Json;
+
+@{
+	IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
+	var houseOptions = await houseService.GetHouseOptions();
+
+	IConsumerService consumerServise = (IConsumerService)ViewContext.HttpContext.RequestServices.GetService(typeof(IConsumerService));
+	var consumerOptions = await consumerServise.GetConsumerOptions();
+
+	IMeterService meterService = (IMeterService)ViewContext.HttpContext.RequestServices.GetService(typeof(IMeterService));
+	var accounts = await meterService.GetMeterAsignableAccounts();
+	var consumers = accounts.Select(a => a.Owner).ToList();
+}
+
+
+<form asp-controller="Meter" asp-action="RegisterRecordByUser" method="post">
+	<div class="modal fade" id="provideValues" tabindex="-1" aria-labelledby="provideValues" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="provideValues">Provide Values</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-12">
+								<label for="ServiceType" class="col-form-label col-md-6">Оберіть лічильник послуги</label>
+								<div class="col-md-6">
+									<input class="form-control" id="ServiceType" name="ServiceType" placeholder="Оберіть послугу">
+								</div>
+								<label for="CurrentIndicator" class="col-form-label col-md-6">Поточний показник</label>
+								<div class="col-md-6">
+									<input class="form-control" id="CurrentIndicator" name="CurrentIndicator" value="" readonly />
+								</div>
+								<label for="NumberOfFlat" class="col-form-label col-md-6">Нове значення показника</label>
+								<div class="col-md-6">
+									<input class="form-control" id="indicator" name="indicator" />
+									<p id="indicator-error" class="text-danger"></p>
+								</div>
+								<input type="hidden" id="date" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+								<input type="hidden" id="id" name="id" value="" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		var indicatorField = document.getElementById('indicator');
+		var errorIndicatorField = document.getElementById('indicator-error');
+		var serviceTypeField = document.getElementById('ServiceType');
+
+		serviceTypeField.addEventListener('change', function () {
+			var selectedServiceType = serviceTypeField.value;
+			getCurrentIndicatorValue(selectedServiceType);
+			getMeterIdForService(selectedServiceType);
+		});
+
+		function getMeterIdForService(serviceType) {
+			$.ajax({
+				type: "GET",
+				url: "/Meter/GetMeterId",
+				data: { serviceType: serviceType },
+				success: function (response) {
+					var MeterId = document.getElementById('id');
+					MeterId.value = response;
+				},
+				error: function () {
+					alert('Error while receiving MeterId');
+				}
+			});
+		}
+
+		function getCurrentIndicatorValue(serviceType) {
+			$.ajax({
+				type: "GET",
+				url: "/Meter/GetCurrentIndicatorValue",
+				data: { serviceType: serviceType },
+				success: function (response) {
+					var CurrentValue = document.getElementById('CurrentIndicator');
+					CurrentValue.value = response;
+				},
+				error: function () {
+					alert('Error while receiving MeterId');
+				}
+			});
+		}
+
+		indicatorField.addEventListener('change', function () {
+			var inputValue = parseFloat(indicatorField.value);
+			var currentValue = parseFloat(document.getElementById('CurrentIndicator').value);
+
+			if (inputValue <= currentValue) {
+				errorIndicatorField.textContent = 'Введене значення має бути більше за поточний показник.';
+				indicatorField.value = '';
+			} else {
+				errorIndicatorField.textContent = '';
+			}
+		});
+	});
+</script>
+

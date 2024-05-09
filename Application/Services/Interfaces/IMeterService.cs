@@ -23,8 +23,10 @@ namespace Application.Services.Interfaces
 
         public Task<MeterInfoDTO> GetMeterInfoByAccount(string acc);
 
-        public Task<List<MeterInfoDTO>> GetList();
+        Task<MeterInfoDTO> GetMeterInfoByTypeOfAccount(string acc);
+
+		public Task<List<MeterInfoDTO>> GetList();
 
         Task<Meter> GetMeterByCounterAccount(string id);
-    }
+	}
 }

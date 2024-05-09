@@ -59,6 +59,60 @@ namespace Infrastructure.Data.Repositories
                 throw new KeyNotFoundException();
             }
 
+            var typeOfAccount = meter.TypeOfAccount;
+
+            Account account = null;
+            switch (typeOfAccount)
+            {
+                case "HotWater":
+                    account = await _context.accounts.FirstOrDefaultAsync(a => a.HotWater == meter.CounterAccount);
+                    break;
+                case "ColdWater":
+                    account = await _context.accounts.FirstOrDefaultAsync(a => a.ColdWater == meter.CounterAccount);
+                    break;
+                case "Heating":
+                    account = await _context.accounts.FirstOrDefaultAsync(a => a.Heating == meter.CounterAccount);
+                    break;
+                case "Electricity":
+                    account = await _context.accounts.FirstOrDefaultAsync(a => a.Electricity == meter.CounterAccount);
+                    break;
+                case "Gas":
+                    account = await _context.accounts.FirstOrDefaultAsync(a => a.Gas == meter.CounterAccount);
+                    break;
+                case "PublicService":
+                    account = await _context.accounts.FirstOrDefaultAsync(a => a.PublicService == meter.CounterAccount);
+                    break;
+                default:
+                    break;
+            }
+
+            if (account != null)
+            {
+                switch (typeOfAccount)
+                {
+                    case "HotWater":
+                        account.HotWater = null;
+                        break;
+                    case "ColdWater":
+                        account.ColdWater = null;
+                        break;
+                    case "Heating":
+                        account.Heating = null;
+                        break;
+                    case "Electricity":
+                        account.Electricity = null;
+                        break;
+                    case "Gas":
+                        account.Gas = null;
+                        break;
+                    case "PublicService":
+                        account.PublicService = null;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             _context.meters.Remove(meter);
             await this._context.SaveChangesAsync();
             return meter;
@@ -69,5 +123,11 @@ namespace Infrastructure.Data.Repositories
             return await _context.meters
                         .FirstOrDefaultAsync(r => r.CounterAccount == id);
         }
-    }
+
+		public async Task<Meter> GetByTypeOfAccountAsync(string id)
+		{
+			return await _context.meters
+						.FirstOrDefaultAsync(r => r.TypeOfAccount == id);
+		}
+	}
 }

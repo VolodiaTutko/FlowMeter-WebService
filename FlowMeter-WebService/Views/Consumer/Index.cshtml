@@ -17,94 +17,96 @@
 
 @Html.Partial("_CreateModalConsumer",new Consumer())
 
-<table class="table table-bordered">
-	<thead class="table-light">
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.PersonalAccount)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.House.HouseAddress)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Flat)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.ConsumerOwner)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.HeatingArea)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.NumberOfPersons)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.ConsumerEmail)
-			</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		@if (Model != null && Model.Any())
-		{
-			@foreach (var item in Model)
+<div class="table-responsive-sm">
+	<table class="table table-bordered">
+		<thead class="table-light">
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.PersonalAccount)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.House.HouseAddress)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Flat)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.ConsumerOwner)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.HeatingArea)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.NumberOfPersons)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.ConsumerEmail)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model != null && Model.Any())
 			{
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.PersonalAccount)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.House.HouseAddress)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Flat)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.ConsumerOwner)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.HeatingArea)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.NumberOfPersons)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.ConsumerEmail)
-					</td>
-					<td>
-						<div class="container">
-							<div class="row">
-								<div class="col">
-									<button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.PersonalAccount">Edit</button>
-									@Html.Partial("_EditModalConsumer", item)
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							@Html.DisplayFor(modelItem => item.PersonalAccount)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.House.HouseAddress)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Flat)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.ConsumerOwner)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.HeatingArea)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.NumberOfPersons)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.ConsumerEmail)
+						</td>
+						<td>
+							<div class="container">
+								<div class="row">
+									<div class="col">
+										<button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.PersonalAccount">Edit</button>
+										@Html.Partial("_EditModalConsumer", item)
 
-								</div>
+									</div>
 
-								<div class="col">
-									<form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.PersonalAccount" method="get">
-										<button type="submit" class="btn btn-info w-100">Details</button>
-									</form>
-								</div>
+									<div class="col">
+										<form asp-controller="Consumer" asp-action="Details" asp-route-id="@item.PersonalAccount" method="get">
+											<button type="submit" class="btn btn-info w-100">Details</button>
+										</form>
+									</div>
 
-								<div class="col">
-									<form method="post" asp-action="Delete" asp-route-id="@item.PersonalAccount" onsubmit="return confirm('Are you sure you want to delete this consumer?');">
-										<button type="submit" class="btn btn-danger w-100">Delete</button>
-									</form>
+									<div class="col">
+										<form method="post" asp-action="Delete" asp-route-id="@item.PersonalAccount" onsubmit="return confirm('Are you sure you want to delete this consumer?');">
+											<button type="submit" class="btn btn-danger w-100">Delete</button>
+										</form>
+									</div>
 								</div>
 							</div>
-						</div>
-					</td>
+						</td>
 
 
-				</tr>
+					</tr>
+				}
 			}
-		}
-		else
-		{
-		<td>No consumers found.</td>
-		}
-	</tbody>
-</table>
+			else
+			{
+			<td>No consumers found.</td>
+			}
+		</tbody>
+	</table>
+</div>
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
