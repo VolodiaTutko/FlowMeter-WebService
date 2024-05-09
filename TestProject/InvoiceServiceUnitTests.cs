@@ -1,6 +1,7 @@
 ﻿using Application.DataAccess;
 using Application.Models;
 using Application.Services;
+using Application.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -19,9 +20,11 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<InvoiceService>>();
             var mockRepository = new Mock<IInvoiceRepository>();
-            var expectedInvoice = new Receipt { ReceiptId = 1, PersonalAccount = "Account123" };
+            var mockConsumerRepository = new Mock<IConsumerService>();
+            var mockHouseRepository = new Mock<IHouseService>();
+        var expectedInvoice = new Receipt { ReceiptId = 1, PersonalAccount = "Account123" };
             mockRepository.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(expectedInvoice);
-            var invoiceService = new InvoiceService(mockRepository.Object, mockLogger.Object);
+            var invoiceService = new InvoiceService(mockRepository.Object, mockConsumerRepository.Object, mockHouseRepository.Object, mockLogger.Object);
 
             // Act
             var result = await invoiceService.GetInvoiceById(1);
@@ -36,8 +39,10 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<InvoiceService>>();
             var mockRepository = new Mock<IInvoiceRepository>();
+            var mockConsumerRepository = new Mock<IConsumerService>();
+            var mockHouseRepository = new Mock<IHouseService>();
             mockRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>())).ThrowsAsync(new Exception("Invoice not found"));
-            var invoiceService = new InvoiceService(mockRepository.Object, mockLogger.Object);
+            var invoiceService = new InvoiceService(mockRepository.Object, mockConsumerRepository.Object, mockHouseRepository.Object, mockLogger.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () => await invoiceService.GetInvoiceById(1));
@@ -49,13 +54,15 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<InvoiceService>>();
             var mockRepository = new Mock<IInvoiceRepository>();
+            var mockConsumerRepository = new Mock<IConsumerService>();
+            var mockHouseRepository = new Mock<IHouseService>();
             var expectedInvoices = new List<Receipt>
             {
                 new Receipt { ReceiptId = 1, PersonalAccount = "Account123" },
                 new Receipt { ReceiptId = 2, PersonalAccount = "Account456" }
             };
             mockRepository.Setup(repo => repo.All()).ReturnsAsync(expectedInvoices);
-            var invoiceService = new InvoiceService(mockRepository.Object, mockLogger.Object);
+            var invoiceService = new InvoiceService(mockRepository.Object, mockConsumerRepository.Object, mockHouseRepository.Object, mockLogger.Object);
 
             // Act
             var result = await invoiceService.GetList();
@@ -70,8 +77,10 @@ namespace TestProject
             // Arrange
             var mockLogger = new Mock<ILogger<InvoiceService>>();
             var mockRepository = new Mock<IInvoiceRepository>();
+            var mockConsumerRepository = new Mock<IConsumerService>();
+            var mockHouseRepository = new Mock<IHouseService>();
             mockRepository.Setup(repo => repo.All()).ThrowsAsync(new Exception("Failed to retrieve invoices"));
-            var invoiceService = new InvoiceService(mockRepository.Object, mockLogger.Object);
+            var invoiceService = new InvoiceService(mockRepository.Object, mockConsumerRepository.Object, mockHouseRepository.Object, mockLogger.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () => await invoiceService.GetList());
