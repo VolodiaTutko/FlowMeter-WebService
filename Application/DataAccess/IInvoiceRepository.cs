@@ -15,5 +15,7 @@ namespace Application.DataAccess
 
         Task<List<Receipt>> All();
 
+        Task<Receipt> Add(Receipt receipt);
+
     }
 }

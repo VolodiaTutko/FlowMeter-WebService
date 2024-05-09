@@ -2,6 +2,7 @@
 using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace FlowMeter_WebService.Controllers
 {
@@ -36,6 +37,20 @@ namespace FlowMeter_WebService.Controllers
             var fileBytes = receipt.PDF;
             var fileName = $"invoice_{receipt.PersonalAccount}_{receipt.Date.ToString("yyyyMMdd")}.pdf";
             return File(fileBytes, "application/pdf", fileName);
+        }
+        [HttpPost]
+        public async Task<ActionResult> PdfTest()
+        {
+            // List < string personalAccount, List < string typeOfAccount,int price,int accrued>>
+            List<(string, List<(string, int, int)>)> data = new List<(string, List<(string, int, int)>)>();
+            data.Add(("1234567810", new List<(string, int, int)>
+            {
+                ("Gas", 100, 1000),
+                ("ColdWater", 110, 770)
+            }));
+            var pdfT = await _invoiceService.Add(data);
+            
+            return View("~/Views/Invoice/Index.cshtml");
         }
     }
 }

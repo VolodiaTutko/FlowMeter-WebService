@@ -14,5 +14,7 @@ namespace Application.Services.Interfaces
         Task<IEnumerable<Receipt>> GetInvoiceByPersonalAccount(string personalAccount);
 
         public Task<List<Receipt>> GetList();
+
+        public Task<Receipt> Add(params object[] data);
     }
 }

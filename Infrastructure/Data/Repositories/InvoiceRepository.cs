@@ -38,5 +38,13 @@ namespace Infrastructure.Data.Repositories
             var invoice = await dbSet.Include(r => r.Consumer).ThenInclude(c => c.House).OrderBy(x => x.ReceiptId).ToListAsync(); ;
             return invoice;
         }
+
+        public async Task<Receipt> Add(Receipt receipt)
+        {
+            _context.receipts.Add(receipt);
+            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            return receipt;
+        }
     }
 }
