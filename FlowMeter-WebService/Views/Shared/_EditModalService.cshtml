@@ -1,0 +1,55 @@
+﻿@model Service
+
+<form asp-action="Update" asp-route-id="@Model.ServiceId" method="post">
+    <div class="modal fade" id="updateModal-@Model.ServiceId" tabindex="-1" aria-labelledby="updateModalLabel-@Model.ServiceId" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="updateModalLabel-@Model.ServiceId">@ViewBag.ModalTitle</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row mt-3">
+                                    <input type="hidden" name="ServiceId" value="@Model.ServiceId" />
+                                    <label for="HouseAddress" class="col-form-label col-md-6">Будинок</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="House.HouseAddress" id="HouseAddress" class="form-control" name="HouseAddress" value=@Model.House.HouseAddress readonly>
+                                        <span asp-validation-for="House.HouseAddress" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <input type="hidden" name="ServiceId" value="@Model.ServiceId" />
+                                    <label for="TypeOfAccount" class="col-form-label col-md-6">Послуга</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="TypeOfAccount" id="TypeOfAccount" class="form-control" name="TypeOfAccount" value=@Model.TypeOfAccount readonly>
+                                        <span asp-validation-for="TypeOfAccount" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <input type="hidden" name="ServiceId" value="@Model.ServiceId" /> 
+                                    <label for="Price" class="col-form-label col-md-6">Ціна</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="Price" id="Price" class="form-control" name="Price" value=@Model.Price>
+                                        <span asp-validation-for="Price" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    @Html.ValidationSummary()
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

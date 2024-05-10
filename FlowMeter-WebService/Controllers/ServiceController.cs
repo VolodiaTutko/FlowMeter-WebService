@@ -59,6 +59,7 @@
 
             await this.serviceService.AddService(service);
             this.logger.LogInformation("Service created successfully: {ServiceId}", service.ServiceId);
+            this.TempData["message"] = "The service has been created successfully";
 
             return this.RedirectToAction(nameof(this.Index));
         }
@@ -95,6 +96,7 @@
                 }
 
                 this.logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
+                this.TempData["message"] = "The service has been edited successfuly";
 
                 return this.RedirectToAction(nameof(this.Index));
             }
