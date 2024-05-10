@@ -1,0 +1,70 @@
+﻿@using Application.DTOS
+@using Application.Services.Interfaces
+@using System.ComponentModel.DataAnnotations
+
+@{
+    IHouseService houseService = (IHouseService)ViewContext.HttpContext.RequestServices.GetService(typeof(IHouseService));
+    var houseOptions = await houseService.GetHouseOptions();
+}
+@model Service
+
+<form asp-action="Create" method="post">
+    <div class="modal fade" id="createModalService" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createModalLabel">@ViewBag.ModalTitle</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row mt-3">
+                                    <label for="HouseId" class="col-form-label col-md-6">Будинок</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="House.HouseAddress" id="HouseAddress" class="form-control" name="HouseAddress" placeholder="Оберіть будинок">
+                                        <datalist id="houses">
+                                            @foreach (var item in houseOptions)
+                                            {
+                                                <option value="@item.HouseAddress"></option>
+                                            }
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="Price" class="col-form-label col-md-6">Ціна</label>
+                                    <div class="col-md-6">
+                                        <input asp-for="Price" id="Price" class="form-control" name="Price">
+                                        <span asp-validation-for="Price" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row mt-3">
+                                    <label for="TypeOfAccount" class="col-form-label col-md-6">Тип</label>
+                                    <div class="col-md-6">
+                                        <select class="form-select building-select" id="TypeOfAccount" name="TypeOfAccount" data-val="true" data-val-required="Тип є обов'язковим">
+                                            <option value="">Оберіть послугу</option>
+                                            @foreach (var type in Enum.GetValues(typeof(Application.Models.ServiceType)))
+                                            {
+                                                <option value="@type">@((type.GetType().GetField(type.ToString()).GetCustomAttributes(typeof(DisplayAttribute), false).Single() as DisplayAttribute).Name)</option>
+                                            }
+                                        </select>
+                                        <span asp-validation-for="TypeOfAccount" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

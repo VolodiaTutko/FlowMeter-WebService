@@ -3,16 +3,21 @@
 
 @{
     ViewData["Title"] = "Index";
-    ViewBag.PartialViewName = "_CreateServiceForm";
-    ViewBag.ModalTitle = "Create new service";
-    ViewBag.UpdateModalTitle = "Update service";
 }
 
 @Html.Partial("_TableNavigation")
+<partial name="_Notification" />
 
 <h1>Services</h1>
 
-@Html.Partial("_CreateModal")
+<p mt-3>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModalService">
+        Create new
+    </button>
+</p>
+
+@Html.Partial("_CreateModalService", new Application.Models.Service { TypeOfAccount = "", Price = 0 })
+
 
 <table class="table table-bordered">
     <thead class="table-light">
@@ -55,37 +60,7 @@
                             <div class="row">
                                 <div class="col">
                                     <button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#updateModal-@item.ServiceId">Edit</button>
-                                    <form asp-action="Update" asp-route-id="@item.ServiceId" method="post">
-                                        <div class="modal fade" id="updateModal-@item.ServiceId" tabindex="-1" aria-labelledby="updateModalLabel-@item.ServiceId" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="updateModalLabel-@item.ServiceId">@ViewBag.UpdateModalTitle</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="container">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <div class="form-group row mt-3">
-                                                                        <input type="hidden" name="ServiceId" value="@item.ServiceId" /> <!-- Додавання прихованого поля ServiceId -->
-                                                                        <label for="Price" class="col-form-label col-md-6">Ціна</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" id="Price" class="form-control" name="Price">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
+                                    @Html.Partial("_EditModalService", item)
                                 </div>
 
                                 <div class="col">
@@ -95,7 +70,7 @@
                                 </div>
 
                                 <div class="col">
-                                        <form method="post" asp-action="Delete" asp-route-id="@item.ServiceId" onsubmit="return confirm('Are you sure you want to delete this consumer?');">
+                                    <form method="post" asp-action="Delete" asp-route-id="@item.ServiceId" onsubmit="return confirm('Are you sure you want to delete this consumer?');">
                                         <button type="submit" class="btn btn-danger w-100">Delete</button>
                                     </form>
                                 </div>
@@ -107,7 +82,26 @@
         }
         else
         {
-            <p>No services found.</p>
+        <td>No services found.</td>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var showModalCreate = '@ViewBag.ShowModalCreate';
+            if (showModalCreate === 'True') {
+                var modal = new bootstrap.Modal(document.getElementById('createModalService'));
+                modal.show();
+            }
+
+            var showModalUpdate = '@ViewBag.ShowModalUpdate';
+            if (showModalUpdate === 'True') {
+                var modal = new bootstrap.Modal(document.getElementById('updateModalHouse'));
+                modal.show();
+            }
+        });
+    </script>
+}
