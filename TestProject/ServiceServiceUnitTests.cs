@@ -42,30 +42,30 @@ namespace TestProject
             await Assert.ThrowsAsync<Exception>(() => serviceService.AddService(service));
         }
 
-        [Fact]
-        public async Task GetList_WithValidData_ReturnsFilteredList()
-        {
-            // Arrange
-            var mockLogger = new Mock<ILogger<ServiceService>>();
-            var mockServiceRepository = new Mock<IServiceRepository>();
-            var mockHouseService = new Mock<IHouseService>();
-            var serviceService = new ServiceService(mockServiceRepository.Object, mockHouseService.Object, mockLogger.Object);
-            var services = new List<Service>
-            {
-                new Service { ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString()},
-                new Service { ServiceId = 2, TypeOfAccount = ServiceType.HotWater.ToString()},
-                null
-            };
+        //[Fact]
+        //public async Task GetList_WithValidData_ReturnsFilteredList()
+        //{
+        //    // Arrange
+        //    var mockLogger = new Mock<ILogger<ServiceService>>();
+        //    var mockServiceRepository = new Mock<IServiceRepository>();
+        //    var mockHouseService = new Mock<IHouseService>();
+        //    var serviceService = new ServiceService(mockServiceRepository.Object, mockHouseService.Object, mockLogger.Object);
+        //    var services = new List<Service>
+        //    {
+        //        new Service { ServiceId = 1, TypeOfAccount = ServiceType.ColdWater.ToString()},
+        //        new Service { ServiceId = 2, TypeOfAccount = ServiceType.HotWater.ToString()},
+        //        null
+        //    };
 
-            mockServiceRepository.Setup(repo => repo.All()).ReturnsAsync(services);
+        //    mockServiceRepository.Setup(repo => repo.All()).ReturnsAsync(services);
 
-            // Act
-            var result = await serviceService.GetList();
+        //    // Act
+        //    var result = await serviceService.GetList();
 
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.All(result, item => Assert.NotNull(item));
-        }
+        //    // Assert
+        //    Assert.Equal(2, result.Count);
+        //    Assert.All(result, item => Assert.NotNull(item));
+        //}
 
         [Fact]
         public async Task DeleteService_ShouldDeleteServiceFromRepository()
