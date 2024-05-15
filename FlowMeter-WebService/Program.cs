@@ -55,7 +55,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-builder.Services.AddSingleton(builder.Configuration.GetSection("SmtpSettings").Get<SmtpSettings>());
+var smtpSettings = new SmtpSettings("smtp.gmail.com", 587, "flowmeterweb@gmail.com", "eiuqbdarzjluyphx", true);
+builder.Services.AddSingleton(smtpSettings);
 builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
