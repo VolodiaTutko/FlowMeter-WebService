@@ -1,64 +1,68 @@
-﻿using Application.Services;
-using Application.Services.Interfaces;
-using Application.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Application.Models;
-using System.Linq;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+﻿// <copyright file="UserController.cs" company="FlowMeter">
+// Copyright (c) FlowMeter. All rights reserved.
+// </copyright>
 
 namespace FlowMeter_WebService.Controllers
 {
+    using System.Linq;
+
+    using Application.Models;
+    using Application.Services;
+    using Application.Services.Interfaces;
+    using Application.ViewModels;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+
     [Authorize]
     public class UserController : Controller
     {
-        private readonly IConsumerService _consumerService;
-        private readonly IHouseService _houseService;
-        private readonly IServiceService _serviceService;
-        private readonly IAccountService _accountService;
-        private readonly IMeterService _meterService;
-        private readonly IInvoiceService _invoiceService;
-        private readonly UserManager<User> _userManager;
-        private readonly ILogger<UserController> _logger;
+        private readonly IConsumerService consumerService;
+        private readonly IHouseService houseService;
+        private readonly IServiceService serviceService;
+        private readonly IAccountService accountService;
+        private readonly IMeterService meterService;
+        private readonly IInvoiceService invoiceService;
+        private readonly UserManager<User> userManager;
+        private readonly ILogger<UserController> logger;
 
         public UserController(IConsumerService consumerService, IHouseService houseService, IInvoiceService invoiceService, IServiceService serviceService, IAccountService accountService, IMeterService meterService, ILogger<UserController> logger, UserManager<User> userManager)
         {
-            this._consumerService = consumerService;
-            this._houseService = houseService;
-            this._invoiceService = invoiceService;
-            this._serviceService = serviceService;
-            this._accountService = accountService;
-            this._meterService = meterService;
-            this._userManager = userManager;
-            this._logger = logger;
+            this.consumerService = consumerService;
+            this.houseService = houseService;
+            this.invoiceService = invoiceService;
+            this.serviceService = serviceService;
+            this.accountService = accountService;
+            this.meterService = meterService;
+            this.userManager = userManager;
+            this.logger = logger;
         }
 
         [Authorize(Roles = "User")]
         public async Task<IActionResult> Index()
         {
-            var currentUser = await this._userManager.GetUserAsync(this.User);
+            var currentUser = await this.userManager.GetUserAsync(this.User);
             if (currentUser != null)
             {
-                var consumer = await this._consumerService.GetConsumerByEmail(currentUser.ConsumerEmail);
-
+                var consumer = await this.consumerService.GetConsumerByEmail(currentUser.ConsumerEmail);
 
                 if (consumer != null)
                 {
-                    var house = await this._houseService.GetHouseById(consumer.HouseId);
+                    var house = await this.houseService.GetHouseById(consumer.HouseId);
                     this.ViewBag.HouseAddress = house?.HouseAddress;
 
-                    var receipts = await this._invoiceService.GetInvoiceByPersonalAccount(consumer.PersonalAccount);
+                    var receipts = await this.invoiceService.GetInvoiceByPersonalAccount(consumer.PersonalAccount);
 
-                    var services = await this._serviceService.GetServiceByHouseId(consumer.HouseId);
+                    var services = await this.serviceService.GetServiceByHouseId(consumer.HouseId);
 
                     var serviceTypePrices = new Dictionary<string, int?>();
-                    foreach (var service in services)
+                    foreach (var service in services.Value)
                     {
                         serviceTypePrices.Add(service.TypeOfAccount, service.Price);
                     }
 
-                    var account = await this._accountService.GetAccountByPerconalAccount(consumer.PersonalAccount);
+                    var account = await this.accountService.GetAccountByPerconalAccount(consumer.PersonalAccount);
 
                     var hotWaterCounterAccount = account.HotWater;
                     var coldWaterCounterAccount = account.ColdWater;
@@ -81,18 +85,19 @@ namespace FlowMeter_WebService.Controllers
                     {
                         if (acc.Value != null)
                         {
-                            var meterInfo = await this._meterService.GetMeterInfoByAccount(acc.Value);
+                            var meterInfo = await this.meterService.GetMeterInfoByAccount(acc.Value);
                             if (meterInfo != null)
                             {
                                 existingMeters.Add(acc.Key, meterInfo?.CurrentIndicator);
-                            } else
+                            }
+                            else
                             {
                             existingMeters.Add(acc.Key, 0);
                             }
-                        } 
+                        }
                         else
                         {
-                            if (services.Any(s => s.TypeOfAccount == acc.Key))
+                            if (services.Value.Any(s => s.TypeOfAccount == acc.Key))
                             {
                                 existingMeters.Add(acc.Key, 0);
                             }
@@ -120,7 +125,7 @@ namespace FlowMeter_WebService.Controllers
 
         public async Task<ActionResult> Download(int id)
         {
-            var receipt = await this._invoiceService.GetInvoiceById(id);
+            var receipt = await this.invoiceService.GetInvoiceById(id);
             if (receipt == null)
             {
                 return this.NotFound();

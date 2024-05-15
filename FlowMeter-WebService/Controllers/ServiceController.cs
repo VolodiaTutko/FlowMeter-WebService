@@ -1,10 +1,18 @@
-﻿namespace FlowMeter_WebService.Controllers
+﻿// <copyright file="ServiceController.cs" company="FlowMeter">
+// Copyright (c) FlowMeter. All rights reserved.
+// </copyright>
+
+namespace FlowMeter_WebService.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+
     using Application.Models;
     using Application.Services.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
 
     [Authorize]
     public class ServiceController : Controller
@@ -23,8 +31,16 @@
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
-            var service = await this.serviceService.GetList();
-            return this.View(service);
+            var serviceResult = await this.serviceService.GetList();
+            if (serviceResult.IsOk)
+            {
+                return this.View(serviceResult.Value);
+            }
+            else
+            {
+                this.logger.LogError(serviceResult.Error.Description);
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         public ActionResult Details(int id)
@@ -32,7 +48,7 @@
             return this.View();
         }
 
-        public ActionResult Create(Account a)
+        public ActionResult Create()
         {
             return this.View();
         }
@@ -41,27 +57,44 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Service model, string houseAddress)
         {
-            var houseModel = await this.houseService.GetHouseByAddress(houseAddress);
+            var houseModelResult = await this.houseService.GetHouseByAddress(houseAddress);
+
             this.ModelState.Remove("House");
-            model.HouseId = houseModel.HouseId;
+            model.HouseId = houseModelResult.HouseId;
+
             if (!this.ModelState.IsValid)
             {
                 return this.RedirectToAction(nameof(this.Index), model);
             }
 
-            var service = new Service
+            var existingDataForHouseResult = await this.serviceService.GetServiceByHouseId(houseModelResult.HouseId);
+            if (existingDataForHouseResult.IsOk)
             {
-                ServiceId = model.ServiceId,
-                HouseId = model.HouseId,
-                TypeOfAccount = model.TypeOfAccount,
-                Price = model.Price,
-            };
+                var existingService = existingDataForHouseResult.Value.FirstOrDefault(s => s.TypeOfAccount == model.TypeOfAccount && s.Price == model.Price);
+                if (existingService != null)
+                {
+                    this.ModelState.AddModelError(string.Empty, "The service already exists for this house");
+                    return this.View(model);
+                }
+            }
+            else
+            {
+                this.logger.LogError(existingDataForHouseResult.Error.Description);
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
-            await this.serviceService.AddService(service);
-            this.logger.LogInformation("Service created successfully: {ServiceId}", service.ServiceId);
-            this.TempData["message"] = "The service has been created successfully";
-
-            return this.RedirectToAction(nameof(this.Index));
+            var serviceResult = await this.serviceService.AddService(model);
+            if (serviceResult.IsOk)
+            {
+                this.logger.LogInformation("Service created successfully: {ServiceId}", serviceResult.Value.ServiceId);
+                this.TempData["message"] = "The service has been created successfully";
+                return this.RedirectToAction(nameof(this.Index));
+            }
+            else
+            {
+                this.logger.LogError(serviceResult.Error.Description);
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         public ActionResult Edit(int id)
@@ -71,38 +104,26 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-             return this.RedirectToAction(nameof(this.Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Update(Service service)
+        public async Task<ActionResult> Edit(Service service)
         {
             this.ModelState.Remove("House");
             this.ModelState.Remove("TypeOfAccount");
-            if (this.ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                var updatedService = await this.serviceService.GetServiceByServiceId(service.ServiceId);
+                return this.RedirectToAction(nameof(this.Index));
+            }
 
-                updatedService.Price = service.Price;
-
-                await this.serviceService.UpdateService(updatedService);
-
-                if (updatedService == null)
-                {
-                    return this.NotFound();
-                }
-
-                this.logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedService.ServiceId);
-                this.TempData["message"] = "The service has been edited successfuly";
-
+            var updatedServiceResult = await this.serviceService.UpdateService(service);
+            if (updatedServiceResult.IsOk)
+            {
+                this.logger.LogInformation("Service with ServiceId: {ServiceId} updated successfully", updatedServiceResult.Value.ServiceId);
+                this.TempData["message"] = "The service has been edited successfully";
                 return this.RedirectToAction(nameof(this.Index));
             }
             else
             {
-                return this.RedirectToAction(nameof(this.Index));
+                this.logger.LogError(updatedServiceResult.Error.Description);
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -110,14 +131,18 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
-            var deletedService = await this.serviceService.DeleteService(id);
-            if (deletedService == null)
+            var deletedServiceResult = await this.serviceService.DeleteService(id);
+            if (deletedServiceResult.IsOk)
             {
-                return this.NotFound();
+                this.logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedServiceResult.Value.ServiceId);
+                this.TempData["message"] = "The service has been deleted successfully";
+                return this.RedirectToAction(nameof(this.Index));
             }
-
-            this.logger.LogInformation("Service with ServiceId: {ServiceId} deleted successfully", deletedService.ServiceId);
-            return this.RedirectToAction(nameof(this.Index));
+            else
+            {
+                this.logger.LogError(deletedServiceResult.Error.Description);
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

@@ -1,19 +1,23 @@
-﻿namespace Application.Services.Interfaces
+﻿// <copyright file="IServiceService.cs" company="FlowMeter">
+// Copyright (c) FlowMeter. All rights reserved.
+// </copyright>
+
+namespace Application.Services.Interfaces
 {
     using Application.Models;
 
     public interface IServiceService
     {
-        public Task<Service> AddService(Service service);
+        public Task<Result<Service, Error>> AddService(Service service);
 
-        Task<Service> DeleteService(int id);
+        Task<Result<Service, Error>> DeleteService(int id);
 
-        Task<Service> UpdateService(Service service);
+        Task<Result<Service, Error>> UpdateService(Service service);
 
-        Task<Service> GetServiceByServiceId(int serviceId);
+        Task<Result<Service, Error>> GetServiceByServiceId(int serviceId);
 
-        Task<IEnumerable<Service>> GetServiceByHouseId(int houseId);
+        Task<Result<IEnumerable<Service>, Error>> GetServiceByHouseId(int houseId);
 
-        public Task<List<Service>> GetList();
+        public Task<Result<List<Service>, Error>> GetList();
     }
 }
