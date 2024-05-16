@@ -19,17 +19,17 @@ namespace FlowMeter_WebService.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly IEmailSenderService _emailSenderService;
+        //private readonly IEmailSenderService _emailSenderService;
  
         public AuthController(ILogger<AuthController> logger, IAuthService authService, IConsumerService consumerService, SignInManager<User> signInManager,
-            UserManager<User> userManager, IEmailSenderService emailSenderService, RoleManager<IdentityRole> roleManager)
+            UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _consumerService = consumerService;
             _authService = authService;
             _logger = logger;
             _signInManager = signInManager;
             _userManager = userManager;
-            _emailSenderService = emailSenderService;
+            //_emailSenderService = emailSenderService;
             _roleManager = roleManager;
 
             Task.Run(async () => await SD.CheckAndCreateRoles(_roleManager)).Wait();
@@ -53,7 +53,7 @@ namespace FlowMeter_WebService.Controllers
 
             var emailUser = await _consumerService.GetConsumerByEmail(signupEmailViewModel.ConsumerEmail);
             var registeredUser = await _userManager.FindByEmailAsync(signupEmailViewModel.ConsumerEmail);
-            signupEmailViewModel.ValidationCode = await _emailSenderService.SendVerificationCode(signupEmailViewModel.ConsumerEmail);
+            //signupEmailViewModel.ValidationCode = await _emailSenderService.SendVerificationCode(signupEmailViewModel.ConsumerEmail);
 
             if (registeredUser != null)
             {
@@ -293,8 +293,8 @@ namespace FlowMeter_WebService.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(registeredUser);
                 var callbackurl = Url.Action("ResetPassword", "Auth", new { userId = registeredUser.Id, code, registeredUser.ConsumerEmail }, protocol:HttpContext.Request.Scheme);
 
-                await _emailSenderService.SendEmailAsync(model.ConsumerEmail, "Reset Password", 
-                    $"Please reset your password by clicking here: <a href='{callbackurl}'>link</a>");
+                //await _emailSenderService.SendEmailAsync(model.ConsumerEmail, "Reset Password", 
+                //    $"Please reset your password by clicking here: <a href='{callbackurl}'>link</a>");
 
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
