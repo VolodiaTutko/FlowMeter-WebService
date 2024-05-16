@@ -33,12 +33,11 @@ namespace Application.Services
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-			var smtpSettings = new SmtpSettings("smtp.gmail.com", 587, "flowmeterweb@gmail.com", "eiuqbdarzjluyphx", true);
-			string smtpHost = smtpSettings.Host;
-            int smtpPort = smtpSettings.Port;
-            string smtpUsername = smtpSettings.Username;
-            string smtpPassword = smtpSettings.Password;
-            bool enableSsl = smtpSettings.EnableSsl;
+			string smtpHost = _smtpSettings.Host;
+            int smtpPort = _smtpSettings.Port;
+            string smtpUsername = _smtpSettings.Username;
+            string smtpPassword = _smtpSettings.Password;
+            bool enableSsl = _smtpSettings.EnableSsl;
 
             using (var client = new SmtpClient(smtpHost, smtpPort))
             {
