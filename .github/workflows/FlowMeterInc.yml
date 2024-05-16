@@ -9,6 +9,7 @@ env:
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: FlowMeter-WebService
+  TEST_DIRECTORY: TestProject
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +24,7 @@ jobs:
     - name: Build
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
     - name: Test
-      run: dotnet test "${{ env.WORKING_DIRECTORY }}"
+      run: dotnet test "${{ env.TEST_DIRECTORY }}"
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
     - name: Publish Artifacts
