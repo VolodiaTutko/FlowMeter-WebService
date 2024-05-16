@@ -15,12 +15,8 @@ using Microsoft.AspNetCore.Identity;
 using Application.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net;
-using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
 
 builder.Host.UseSerilog((context, loggerConfig) =>
 {
