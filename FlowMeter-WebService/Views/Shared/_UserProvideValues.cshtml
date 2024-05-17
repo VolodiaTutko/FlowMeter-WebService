@@ -48,7 +48,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<button type="button" class="btn btn-primary" id="submitButton">Submit</button>
 				</div>
 			</div>
 		</div>
@@ -56,6 +56,20 @@
 </form>
 
 <script>
+	document.addEventListener("DOMContentLoaded", function () {
+		var submitButton = document.getElementById('submitButton');
+		var indicatorField = document.getElementById('indicator');
+		var serviceTypeField = document.getElementById('ServiceType');
+
+		submitButton.addEventListener('click', function () {
+			if (!indicatorField.value || !serviceTypeField.value) {
+				alert('Будь ласка, заповніть всі поля');
+			} else {
+				document.querySelector('form').submit();
+			}
+		});
+	});
+
 	document.addEventListener("DOMContentLoaded", function () {
 		var indicatorField = document.getElementById('indicator');
 		var errorIndicatorField = document.getElementById('indicator-error');

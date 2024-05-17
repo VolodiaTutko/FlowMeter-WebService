@@ -76,14 +76,15 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(ConsumerUpdateViewModel consumer)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
 				ViewBag.ShowModalUpdate = true;
 				var updatedConsumer = await _consumerService.UpdateConsumer(consumer);
-				return RedirectToAction(nameof(Index));
+                TempData["message"] = "The consumer has been edited successfuly";
+                return RedirectToAction(nameof(Index));
             }
 
-			TempData["message"] = "The house has been edited successfuly";
+            TempData["message"] = "The consumer has not been edited successfuly";
             return RedirectToAction(nameof(Index));
         }
 
